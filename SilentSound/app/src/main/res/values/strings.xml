@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">Silent Sound</string>
+    <string name="app_name">صدا‌ی سکوت</string>
+    <string name="frequency">فرکانس پایه</string>
+    <string name="volume">حجم صدا</string>
+    <string name="play">شروع</string>
+    <string name="pause">مکث</string>
+    <string name="stop">توقف</string>
+    <string name="background_music">موسیقی زمینه</string>
+    <string name="meditation_stories">داستان‌های مدیتیشن</string>
+    <string name="auto_timer">تایمر خودکار</string>
+    <string name="timer_5min">۵ دقیقه</string>
+    <string name="timer_10min">۱۰ دقیقه</string>
+    <string name="timer_15min">۱۵ دقیقه</string>
+    <string name="timer_30min">۳۰ دقیقه</string>
 </resources>
