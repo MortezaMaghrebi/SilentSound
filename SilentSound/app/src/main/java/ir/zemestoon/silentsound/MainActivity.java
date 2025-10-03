@@ -2,6 +2,7 @@ package ir.zemestoon.silentsound;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    private Map<String, Sound> soundMap = new HashMap<>(); // اضافه کردن این خط
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +79,15 @@ public class MainActivity extends AppCompatActivity {
         setupRecyclerView();
         setupTimerButtons();
         loadSounds();
+        initializeSoundMap();
     }
 
+    private void initializeSoundMap() {
+        soundMap.clear();
+        for (Sound sound : allSounds) {
+            soundMap.put(sound.getName(), sound);
+        }
+    }
     private void initViews() {
         soundsRecyclerView = findViewById(R.id.soundsRecyclerView);
 
@@ -174,9 +183,123 @@ public class MainActivity extends AppCompatActivity {
         soundsRecyclerView.setAdapter(soundAdapter);
     }
 
+
+
+    public void updateSoundDownloadProgress(final String soundName, final int progress) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                // پیدا کردن صدا در لیست فیلتر شده
+                int position = -1;
+                for (int i = 0; i < filteredSounds.size(); i++) {
+                    if (filteredSounds.get(i).getName().equals(soundName)) {
+                        position = i;
+                        break;
+                    }
+                }
+
+                // آپدیت آیتم در آداپتر
+                if (position != -1) {
+                    soundAdapter.notifyItemChanged(position);
+
+                    // لاگ برای دیباگ
+                    Log.d("UI_Update", "Updating UI for: " + soundName + " at position: " + position + " progress: " + progress);
+                } else {
+                    Log.d("UI_Update", "Sound not found in filtered list: " + soundName);
+                }
+            }
+        });
+    }
+
+    private Sound findSoundByName(String soundName) {
+        for (Sound sound : allSounds) {
+            if (sound.getName().equals(soundName)) {
+                return sound;
+            }
+        }
+        return null;
+    }
+
+    private void startDownloadWithProgress(Sound sound) {
+        sound.setSelected(true);
+        updateItemAppearance(sound); // آپدیت UI برای نمایش انتخاب
+        audioManager.downloadSound(sound, new AudioManager.DownloadCallback() {
+            @Override
+            public void onDownloadProgress(String soundName, int progress) {
+                updateSoundDownloadProgress(soundName, progress);
+                Log.d("DownloadProgress", soundName + ": " + progress + "%");
+            }
+
+            @Override
+            public void onDownloadComplete(String soundName, String localPath) {
+                // آپدیت صدا و UI
+                Sound currentSound = soundMap.get(soundName);
+                if (currentSound != null) {
+                    currentSound.setLocalPath(localPath);
+                }
+                updateSoundDownloadProgress(soundName, 100);
+                showToast(soundName + " دانلود شد");
+
+                // یک آپدیت نهایی بعد از 500ms برای اطمینان
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateSoundDownloadProgress(soundName, 100);
+                        if (currentSound != null) {
+                            playSoundAfterDownload(currentSound);
+                        }
+                    }
+                }, 500);
+            }
+
+            @Override
+            public void onDownloadError(String soundName, String error) {
+                Sound currentSound = soundMap.get(soundName);
+                if (currentSound != null) {
+                    currentSound.setSelected(false);
+                }
+                updateSoundDownloadProgress(soundName, 0);
+                showToast("خطا در دانلود " + soundName + ": " + error);
+            }
+        });
+    }
+
+    private void playSoundAfterDownload(Sound sound) {
+        // مطمئن شو صدا انتخاب شده
+        sound.setSelected(true);
+
+        // پخش صدا
+        audioManager.playSound(sound, sound.getVolume(), new AudioManager.PlaybackCallback() {
+            @Override
+            public void onPlaybackStarted(String soundName) {
+                playingStatus.put(soundName, true);
+                //showToast(soundName + " در حال پخش...");
+                updateAllItemsAppearance();
+
+                // لاگ برای دیباگ
+                Log.d("Playback", "Playback started after download: " + soundName);
+            }
+
+            @Override
+            public void onPlaybackStopped(String soundName) {
+                playingStatus.put(soundName, false);
+                updateAllItemsAppearance();
+            }
+
+            @Override
+            public void onPlaybackError(String soundName, String error) {
+                playingStatus.put(soundName, false);
+                showToast("خطا در پخش " + soundName + ": " + error);
+                updateAllItemsAppearance();
+            }
+        });
+
+        // آپدیت UI برای نمایش وضعیت پخش
+        updateAllItemsAppearance();
+    }
+
     private void toggleSoundPlayback(Sound sound) {
         String soundName = sound.getName();
-
 
         if (sound.getAudioUrl() == null || sound.getAudioUrl().isEmpty()) {
             showToast("آهنگ " + soundName + " در دسترس نیست");
@@ -184,36 +307,42 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (isSoundPlaying(soundName)) {
-
+            // توقف پخش
             audioManager.stopSound(sound);
             playingStatus.put(soundName, false);
-            showToast(soundName + " متوقف شد");
+            //showToast(soundName + " متوقف شد");
+            updateAllItemsAppearance();
         } else {
+            if (!audioManager.isSoundDownloaded(sound)) {
+                // فوراً UI رو آپدیت کن
+                updateSoundDownloadProgress(soundName, 5); // 5% برای شروع
+                // سپس دانلود رو شروع کن
+                startDownloadWithProgress(sound);
+            } else { // شروع پخش با نمایش progress دانلود
+                audioManager.playSound(sound, sound.getVolume(), new AudioManager.PlaybackCallback() {
+                    @Override
+                    public void onPlaybackStarted(String soundName) {
+                        playingStatus.put(soundName, true);
+                        //showToast(soundName + " در حال پخش...");
+                        updateAllItemsAppearance();
+                    }
 
-            audioManager.playSound(sound, sound.getVolume(), new AudioManager.PlaybackCallback() {
-                @Override
-                public void onPlaybackStarted(String soundName) {
-                    playingStatus.put(soundName, true);
-                    showToast(soundName + " در حال پخش...");
-                    updateAllItemsAppearance();
-                }
+                    @Override
+                    public void onPlaybackStopped(String soundName) {
+                        playingStatus.put(soundName, false);
+                        updateAllItemsAppearance();
+                    }
 
-                @Override
-                public void onPlaybackStopped(String soundName) {
-                    playingStatus.put(soundName, false);
-                    updateAllItemsAppearance();
-                }
+                    @Override
+                    public void onPlaybackError(String soundName, String error) {
+                        playingStatus.put(soundName, false);
+                        showToast("خطا در پخش " + soundName + ": " + error);
+                        updateAllItemsAppearance();
+                    }
+                });
+            }
 
-                @Override
-                public void onPlaybackError(String soundName, String error) {
-                    playingStatus.put(soundName, false);
-                    showToast("خطا در پخش " + soundName + ": " + error);
-                    updateAllItemsAppearance();
-                }
-            });
         }
-
-        updateAllItemsAppearance();
     }
 
     public boolean isSoundPlaying(String soundName) {

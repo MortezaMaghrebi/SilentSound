@@ -2,7 +2,10 @@ package ir.zemestoon.silentsound;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ClipDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -75,7 +78,7 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
         private TextView nameTextView;
         private SeekBar volumeSeekBar;
         private View selectionOverlay;
-        private ProgressBar downloadProgressBar;
+        private View progressBackground;
         private TextView downloadProgressText;
 
         public SoundViewHolder(@NonNull View itemView) {
@@ -88,7 +91,7 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
             nameTextView = itemView.findViewById(R.id.nameTextView);
             volumeSeekBar = itemView.findViewById(R.id.volumeSeekBar);
             selectionOverlay = itemView.findViewById(R.id.selectionOverlay);
-            downloadProgressBar = itemView.findViewById(R.id.downloadProgressBar);
+            progressBackground = itemView.findViewById(R.id.progressBackground);
             downloadProgressText = itemView.findViewById(R.id.downloadProgressText);
 
             // کلیک روی کل آیتم
@@ -120,33 +123,74 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
             nameTextView.setText(sound.getName());
             volumeSeekBar.setProgress(sound.getVolume());
 
-            // بررسی وضعیت دانلود
+            // بررسی وضعیت دانلود - بهبود یافته
             boolean isDownloaded = audioManager.isSoundDownloaded(sound);
             int downloadProgress = audioManager.getDownloadProgress(sound);
 
-            if (downloadProgress > 0 && downloadProgress < 100) {
-                // در حال دانلود
-                downloadProgressBar.setVisibility(View.VISIBLE);
+            Log.d("SoundAdapter", "Binding: " + sound.getName() +
+                    ", Downloaded: " + isDownloaded +
+                    ", Progress: " + downloadProgress);
+
+            // مدیریت نمایش progress
+            if (!isDownloaded && downloadProgress > 0) {
+                // تنظیم level برای ClipDrawable (0-10000)
+                Drawable backgroundDrawable = progressBackground.getBackground();
+                if (backgroundDrawable instanceof LayerDrawable) {
+                    LayerDrawable layerDrawable = (LayerDrawable) backgroundDrawable;
+                    Drawable clipDrawable = layerDrawable.getDrawable(1); // آیتم دوم (پیشرفت آبی)
+                    if (clipDrawable instanceof ClipDrawable) {
+                        // ClipDrawable از 0 (کاملاً پنهان) تا 10000 (کاملاً قابل مشاهده) کار می‌کند
+                        int level = downloadProgress * 100;
+                        clipDrawable.setLevel(level);
+                    }
+                }
+
+                // نمایش درصد
                 downloadProgressText.setVisibility(View.VISIBLE);
-                downloadProgressBar.setProgress(downloadProgress);
                 downloadProgressText.setText(downloadProgress + "%");
 
-                if (listener != null) {
-                    listener.onDownloadProgress(sound, downloadProgress);
+                itemView.setEnabled(false);
+                itemView.setAlpha(0.9f);
+
+            } else if (!isDownloaded && downloadProgress == 0) {
+                // آماده برای دانلود - پنهان کردن progress
+                Drawable backgroundDrawable = progressBackground.getBackground();
+                if (backgroundDrawable instanceof LayerDrawable) {
+                    LayerDrawable layerDrawable = (LayerDrawable) backgroundDrawable;
+                    Drawable clipDrawable = layerDrawable.getDrawable(1);
+                    if (clipDrawable instanceof ClipDrawable) {
+                        clipDrawable.setLevel(0); // کاملاً پنهان
+                    }
                 }
-            } else {
-                downloadProgressBar.setVisibility(View.GONE);
+
                 downloadProgressText.setVisibility(View.GONE);
+                itemView.setEnabled(true);
+                itemView.setAlpha(1.0f);
+
+            } else {
+                // دانلود کامل شده - پنهان کردن progress
+                Drawable backgroundDrawable = progressBackground.getBackground();
+                if (backgroundDrawable instanceof LayerDrawable) {
+                    LayerDrawable layerDrawable = (LayerDrawable) backgroundDrawable;
+                    Drawable clipDrawable = layerDrawable.getDrawable(1);
+                    if (clipDrawable instanceof ClipDrawable) {
+                        clipDrawable.setLevel(0); // کاملاً پنهان
+                    }
+                }
+
+                downloadProgressText.setVisibility(View.GONE);
+                itemView.setEnabled(true);
+                itemView.setAlpha(1.0f);
             }
 
-            // تغییر ظاهر بر اساس وضعیت انتخاب و پخش
+
+            // **مدیریت ظاهر بر اساس وضعیت پخش و انتخاب - اصلاح شده**
             if (isSoundPlaying(sound.getName())) {
-                // اگر در حال پخش است
+                // اگر در حال پخش است - حاشیه آبی
                 itemView.setBackgroundResource(R.drawable.sound_item_background_playing);
                 selectionOverlay.setVisibility(View.VISIBLE);
                 nameTextView.setTextColor(Color.parseColor("#3B82F6"));
                 nameTextView.setTypeface(nameTextView.getTypeface(), Typeface.BOLD);
-
 
                 Drawable playIcon = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_playing);
                 if (playIcon != null) {
@@ -156,15 +200,17 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
                 }
 
             } else if (sound.isSelected()) {
-                // اگر انتخاب شده اما پخش نمی‌شود
+                // اگر انتخاب شده اما پخش نمی‌شود - حاشیه آبی کمرنگ
                 selectionOverlay.setVisibility(View.VISIBLE);
-                itemView.setBackgroundResource(R.drawable.sound_item_background_selected);
+                itemView.setBackgroundResource(R.drawable.sound_item_background);
                 nameTextView.setTextColor(Color.parseColor("#E2E8F0"));
                 nameTextView.setTypeface(nameTextView.getTypeface(), Typeface.NORMAL);
                 nameTextView.setCompoundDrawables(null, null, null, null);
+
             } else {
-                // حالت عادی
+                // حالت عادی - بدون حاشیه آبی
                 selectionOverlay.setVisibility(View.GONE);
+                progressBackground.setVisibility(View.GONE);
                 itemView.setBackgroundResource(R.drawable.sound_item_background);
                 nameTextView.setTextColor(Color.parseColor("#E2E8F0"));
                 nameTextView.setTypeface(nameTextView.getTypeface(), Typeface.NORMAL);

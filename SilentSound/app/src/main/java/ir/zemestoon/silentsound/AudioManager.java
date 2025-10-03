@@ -165,9 +165,12 @@ public class AudioManager {
             try {
                 String audioUrl = sound.getAudioUrl();
                 if (audioUrl == null || audioUrl.trim().isEmpty()) {
-                    runOnUiThread(() -> callback.onDownloadError(sound.getName(), "Audio URL is empty"));
-                    downloadCallbacks.remove(soundKey);
-                    downloadProgressMap.remove(soundKey);
+                    runOnUiThread(() -> {
+                        DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
+                        if (currentCallback != null) {
+                            currentCallback.onDownloadError(sound.getName(), "Audio URL is empty");
+                        }
+                    });
                     return;
                 }
 
@@ -179,17 +182,18 @@ public class AudioManager {
                 URL url = new URL(audioUrl);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setConnectTimeout(15000);
-                connection.setReadTimeout(60000); // تایم اوت بیشتر
-                connection.setInstanceFollowRedirects(true); // دنبال کردن ریدایرکت‌ها
+                connection.setReadTimeout(60000);
+                connection.setInstanceFollowRedirects(true);
                 connection.connect();
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode != HttpURLConnection.HTTP_OK) {
-                    runOnUiThread(() ->
-                            callback.onDownloadError(sound.getName(),
-                                    "Server returned HTTP " + responseCode));
-                    downloadCallbacks.remove(soundKey);
-                    downloadProgressMap.remove(soundKey);
+                    runOnUiThread(() -> {
+                        DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
+                        if (currentCallback != null) {
+                            currentCallback.onDownloadError(sound.getName(), "Server returned HTTP " + responseCode);
+                        }
+                    });
                     return;
                 }
 
@@ -197,14 +201,13 @@ public class AudioManager {
                 input = connection.getInputStream();
 
                 File outputFile = new File(getLocalPath(soundKey));
-                // مطمئن شو فولدر ساخته بشه
                 if (outputFile.getParentFile() != null && !outputFile.getParentFile().exists()) {
                     outputFile.getParentFile().mkdirs();
                 }
 
                 output = new FileOutputStream(outputFile);
 
-                byte[] data = new byte[8192]; // بافر بزرگ‌تر
+                byte[] data = new byte[8192];
                 long total = 0;
                 int count;
                 int lastProgress = 0;
@@ -214,17 +217,16 @@ public class AudioManager {
                         input.close();
                         output.close();
                         outputFile.delete();
-                        downloadCallbacks.remove(soundKey);
-                        downloadProgressMap.remove(soundKey);
                         return;
                     }
 
                     total += count;
                     if (fileLength > 0) {
                         final int progress = (int) (total * 100 / fileLength);
-                        if (progress > lastProgress) { // فقط اگر progress تغییر کرد آپدیت کن
+                        if (progress > lastProgress) {
                             lastProgress = progress;
                             downloadProgressMap.put(soundKey, progress);
+
                             runOnUiThread(() -> {
                                 DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
                                 if (currentCallback != null) {
@@ -245,8 +247,6 @@ public class AudioManager {
 
                     sound.setLocalPath(outputFile.getAbsolutePath());
                     downloadStatus.put(soundKey, true);
-
-                    // ذخیره وضعیت دانلود
                     saveDownloadStatus(soundKey);
 
                     Log.d(TAG, "Download completed successfully: " + sound.getName() +
@@ -257,15 +257,18 @@ public class AudioManager {
                         if (currentCallback != null) {
                             currentCallback.onDownloadComplete(sound.getName(), outputFile.getAbsolutePath());
                         }
+                        // حالا می‌تونیم callback رو پاک کنیم
+                        downloadCallbacks.remove(soundKey);
                     });
+
                 } else {
                     outputFile.delete();
                     runOnUiThread(() -> {
                         DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
                         if (currentCallback != null) {
-                            currentCallback.onDownloadError(sound.getName(),
-                                    "Downloaded file is incomplete or corrupted");
+                            currentCallback.onDownloadError(sound.getName(), "Downloaded file is incomplete or corrupted");
                         }
+                        downloadCallbacks.remove(soundKey);
                     });
                 }
 
@@ -276,6 +279,7 @@ public class AudioManager {
                     if (currentCallback != null) {
                         currentCallback.onDownloadError(sound.getName(), e.getMessage());
                     }
+                    downloadCallbacks.remove(soundKey);
                 });
             } finally {
                 try {
@@ -284,9 +288,12 @@ public class AudioManager {
                     if (connection != null) connection.disconnect();
                 } catch (IOException ignored) {}
 
-                // پاک کردن callback و progress بعد از اتمام
-                downloadCallbacks.remove(soundKey);
+                // فقط progress map رو پاک کنید، callback رو نه
                 downloadProgressMap.remove(soundKey);
+
+                // لاگ برای دیباگ
+                Log.d(TAG, "Finally block executed for: " + sound.getName() +
+                        ", Callback exists: " + downloadCallbacks.containsKey(soundKey));
             }
         });
     }
