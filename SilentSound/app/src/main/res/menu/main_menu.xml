@@ -2,6 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/action_clear_cache"
+        android:fontFamily="@font/yekan"
         android:title="پاک کردن کش"
         android:icon="@drawable/ic_clear" />
 </menu>

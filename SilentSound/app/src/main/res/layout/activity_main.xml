@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/tvTitle"
         android:text="صداهای خواب"
+        android:fontFamily="@font/yekan"
         android:gravity="center"
         android:layout_marginTop="20dp"
         android:textColor="#4080f0"
@@ -55,6 +56,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="طبیعت"
+                        android:fontFamily="@font/yekan"
+
                         android:textColor="#3B82F6"
                         android:textSize="14sp" />
 
@@ -81,6 +84,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="آهنگ‌ها"
+                        android:fontFamily="@font/yekan"
+
                         android:textColor="#64748B"
                         android:textSize="14sp" />
 
@@ -107,6 +112,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="نویزها"
+                        android:fontFamily="@font/yekan"
+
                         android:textColor="#64748B"
                         android:textSize="14sp" />
 
@@ -133,6 +140,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="موج‌ها"
+                        android:fontFamily="@font/yekan"
                         android:textColor="#64748B"
                         android:textSize="14sp" />
 
@@ -159,6 +167,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="داستان ها"
+                        android:fontFamily="@font/yekan"
                         android:textColor="#64748B"
                         android:textSize="14sp" />
 
@@ -185,6 +194,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="ترکیب ها"
+                        android:fontFamily="@font/yekan"
                         android:textColor="#64748B"
                         android:textSize="14sp" />
 
@@ -226,6 +236,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:drawablePadding="8dp"
+            android:fontFamily="@font/yekan"
             android:id="@+id/timerTitle"
             android:drawableStart="@drawable/ic_timer" />
         <TextView
@@ -235,6 +246,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:text="تایمر فعال: ندارد"
+            android:fontFamily="@font/yekan"
             android:textColor="#3B82F6"
             android:textSize="16sp" />
         <HorizontalScrollView
@@ -272,6 +284,7 @@
             android:layout_marginEnd="10dp"
             android:background="@drawable/button_primary"
             android:text="پخش همه ▶"
+            android:fontFamily="@font/yekan"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
            />
@@ -283,6 +296,7 @@
             android:layout_weight="1"
             android:layout_marginStart="10dp"
             android:background="@drawable/button_stop"
+            android:fontFamily="@font/yekan"
             android:text="توقف همه ∎"
             android:textColor="#FFFFFF"
             android:textSize="16sp"

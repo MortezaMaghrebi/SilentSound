@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -22,10 +23,13 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
     private OnSoundClickListener listener;
     private int itemWidth;
     private MainActivity mainActivity;
+    private AudioManager audioManager;
+
     public interface OnSoundClickListener {
         void onSoundClick(Sound sound);
         void onVolumeChanged(Sound sound, int volume);
         void onSelectionChanged(Sound sound, boolean selected);
+        void onDownloadProgress(Sound sound, int progress); // اضافه شده
     }
 
     public SoundAdapter(List<Sound> soundList, OnSoundClickListener listener, int screenWidth, MainActivity mainActivity) {
@@ -33,6 +37,7 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
         this.listener = listener;
         this.itemWidth = (screenWidth - convertDpToPx(60) - convertDpToPx(20)) / 3;
         this.mainActivity = mainActivity;
+        this.audioManager = AudioManager.getInstance(mainActivity);
     }
 
     private boolean isSoundPlaying(String soundName) {
@@ -70,6 +75,8 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
         private TextView nameTextView;
         private SeekBar volumeSeekBar;
         private View selectionOverlay;
+        private ProgressBar downloadProgressBar;
+        private TextView downloadProgressText;
 
         public SoundViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -81,6 +88,8 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
             nameTextView = itemView.findViewById(R.id.nameTextView);
             volumeSeekBar = itemView.findViewById(R.id.volumeSeekBar);
             selectionOverlay = itemView.findViewById(R.id.selectionOverlay);
+            downloadProgressBar = itemView.findViewById(R.id.downloadProgressBar);
+            downloadProgressText = itemView.findViewById(R.id.downloadProgressText);
 
             // کلیک روی کل آیتم
             itemView.setOnClickListener(v -> {
@@ -111,6 +120,25 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
             nameTextView.setText(sound.getName());
             volumeSeekBar.setProgress(sound.getVolume());
 
+            // بررسی وضعیت دانلود
+            boolean isDownloaded = audioManager.isSoundDownloaded(sound);
+            int downloadProgress = audioManager.getDownloadProgress(sound);
+
+            if (downloadProgress > 0 && downloadProgress < 100) {
+                // در حال دانلود
+                downloadProgressBar.setVisibility(View.VISIBLE);
+                downloadProgressText.setVisibility(View.VISIBLE);
+                downloadProgressBar.setProgress(downloadProgress);
+                downloadProgressText.setText(downloadProgress + "%");
+
+                if (listener != null) {
+                    listener.onDownloadProgress(sound, downloadProgress);
+                }
+            } else {
+                downloadProgressBar.setVisibility(View.GONE);
+                downloadProgressText.setVisibility(View.GONE);
+            }
+
             // تغییر ظاهر بر اساس وضعیت انتخاب و پخش
             if (isSoundPlaying(sound.getName())) {
                 // اگر در حال پخش است
@@ -119,7 +147,7 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
                 nameTextView.setTextColor(Color.parseColor("#3B82F6"));
                 nameTextView.setTypeface(nameTextView.getTypeface(), Typeface.BOLD);
 
-                // اضافه کردن آیکون پخش کوچک
+
                 Drawable playIcon = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_playing);
                 if (playIcon != null) {
                     playIcon.setBounds(0, 0, 16, 16);
@@ -146,8 +174,8 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
             // Load icon using Glide with error handling
             Glide.with(itemView.getContext())
                     .load(sound.getIcon())
-                    .placeholder(R.drawable.ic_default_icon)
-                    .error(R.drawable.ic_default_icon)
+                    .placeholder(R.drawable.music_50px)
+                    .error(R.drawable.music_50px)
                     .into(iconImageView);
         }
     }

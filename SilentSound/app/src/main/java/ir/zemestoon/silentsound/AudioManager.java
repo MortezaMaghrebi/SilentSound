@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class AudioManager {
     private static final String TAG = "AudioManager";
@@ -34,6 +36,10 @@ public class AudioManager {
     private Handler mainHandler;
     private SharedPreferences sharedPreferences;
 
+    // اضافه کردن Map برای نگهداری progressهای دانلود
+    private Map<String, Integer> downloadProgressMap;
+    private Map<String, DownloadCallback> downloadCallbacks;
+
     private AudioManager(Context context) {
         this.context = context.getApplicationContext();
         this.executorService = Executors.newFixedThreadPool(3);
@@ -41,6 +47,8 @@ public class AudioManager {
         this.downloadStatus = new HashMap<>();
         this.mainHandler = new Handler(Looper.getMainLooper());
         this.sharedPreferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        this.downloadProgressMap = new HashMap<>();
+        this.downloadCallbacks = new HashMap<>();
 
         // بارگذاری وضعیت دانلود‌های قبلی
         loadDownloadStatus();
@@ -65,57 +73,89 @@ public class AudioManager {
         void onPlaybackError(String soundName, String error);
     }
 
+    // تولید نام یکتا برای فایل بر اساس URL
+    private String generateUniqueFileName(String soundName, String audioUrl) {
+        try {
+            // استفاده از hash برای ایجاد نام یکتا
+            String uniqueString = soundName + "_" + audioUrl;
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            byte[] hash = digest.digest(uniqueString.getBytes());
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : hash) {
+                String hex = Integer.toHexString(0xff & b);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            return hexString.toString() + ".mp3";
+        } catch (NoSuchAlgorithmException e) {
+            // اگر خطا رخ داد، از نام ساده استفاده کن
+            return soundName.replace(" ", "_").replace("/", "_") + "_" +
+                    Math.abs(audioUrl.hashCode()) + ".mp3";
+        }
+    }
+
     // بارگذاری وضعیت دانلود‌ها از SharedPreferences
     private void loadDownloadStatus() {
         Set<String> downloadedSounds = sharedPreferences.getStringSet(KEY_DOWNLOADED_SOUNDS, new HashSet<>());
 
-        for (String soundName : downloadedSounds) {
-            String filePath = getLocalPath(soundName);
+        for (String soundKey : downloadedSounds) {
+            String filePath = getLocalPath(soundKey);
             File file = new File(filePath);
             if (file.exists()) {
-                downloadStatus.put(soundName, true);
-                Log.d(TAG, "Loaded downloaded sound: " + soundName);
+                downloadStatus.put(soundKey, true);
+                Log.d(TAG, "Loaded downloaded sound: " + soundKey);
             } else {
                 // اگر فایل وجود ندارد، از لیست حذف کن
-                removeFromDownloadedSounds(soundName);
+                removeFromDownloadedSounds(soundKey);
             }
         }
     }
 
     // ذخیره وضعیت دانلود در SharedPreferences
-    private void saveDownloadStatus(String soundName) {
+    private void saveDownloadStatus(String soundKey) {
         Set<String> downloadedSounds = new HashSet<>(
                 sharedPreferences.getStringSet(KEY_DOWNLOADED_SOUNDS, new HashSet<>())
         );
-        downloadedSounds.add(soundName);
+        downloadedSounds.add(soundKey);
 
         sharedPreferences.edit()
                 .putStringSet(KEY_DOWNLOADED_SOUNDS, downloadedSounds)
                 .apply();
 
-        Log.d(TAG, "Saved download status for: " + soundName);
+        Log.d(TAG, "Saved download status for: " + soundKey);
     }
 
     // حذف از لیست دانلود‌ها
-    private void removeFromDownloadedSounds(String soundName) {
+    private void removeFromDownloadedSounds(String soundKey) {
         Set<String> downloadedSounds = new HashSet<>(
                 sharedPreferences.getStringSet(KEY_DOWNLOADED_SOUNDS, new HashSet<>())
         );
-        downloadedSounds.remove(soundName);
+        downloadedSounds.remove(soundKey);
 
         sharedPreferences.edit()
                 .putStringSet(KEY_DOWNLOADED_SOUNDS, downloadedSounds)
                 .apply();
 
-        Log.d(TAG, "Removed from downloaded sounds: " + soundName);
+        Log.d(TAG, "Removed from downloaded sounds: " + soundKey);
+    }
+
+    // ایجاد کلید یکتا برای صدا
+    private String getSoundKey(Sound sound) {
+        return generateUniqueFileName(sound.getName(), sound.getAudioUrl());
     }
 
     // دانلود آهنگ
     public void downloadSound(Sound sound, DownloadCallback callback) {
-        if (isSoundDownloaded(sound.getName())) {
-            runOnUiThread(() -> callback.onDownloadComplete(sound.getName(), getLocalPath(sound.getName())));
+        String soundKey = getSoundKey(sound);
+
+        if (isSoundDownloaded(sound)) {
+            runOnUiThread(() -> callback.onDownloadComplete(sound.getName(), getLocalPath(soundKey)));
             return;
         }
+
+        // ذخیره callback برای آپدیت progress
+        downloadCallbacks.put(soundKey, callback);
+        downloadProgressMap.put(soundKey, 0);
 
         executorService.execute(() -> {
             HttpURLConnection connection = null;
@@ -126,6 +166,8 @@ public class AudioManager {
                 String audioUrl = sound.getAudioUrl();
                 if (audioUrl == null || audioUrl.trim().isEmpty()) {
                     runOnUiThread(() -> callback.onDownloadError(sound.getName(), "Audio URL is empty"));
+                    downloadCallbacks.remove(soundKey);
+                    downloadProgressMap.remove(soundKey);
                     return;
                 }
 
@@ -146,13 +188,15 @@ public class AudioManager {
                     runOnUiThread(() ->
                             callback.onDownloadError(sound.getName(),
                                     "Server returned HTTP " + responseCode));
+                    downloadCallbacks.remove(soundKey);
+                    downloadProgressMap.remove(soundKey);
                     return;
                 }
 
                 int fileLength = connection.getContentLength();
                 input = connection.getInputStream();
 
-                File outputFile = new File(getLocalPath(sound.getName()));
+                File outputFile = new File(getLocalPath(soundKey));
                 // مطمئن شو فولدر ساخته بشه
                 if (outputFile.getParentFile() != null && !outputFile.getParentFile().exists()) {
                     outputFile.getParentFile().mkdirs();
@@ -163,19 +207,31 @@ public class AudioManager {
                 byte[] data = new byte[8192]; // بافر بزرگ‌تر
                 long total = 0;
                 int count;
+                int lastProgress = 0;
 
                 while ((count = input.read(data)) != -1) {
                     if (Thread.currentThread().isInterrupted()) {
                         input.close();
                         output.close();
                         outputFile.delete();
+                        downloadCallbacks.remove(soundKey);
+                        downloadProgressMap.remove(soundKey);
                         return;
                     }
 
                     total += count;
                     if (fileLength > 0) {
                         final int progress = (int) (total * 100 / fileLength);
-                        runOnUiThread(() -> callback.onDownloadProgress(sound.getName(), progress));
+                        if (progress > lastProgress) { // فقط اگر progress تغییر کرد آپدیت کن
+                            lastProgress = progress;
+                            downloadProgressMap.put(soundKey, progress);
+                            runOnUiThread(() -> {
+                                DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
+                                if (currentCallback != null) {
+                                    currentCallback.onDownloadProgress(sound.getName(), progress);
+                                }
+                            });
+                        }
                     }
                     output.write(data, 0, count);
                 }
@@ -188,33 +244,57 @@ public class AudioManager {
                         && (fileLength <= 0 || outputFile.length() == fileLength)) {
 
                     sound.setLocalPath(outputFile.getAbsolutePath());
-                    downloadStatus.put(sound.getName(), true);
+                    downloadStatus.put(soundKey, true);
 
                     // ذخیره وضعیت دانلود
-                    saveDownloadStatus(sound.getName());
+                    saveDownloadStatus(soundKey);
 
                     Log.d(TAG, "Download completed successfully: " + sound.getName() +
                             ", size: " + outputFile.length() + " bytes");
 
-                    runOnUiThread(() ->
-                            callback.onDownloadComplete(sound.getName(), outputFile.getAbsolutePath()));
+                    runOnUiThread(() -> {
+                        DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
+                        if (currentCallback != null) {
+                            currentCallback.onDownloadComplete(sound.getName(), outputFile.getAbsolutePath());
+                        }
+                    });
                 } else {
                     outputFile.delete();
-                    runOnUiThread(() -> callback.onDownloadError(sound.getName(),
-                            "Downloaded file is incomplete or corrupted"));
+                    runOnUiThread(() -> {
+                        DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
+                        if (currentCallback != null) {
+                            currentCallback.onDownloadError(sound.getName(),
+                                    "Downloaded file is incomplete or corrupted");
+                        }
+                    });
                 }
 
             } catch (Exception e) {
                 Log.e(TAG, "Download error for " + sound.getName() + ": " + e.getMessage(), e);
-                runOnUiThread(() -> callback.onDownloadError(sound.getName(), e.getMessage()));
+                runOnUiThread(() -> {
+                    DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
+                    if (currentCallback != null) {
+                        currentCallback.onDownloadError(sound.getName(), e.getMessage());
+                    }
+                });
             } finally {
                 try {
                     if (output != null) output.close();
                     if (input != null) input.close();
                     if (connection != null) connection.disconnect();
                 } catch (IOException ignored) {}
+
+                // پاک کردن callback و progress بعد از اتمام
+                downloadCallbacks.remove(soundKey);
+                downloadProgressMap.remove(soundKey);
             }
         });
+    }
+
+    // دریافت progress فعلی دانلود
+    public int getDownloadProgress(Sound sound) {
+        String soundKey = getSoundKey(sound);
+        return downloadProgressMap.getOrDefault(soundKey, 0);
     }
 
     // پخش آهنگ
@@ -222,7 +302,7 @@ public class AudioManager {
         executorService.execute(() -> {
             try {
                 // اگر آهنگ دانلود نشده، اول دانلود کن
-                if (!isSoundDownloaded(sound.getName())) {
+                if (!isSoundDownloaded(sound)) {
                     downloadSound(sound, new DownloadCallback() {
                         @Override
                         public void onDownloadProgress(String soundName, int progress) {
@@ -255,24 +335,26 @@ public class AudioManager {
 
     private void playDownloadedSound(Sound sound, int volume, PlaybackCallback callback) {
         try {
+            String soundKey = getSoundKey(sound);
+
             // اگر قبلاً در حال پخش است، متوقفش کن
-            if (mediaPlayers.containsKey(sound.getName())) {
-                MediaPlayer oldPlayer = mediaPlayers.get(sound.getName());
+            if (mediaPlayers.containsKey(soundKey)) {
+                MediaPlayer oldPlayer = mediaPlayers.get(soundKey);
                 if (oldPlayer != null && oldPlayer.isPlaying()) {
                     oldPlayer.stop();
                     oldPlayer.release();
                 }
             }
 
-            String filePath = sound.getLocalPath();
+            String filePath = getLocalPath(soundKey);
             Log.d(TAG, "Playing sound from: " + filePath);
 
             // بررسی وجود فایل
             File audioFile = new File(filePath);
             if (!audioFile.exists()) {
                 // اگر فایل وجود ندارد، وضعیت دانلود را ریست کن
-                downloadStatus.put(sound.getName(), false);
-                removeFromDownloadedSounds(sound.getName());
+                downloadStatus.put(soundKey, false);
+                removeFromDownloadedSounds(soundKey);
 
                 runOnUiThread(() -> callback.onPlaybackError(sound.getName(), "File not found, please download again"));
                 return;
@@ -292,12 +374,12 @@ public class AudioManager {
             mediaPlayer.setVolume(volumeLevel, volumeLevel);
 
             mediaPlayer.setOnCompletionListener(mp -> {
-                mediaPlayers.remove(sound.getName());
+                mediaPlayers.remove(soundKey);
                 runOnUiThread(() -> callback.onPlaybackStopped(sound.getName()));
             });
 
             mediaPlayer.setOnErrorListener((mp, what, extra) -> {
-                mediaPlayers.remove(sound.getName());
+                mediaPlayers.remove(soundKey);
                 String errorMsg = "MediaPlayer error: " + what + ", extra: " + extra;
                 Log.e(TAG, errorMsg);
                 runOnUiThread(() -> callback.onPlaybackError(sound.getName(), errorMsg));
@@ -305,7 +387,7 @@ public class AudioManager {
             });
 
             mediaPlayer.start();
-            mediaPlayers.put(sound.getName(), mediaPlayer);
+            mediaPlayers.put(soundKey, mediaPlayer);
 
             Log.d(TAG, "Playback started: " + sound.getName());
             runOnUiThread(() -> callback.onPlaybackStarted(sound.getName()));
@@ -317,15 +399,16 @@ public class AudioManager {
     }
 
     // توقف آهنگ
-    public void stopSound(String soundName) {
-        if (mediaPlayers.containsKey(soundName)) {
-            MediaPlayer mediaPlayer = mediaPlayers.get(soundName);
+    public void stopSound(Sound sound) {
+        String soundKey = getSoundKey(sound);
+        if (mediaPlayers.containsKey(soundKey)) {
+            MediaPlayer mediaPlayer = mediaPlayers.get(soundKey);
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
                 mediaPlayer.release();
-                Log.d(TAG, "Stopped: " + soundName);
+                Log.d(TAG, "Stopped: " + sound.getName());
             }
-            mediaPlayers.remove(soundName);
+            mediaPlayers.remove(soundKey);
         }
     }
 
@@ -342,21 +425,23 @@ public class AudioManager {
     }
 
     // بررسی آیا آهنگ دانلود شده است
-    public boolean isSoundDownloaded(String soundName) {
-        if (downloadStatus.containsKey(soundName)) {
-            return downloadStatus.get(soundName);
+    public boolean isSoundDownloaded(Sound sound) {
+        String soundKey = getSoundKey(sound);
+
+        if (downloadStatus.containsKey(soundKey)) {
+            return downloadStatus.get(soundKey);
         }
 
         // بررسی از SharedPreferences و وجود فایل
         Set<String> downloadedSounds = sharedPreferences.getStringSet(KEY_DOWNLOADED_SOUNDS, new HashSet<>());
-        if (downloadedSounds.contains(soundName)) {
-            File file = new File(getLocalPath(soundName));
+        if (downloadedSounds.contains(soundKey)) {
+            File file = new File(getLocalPath(soundKey));
             boolean exists = file.exists() && file.length() > 0;
-            downloadStatus.put(soundName, exists);
+            downloadStatus.put(soundKey, exists);
 
             // اگر فایل وجود ندارد، از لیست حذف کن
             if (!exists) {
-                removeFromDownloadedSounds(soundName);
+                removeFromDownloadedSounds(soundKey);
             }
 
             return exists;
@@ -371,13 +456,12 @@ public class AudioManager {
     }
 
     // مسیر local برای ذخیره آهنگ
-    private String getLocalPath(String soundName) {
+    private String getLocalPath(String soundKey) {
         File directory = new File(context.getExternalFilesDir(Environment.DIRECTORY_MUSIC), "sleep_sounds");
         if (!directory.exists()) {
             directory.mkdirs();
         }
-        String fileName = soundName.replace(" ", "_") + ".mp3";
-        return new File(directory, fileName).getAbsolutePath();
+        return new File(directory, soundKey).getAbsolutePath();
     }
 
     // حذف فایل‌های دانلود شده
@@ -393,6 +477,8 @@ public class AudioManager {
             }
         }
         downloadStatus.clear();
+        downloadProgressMap.clear();
+        downloadCallbacks.clear();
 
         // پاک کردن SharedPreferences
         sharedPreferences.edit().clear().apply();
@@ -401,15 +487,16 @@ public class AudioManager {
     }
 
     // حذف یک فایل خاص
-    public boolean deleteSound(String soundName) {
-        stopSound(soundName);
-        File file = new File(getLocalPath(soundName));
+    public boolean deleteSound(Sound sound) {
+        String soundKey = getSoundKey(sound);
+        stopSound(sound);
+        File file = new File(getLocalPath(soundKey));
         boolean deleted = file.delete();
 
         if (deleted) {
-            downloadStatus.put(soundName, false);
-            removeFromDownloadedSounds(soundName);
-            Log.d(TAG, "Deleted: " + soundName);
+            downloadStatus.put(soundKey, false);
+            removeFromDownloadedSounds(soundKey);
+            Log.d(TAG, "Deleted: " + sound.getName());
         }
 
         return deleted;
