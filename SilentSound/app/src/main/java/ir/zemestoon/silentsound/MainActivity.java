@@ -448,6 +448,7 @@ public class MainActivity extends AppCompatActivity {
                 "https://img.icons8.com/ios-filled/50/FFFFFF/wolf.png",
                 baseUrl + "nature/wolf.mp3", 50, false, false));
 
+
         allSounds.add(new Sound("موج‌ها", "Water\nMonk",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
                 baseUrl + "wave/Water%20-%20The%20Binaural%20Monk%20(320).mp3", 50, false, false));
@@ -464,161 +465,153 @@ public class MainActivity extends AppCompatActivity {
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
                 baseUrl + "wave/Wunder%20-%20Alpha%20Sinus%2091Hz%20-%20101Hz%20-%20Sea%20Turtles%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "432Hz\nMiracle",
+        allSounds.add(new Sound("موج‌ها", "Adagio\nAlpha",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/432Hz%20Miracle%20Tone%20-%20Divine%20Frequency.mp3", 50, false, false));
+                baseUrl + "wave/Adagio%20Alpha%20105Hz%20-%20115Hz%20-%20Floating%20States%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Alpha\n10Hz Relax",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nFocus",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Alpha%20Waves%2010Hz%20-%20Deep%20Relaxation.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Binaural%20Focus%20107Hz%20-%20115Hz%20-%20New%20Lab%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Binaural\n4Hz Medit",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nFocus127",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Binaural%20Beats%204Hz%20-%20Deep%20Meditation.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Binaural%20Focus%20127Hz%20-%20135Hz%20-%20New%20Lab%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Delta\n2Hz Sleep",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nInnerverse",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Delta%20Waves%202Hz%20-%20Deep%20Sleep.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Binaural%20Innerverse%20Resonance%20-%20Lapalillo%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Gamma\n40Hz Focus",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nLucid",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Gamma%20Waves%2040Hz%20-%20Cognitive%20Enhancement.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Binaural%20Lucid%20Waves%20-%20La%20Perezosa%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Theta\n6Hz Medit",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nBliss",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Theta%20Waves%206Hz%20-%20Meditation.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Bliss%20107%20Hz%20-%20115%20Hz%20-%20Brainwave%20Harmony%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Iso 10Hz\nFocus",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nBrain",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Isochronic%20Tones%2010Hz%20-%20Focus.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Brain%20Waves%20-%20Brainbox%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Schumann\n7.83Hz",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nFocus97",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Schumann%20Resonance%207.83Hz%20-%20Earth%20Frequency.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Focus%2097Hz%20-%20104Hz%20-%20Universal%20Frequency%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Solfeggio\n528Hz DNA",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nMeditation",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Solfeggio%20Frequency%20528Hz%20-%20DNA%20Repair.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Meditation%20-%20Brainbox%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Beta\n16Hz Focus",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nNight",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Beta%20Waves%2016Hz%20-%20Concentration.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Night%20(106Hz%20-%20114Hz)%20-%20Binaural%20Explorer%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Ocean\nShore",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nPath",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Ocean%20Waves%20-%20Gentle%20Shore.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Path%2096%20Hz%20-%20105%20Hz%20-%20Dreamlike%20States%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Pink\nNoise Sleep",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nProsperity",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Pink%20Noise%20-%20Sleep%20Enhancement.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Prosperity%20127%20Hz%20-%20135%20Hz%20-%20Aerial%20Lakes%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "White\nNoise Focus",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nSinus",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/White%20Noise%20-%20Focus%20Masking.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Sinus%2054%2C8hz%20-%2057%2C3%20hz%20-%20Mystical.mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Brown\nNoise Relax",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nSoul",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Brown%20Noise%20-%20Deep%20Relaxation.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Soul%20110Hz-117Hz%20-%20Solace%20Sonique%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Binaural\n8Hz Theta",
+        allSounds.add(new Sound("موج‌ها", "Alpha\nZone",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Binaural%20Beats%208Hz%20-%20Theta%20Meditation.mp3", 50, false, false));
+                baseUrl + "wave/Alpha%20Zone%2093Hz%20-%20104Hz%20-%20Solace%20Sonique%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Alpha-Theta\n7Hz Bridge",
+        allSounds.add(new Sound("موج‌ها", "Beta\nSinus",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Alpha-Theta%20Bridge%207Hz%20-%20Hypnagogic.mp3", 50, false, false));
+                baseUrl + "wave/Beta%20Sinus%20100%20Hz%20-%20114%20Hz%20-%20Ampinomene%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Gamma Beta\n30Hz Learn",
+        allSounds.add(new Sound("موج‌ها", "Beta\nWaves",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Gamma%20Beta%20Mix%2030Hz%20-%20Learning.mp3", 50, false, false));
+                baseUrl + "wave/Beta%20Waves%20110Hz%20-%20130Hz%20-%20Calming%20Beats%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Delta Theta\n4Hz Dream",
+        allSounds.add(new Sound("موج‌ها", "Ecriurem\n100Hz",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Delta%20Theta%20Mix%204Hz%20-%20Lucid%20Dreaming.mp3", 50, false, false));
+                baseUrl + "wave/Ecriurem%20100-108Hz%20-%20Solace%20Sonique%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Solfeggio\n396Hz Free",
+        allSounds.add(new Sound("موج‌ها", "Equilibrium\n96Hz",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Solfeggio%20396Hz%20-%20Liberation.mp3", 50, false, false));
+                baseUrl + "wave/Equilibrium%2096hz-104hz%20-%20Solace%20Sonique%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Solfeggio\n417Hz Change",
+        allSounds.add(new Sound("موج‌ها", "Eventi\nAlpha",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Solfeggio%20417Hz%20-%20Change.mp3", 50, false, false));
+                baseUrl + "wave/Eventi%20Alpha%20SInus%2088-94%20Hz%20-%20Restful%20SInus%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Solfeggio\n639Hz Love",
+        allSounds.add(new Sound("موج‌ها", "Flow State\nAlpha",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Solfeggio%20639Hz%20-%20Relationships.mp3", 50, false, false));
+                baseUrl + "wave/Flow%20State%20Alpha%20203.6%20Hz%20-%20211.6%20Hz%20-%20Syntropy%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Solfeggio\n741Hz Awake",
+        allSounds.add(new Sound("موج‌ها", "Follia\nTheta",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Solfeggio%20741Hz%20-%20Awakening.mp3", 50, false, false));
+                baseUrl + "wave/Follia%20Theta%2041Hz%20-%2045Hz%20-%20Rerose%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Solfeggio\n852Hz Intuit",
+        allSounds.add(new Sound("موج‌ها", "Gamma\nSinus100",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Solfeggio%20852Hz%20-%20Intuition.mp3", 50, false, false));
+                baseUrl + "wave/Gamma%20Sinus%20100%20Hz%20-%20140%20Hz%20-%20Pola%20Ris%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Binaural\n12Hz Relax",
+        allSounds.add(new Sound("موج‌ها", "Gamma\nSinus300",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Binaural%2012Hz%20-%20Alpha%20Relaxation.mp3", 50, false, false));
+                baseUrl + "wave/Gamma%20Sinus%20300%20Hz%20-%20350%20Hz%20-%20Ampinomene%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Binaural\n18Hz Focus",
+        allSounds.add(new Sound("موج‌ها", "Gamma\nWaves",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Binaural%2018Hz%20-%20Beta%20Focus.mp3", 50, false, false));
+                baseUrl + "wave/Gamma%20Waves%2089%20%2B%2086%20hz%20-%20Electronic%20Waves%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Binaural\n5Hz Dream",
+        allSounds.add(new Sound("موج‌ها", "Inner\nStudy",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Binaural%205Hz%20-%20Theta%20Dream.mp3", 50, false, false));
+                baseUrl + "wave/Inner%20Study%20110Hz%20-%20115Hz%20-%20Rerose%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Binaural\n2Hz Sleep",
+        allSounds.add(new Sound("موج‌ها", "Living\n150Hz",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Binaural%202Hz%20-%20Delta%20Sleep.mp3", 50, false, false));
+                baseUrl + "wave/Living%20150-158%20Hz%20-%20Solace%20Sonique%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Iso 15Hz\nEnergy",
+        allSounds.add(new Sound("موج‌ها", "Luz\nAlpha",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Isochronic%2015Hz%20-%20Energy.mp3", 50, false, false));
+                baseUrl + "wave/Luz%20Alpha%20100hz-108hz%20-%20Rerose%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Iso 20Hz\nCreative",
+        allSounds.add(new Sound("موج‌ها", "Mantra\nAlpha",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Isochronic%2020Hz%20-%20Creativity.mp3", 50, false, false));
+                baseUrl + "wave/Mantra%20-%20Alpha%20Waves%20-%20Theta%20Time%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Iso 6Hz\nMeditate",
+        allSounds.add(new Sound("موج‌ها", "Memory\nGamma",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Isochronic%206Hz%20-%20Meditation.mp3", 50, false, false));
+                baseUrl + "wave/Memory%20Training%20Gamma%20-%20Isotopic%20Dreams%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Iso 3Hz\nSleep",
+        allSounds.add(new Sound("موج‌ها", "Nation\nAlpha",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Isochronic%203Hz%20-%20Deep%20Sleep.mp3", 50, false, false));
+                baseUrl + "wave/Nation%20-%20Alpha%20Sinus%2062%2C5%20Hz%20-%2066%20Hz%20-%20Drone%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Ocean\nStormy",
+        allSounds.add(new Sound("موج‌ها", "Rem\nTheta",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Ocean%20Waves%20-%20Stormy%20Sea.mp3", 50, false, false));
+                baseUrl + "wave/Rem%20Theta%2060%20Hz%20-%2066%20Hz%20-%20Naumanni%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "River\nGentle",
+        allSounds.add(new Sound("موج‌ها", "Revolve\nDelta",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/River%20Flow%20-%20Gentle%20Current.mp3", 50, false, false));
+                baseUrl + "wave/Revolve%20Delta%20125Hz%20-%20128Hz%20-%20Solace%20Sonique%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Rain\nGentle",
+        allSounds.add(new Sound("موج‌ها", "Shaant\nAlpha",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Rainfall%20-%20Gentle%20Drops.mp3", 50, false, false));
+                baseUrl + "wave/Shaant%20Prayog%20Alpha%2074Hz%20-%2082Hz%20-%20Smoove%20Nappers%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Thunder\nRumble",
+        allSounds.add(new Sound("موج‌ها", "Sphere\nAlpha",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Thunderstorm%20-%20Distant%20Rumble.mp3", 50, false, false));
+                baseUrl + "wave/Sphere%20of%20Alpha%2010%20Hz%20-%20The%20Inner%20Circle%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Wind\nChimes",
+        allSounds.add(new Sound("موج‌ها", "Transcend\nAlpha",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Wind%20Chimes%20-%20Gentle%20Breeze.mp3", 50, false, false));
+                baseUrl + "wave/Transcend%20Alpha%20106%20Hz%20-%20114%20Hz%20-%20Earthbound%20(320).mp3", 50, false, false));
 
-        allSounds.add(new Sound("موج‌ها", "Crystal\nBowls",
+        allSounds.add(new Sound("موج‌ها", "Universal\nAlpha",
                 "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Crystal%20Bowls%20-%20Healing%20Tones.mp3", 50, false, false));
-
-        allSounds.add(new Sound("موج‌ها", "Tibetan\nBowl",
-                "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Tibetan%20Singing%20Bowl%20-%20Meditation.mp3", 50, false, false));
-
-        allSounds.add(new Sound("موج‌ها", "Piano\nWaves",
-                "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png",
-                baseUrl + "wave/Piano%20Waves%20-%20Gentle%20Keys.mp3", 50, false, false));
+                baseUrl + "wave/Universal%20Alpha%2065%20Hz%20-%2073%20Hz%20-%20Aerial%20Lakes%20(320).mp3", 50, false, false));
 
         // آهنگ‌های بی‌کلام
         allSounds.add(new Sound("آهنگ‌ها", "autumn", "https://img.icons8.com/ios-filled/50/FFFFFF/autumn.png","", 50, false, false));

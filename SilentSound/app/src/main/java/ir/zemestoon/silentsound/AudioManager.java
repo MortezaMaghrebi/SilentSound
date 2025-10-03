@@ -118,39 +118,49 @@ public class AudioManager {
         }
 
         executorService.execute(() -> {
+            HttpURLConnection connection = null;
+            InputStream input = null;
+            FileOutputStream output = null;
+
             try {
                 String audioUrl = sound.getAudioUrl();
-                if (audioUrl == null || audioUrl.isEmpty()) {
+                if (audioUrl == null || audioUrl.trim().isEmpty()) {
                     runOnUiThread(() -> callback.onDownloadError(sound.getName(), "Audio URL is empty"));
                     return;
                 }
 
+                // Encode برای URL هایی که فاصله یا کاراکتر خاص دارند
+                audioUrl = audioUrl.replace(" ", "%20");
+
                 Log.d(TAG, "Starting download: " + sound.getName() + " from: " + audioUrl);
 
                 URL url = new URL(audioUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection = (HttpURLConnection) url.openConnection();
                 connection.setConnectTimeout(15000);
-                connection.setReadTimeout(15000);
+                connection.setReadTimeout(60000); // تایم اوت بیشتر
+                connection.setInstanceFollowRedirects(true); // دنبال کردن ریدایرکت‌ها
                 connection.connect();
 
-                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    runOnUiThread(() -> {
-                        try {
-                            callback.onDownloadError(sound.getName(), "Server returned HTTP " + connection.getResponseCode());
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+                int responseCode = connection.getResponseCode();
+                if (responseCode != HttpURLConnection.HTTP_OK) {
+                    runOnUiThread(() ->
+                            callback.onDownloadError(sound.getName(),
+                                    "Server returned HTTP " + responseCode));
                     return;
                 }
 
                 int fileLength = connection.getContentLength();
-                InputStream input = connection.getInputStream();
+                input = connection.getInputStream();
 
                 File outputFile = new File(getLocalPath(sound.getName()));
-                FileOutputStream output = new FileOutputStream(outputFile);
+                // مطمئن شو فولدر ساخته بشه
+                if (outputFile.getParentFile() != null && !outputFile.getParentFile().exists()) {
+                    outputFile.getParentFile().mkdirs();
+                }
 
-                byte[] data = new byte[4096];
+                output = new FileOutputStream(outputFile);
+
+                byte[] data = new byte[8192]; // بافر بزرگ‌تر
                 long total = 0;
                 int count;
 
@@ -171,11 +181,12 @@ public class AudioManager {
                 }
 
                 output.flush();
-                output.close();
-                input.close();
 
                 // بررسی صحت فایل دانلود شده
-                if (outputFile.exists() && outputFile.length() > 0) {
+                if (outputFile.exists()
+                        && outputFile.length() > 0
+                        && (fileLength <= 0 || outputFile.length() == fileLength)) {
+
                     sound.setLocalPath(outputFile.getAbsolutePath());
                     downloadStatus.put(sound.getName(), true);
 
@@ -185,14 +196,23 @@ public class AudioManager {
                     Log.d(TAG, "Download completed successfully: " + sound.getName() +
                             ", size: " + outputFile.length() + " bytes");
 
-                    runOnUiThread(() -> callback.onDownloadComplete(sound.getName(), outputFile.getAbsolutePath()));
+                    runOnUiThread(() ->
+                            callback.onDownloadComplete(sound.getName(), outputFile.getAbsolutePath()));
                 } else {
-                    runOnUiThread(() -> callback.onDownloadError(sound.getName(), "Downloaded file is empty or corrupted"));
+                    outputFile.delete();
+                    runOnUiThread(() -> callback.onDownloadError(sound.getName(),
+                            "Downloaded file is incomplete or corrupted"));
                 }
 
             } catch (Exception e) {
                 Log.e(TAG, "Download error for " + sound.getName() + ": " + e.getMessage(), e);
                 runOnUiThread(() -> callback.onDownloadError(sound.getName(), e.getMessage()));
+            } finally {
+                try {
+                    if (output != null) output.close();
+                    if (input != null) input.close();
+                    if (connection != null) connection.disconnect();
+                } catch (IOException ignored) {}
             }
         });
     }
