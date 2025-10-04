@@ -297,7 +297,7 @@
             android:layout_marginStart="10dp"
             android:background="@drawable/button_stop"
             android:fontFamily="@font/yekan"
-            android:text="توقف همه ∎"
+            android:text="توقف همه ■"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             />

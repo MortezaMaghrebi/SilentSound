@@ -348,6 +348,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onPlaybackStarted(String soundName) {
                             playingStatus.put(soundName, true);
+                            sound.setSelected(true);
                             updateAllItemsAppearance();
 
                             // اگر آهنگ music است، ایندکس فعلی را تنظیم کن
@@ -524,7 +525,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void playAllSounds() {
         // اول همه صداهای غیر music را پخش کن
-        for (Sound sound : filteredSounds) {
+        for (Sound sound : allSounds) {
             if (sound.isSelected() && !isSoundPlaying(sound.getName()) && !sound.isMusicGroup()) {
                 toggleSoundPlayback(sound);
             }
@@ -533,22 +534,26 @@ public class MainActivity extends AppCompatActivity {
         // سپس اولین آهنگ music را پخش کن (اگر هیچ آهنگی در حال پخش نیست)
         //updateMusicPlaylist();
         if (!musicPlaylist.isEmpty() && getCurrentlyPlayingMusic() == null) {
-            currentMusicIndex = 0;
-            Sound firstMusic = musicPlaylist.get(currentMusicIndex);
-            if (!isSoundPlaying(firstMusic.getName())) {
-                toggleSoundPlayback(firstMusic);
+            //currentMusicIndex = 0;
+            Sound selectedMusic = musicPlaylist.get(currentMusicIndex);
+            if (!isSoundPlaying(selectedMusic.getName())) {
+                toggleSoundPlayback(selectedMusic);
             }
         }
     }
 
     private void stopAllSounds() {
         audioManager.stopAllSounds();
-        playingStatus.clear();
-        musicPlaylist.clear();
-        currentMusicIndex = -1;
-        isAutoPlayingNext = false;
+        for (Sound sound:allSounds) {
+            if(sound.isSelected())
+            playingStatus.put(sound.getName(), false);
+        }
+        //playingStatus.clear();
+        //musicPlaylist.clear();
+        //currentMusicIndex = -1;
+        //isAutoPlayingNext = false;
 
-        for (Sound sound : filteredSounds) {
+        for (Sound sound : allSounds) {
             updateItemAppearance(sound);
         }
 
@@ -676,34 +681,44 @@ public class MainActivity extends AppCompatActivity {
 
 
         // صداهای طبیعت
-        allSounds.add(new Sound("nature", "پرنده", "https://img.icons8.com/ios-filled/50/FFFFFF/bird.png", baseUrl + "nature/bird.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "پرندگان", "https://img.icons8.com/ios-filled/50/FFFFFF/hummingbird.png", baseUrl + "nature/birds.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "گربه خرخر", "https://img.icons8.com/ios-filled/50/FFFFFF/cat.png", baseUrl + "nature/cat_purring.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "جیرجیرک", "https://img.icons8.com/ios-filled/50/FFFFFF/cricket.png", baseUrl + "nature/cricket.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "چکه آب", "https://img.icons8.com/ios-filled/50/FFFFFF/water.png", baseUrl + "nature/dripping.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "آتش هیزم", "https://img.icons8.com/ios-filled/50/FFFFFF/campfire.png", baseUrl + "nature/firewood.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "جنگل", "https://img.icons8.com/ios-filled/50/FFFFFF/forest.png", baseUrl + "nature/forest.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "قورباغه", "https://img.icons8.com/ios-filled/50/FFFFFF/frog.png", baseUrl + "nature/frog.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "چمنزار", "https://img.icons8.com/ios-filled/50/FFFFFF/grass.png", baseUrl + "nature/grassland.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "باران شدید", "https://img.icons8.com/ios-filled/50/FFFFFF/rain.png", baseUrl + "nature/heavy_rain.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "پرنده لون", "https://img.icons8.com/ios-filled/50/FFFFFF/bird.png", baseUrl + "nature/loon.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "جغد", "https://img.icons8.com/ios-filled/50/FFFFFF/owl.png", baseUrl + "nature/owl.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "باران", "https://img.icons8.com/ios-filled/50/FFFFFF/rain.png", baseUrl + "nature/rain.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "باران روی سقف", "https://img.icons8.com/ios-filled/50/FFFFFF/rain.png", baseUrl + "nature/rain_on_roof.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "باران روی چادر", "https://img.icons8.com/ios-filled/50/FFFFFF/tent.png", baseUrl + "nature/rain_on_tent.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "باران روی پنجره", "https://img.icons8.com/ios-filled/50/FFFFFF/window.png", baseUrl + "nature/rain_on_window.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "دریا", "https://img.icons8.com/ios-filled/50/FFFFFF/sea.png", baseUrl + "nature/sea.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "مرغ دریایی", "https://img.icons8.com/ios-filled/50/FFFFFF/seagull.png", baseUrl + "nature/seagull.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "برف", "https://img.icons8.com/ios-filled/50/FFFFFF/snow.png", baseUrl + "nature/snow.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "رعد و برق", "https://img.icons8.com/ios-filled/50/FFFFFF/storm.png", baseUrl + "nature/thunder.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "زیر آب", "https://img.icons8.com/ios-filled/50/FFFFFF/submarine.png", baseUrl + "nature/under_water.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "جریان آب", "https://img.icons8.com/ios-filled/50/FFFFFF/water.png", baseUrl + "nature/water_flow.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "آبشار", "https://img.icons8.com/ios-filled/50/FFFFFF/waterfall.png", baseUrl + "nature/waterfall.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "نهنگ", "https://img.icons8.com/ios-filled/50/FFFFFF/whale.png", baseUrl + "nature/whale.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "باد", "https://img.icons8.com/ios-filled/50/FFFFFF/wind.png", baseUrl + "nature/wind.mp3", 50, false, false));
-        allSounds.add(new Sound("nature", "گرگ", "https://img.icons8.com/ios-filled/50/FFFFFF/wolf.png", baseUrl + "nature/wolf.mp3", 50, false, false));
+        allSounds.add(new Sound("nature", "پرنده", "https://img.icons8.com/ios-filled/50/FFFFFF/bird.png", baseUrl + "nature/bird.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "پرندگان", "https://img.icons8.com/ios-filled/50/FFFFFF/hummingbird.png", baseUrl + "nature/birds.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "گربه خرخر", "https://img.icons8.com/ios-filled/50/FFFFFF/cat.png", baseUrl + "nature/cat_purring.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "جیرجیرک", "https://img.icons8.com/ios-filled/50/FFFFFF/cricket.png", baseUrl + "nature/cricket.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "چکه آب", "https://img.icons8.com/ios-filled/50/FFFFFF/water.png", baseUrl + "nature/dripping.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "آتش هیزم", "https://img.icons8.com/ios-filled/50/FFFFFF/campfire.png", baseUrl + "nature/firewood.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "جنگل", "https://img.icons8.com/ios-filled/50/FFFFFF/forest.png", baseUrl + "nature/forest.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "قورباغه", "https://img.icons8.com/ios-filled/50/FFFFFF/frog.png", baseUrl + "nature/frog.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "چمنزار", "https://img.icons8.com/ios-filled/50/FFFFFF/grass.png", baseUrl + "nature/grassland.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "باران شدید", "https://img.icons8.com/ios-filled/50/FFFFFF/rain.png", baseUrl + "nature/heavy_rain.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "پرنده لون", "https://img.icons8.com/ios-filled/50/FFFFFF/bird.png", baseUrl + "nature/loon.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "جغد", "https://img.icons8.com/ios-filled/50/FFFFFF/owl.png", baseUrl + "nature/owl.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "باران", "https://img.icons8.com/ios-filled/50/FFFFFF/rain.png", baseUrl + "nature/rain.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "باران روی سقف", "https://img.icons8.com/ios-filled/50/FFFFFF/rain.png", baseUrl + "nature/rain_on_roof.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "باران روی چادر", "https://img.icons8.com/ios-filled/50/FFFFFF/tent.png", baseUrl + "nature/rain_on_tent.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "باران روی پنجره", "https://img.icons8.com/ios-filled/50/FFFFFF/window.png", baseUrl + "nature/rain_on_window.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "دریا", "https://img.icons8.com/ios-filled/50/FFFFFF/sea.png", baseUrl + "nature/sea.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "مرغ دریایی", "https://img.icons8.com/ios-filled/50/FFFFFF/seagull.png", baseUrl + "nature/seagull.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "برف", "https://img.icons8.com/ios-filled/50/FFFFFF/snow.png", baseUrl + "nature/snow.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "رعد و برق", "https://img.icons8.com/ios-filled/50/FFFFFF/storm.png", baseUrl + "nature/thunder.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "زیر آب", "https://img.icons8.com/ios-filled/50/FFFFFF/submarine.png", baseUrl + "nature/under_water.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "جریان آب", "https://img.icons8.com/ios-filled/50/FFFFFF/water.png", baseUrl + "nature/water_flow.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "آبشار", "https://img.icons8.com/ios-filled/50/FFFFFF/waterfall.png", baseUrl + "nature/waterfall.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "نهنگ", "https://img.icons8.com/ios-filled/50/FFFFFF/whale.png", baseUrl + "nature/whale.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "باد", "https://img.icons8.com/ios-filled/50/FFFFFF/wind.png", baseUrl + "nature/wind.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "گرگ", "https://img.icons8.com/ios-filled/50/FFFFFF/wolf.png", baseUrl + "nature/wolf.mp3", 10, false, false));
 
 // موسیقی
+        allSounds.add(new Sound("music", "نوازش فرشته ای", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_an_angles_caress.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "رهروی در سرزمین خواب", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_drifting_in_dreamland.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "نخستین ستاره افق", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_first_star_in_sky.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "فرود آرام", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_gentle_descent.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "نیمه شب نیلی", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_midnight_blue.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "آرام و آسوده", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_safe_and_sound.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "سایه روشن های شفق", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_twilight_fades.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "آب روان", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_water_flow.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "جهانی دور", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_worlds_away.mp3", 50, false, false));
+
         allSounds.add(new Sound("music", "پاییز", "https://img.icons8.com/ios-filled/50/FFFFFF/autumn.png", baseUrl + "music/brian_crain/brian_autumn.mp3", 50, false, false));
         allSounds.add(new Sound("music", "زمین", "https://img.icons8.com/ios-filled/50/FFFFFF/globe.png", baseUrl + "music/brian_crain/brian_earth.mp3", 50, false, false));
         allSounds.add(new Sound("music", "آتش", "https://img.icons8.com/ios-filled/50/FFFFFF/campfire.png", baseUrl + "music/brian_crain/brian_fire.mp3", 50, false, false));
@@ -768,51 +783,51 @@ public class MainActivity extends AppCompatActivity {
         allSounds.add(new Sound("music", "به کسی که می‌داند", "https://img.icons8.com/ios-filled/50/FFFFFF/reading.png", baseUrl + "music/yanni/yanni_to_the_one_who_knows.mp3", 50, false, false));
 
 // نویز
-        allSounds.add(new Sound("noise", "نویز قهوه‌ای", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "noise/brown_noise.mp3", 50, false, false));
-        allSounds.add(new Sound("noise", "نویز سفید", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "noise/white_noise.mp3", 50, false, false));
+        allSounds.add(new Sound("noise", "نویز قهوه‌ای", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "noise/brown_noise.mp3", 30, false, false));
+        allSounds.add(new Sound("noise", "نویز سفید", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "noise/white_noise.mp3", 30, false, false));
 
 // امواج
-        allSounds.add(new Sound("wave", "آداجیو آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Adagio_Alpha_105-115Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "آلفا سعادت", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Bliss_107-115Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "امواج آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Brain_Waves.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "تمرکز آلفا ۱", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Focus_107-115Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "تمرکز آلفا ۲", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Focus_127-135Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "تمرکز آلفا ۳", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Focus_97-104Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "آلفا اینرورس", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Innerverse_Reso.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "امواج شفاف", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Lucid_Waves.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "مدیتیشن آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Meditation.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "شب آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Night_106-114Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "مسیر آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/path.png", baseUrl + "wave/Alpha_Path_96-105Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "رفاه آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Prosperity_127-135Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "شانت آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Shaant_74-82Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "سینوس آلفا ۱", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Sinus_54.8-57.3Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "سینوس آلفا ۲", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Sinus_62.5-66Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "سینوس آلفا ۳", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Sinus_88-94Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "سینوس آلفا ۴", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Sinus_91-101Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "روح آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Soul_110-117Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "کره آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Sphere_10Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "ترانسند آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Transcend_106-114Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "یونیورسال آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Universal_65-73Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "امواج آلفا ۸۸", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Waves_88-96Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "زون آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Zone_93-104Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "سینوس بتا", "https://img.icons8.com/ios-filled/50/FFFFFF/beta.png", baseUrl + "wave/Beta_Sinus_100-114Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "امواج بتا", "https://img.icons8.com/ios-filled/50/FFFFFF/beta.png", baseUrl + "wave/Beta_Waves_110-130Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "چرخش دلتا", "https://img.icons8.com/ios-filled/50/FFFFFF/d.png", baseUrl + "wave/Delta_Revolve_125-128Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "اکریورم", "https://img.icons8.com/ios-filled/50/FFFFFF/beta.png", baseUrl + "wave/Ecriurem_100-108Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "تعادل", "https://img.icons8.com/ios-filled/50/FFFFFF/balance.png", baseUrl + "wave/Equilibrium_96-104Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "فلو آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Flow_Alpha_203-211Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "حافظه گاما", "https://img.icons8.com/ios-filled/50/FFFFFF/gamma.png", baseUrl + "wave/Gamma_Memory_Training.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "سینوس گاما ۱", "https://img.icons8.com/ios-filled/50/FFFFFF/gamma.png", baseUrl + "wave/Gamma_Sinus_100-140Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "سینوس گاما ۲", "https://img.icons8.com/ios-filled/50/FFFFFF/gamma.png", baseUrl + "wave/Gamma_Sinus_300-350Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "امواج گاما ۸۶", "https://img.icons8.com/ios-filled/50/FFFFFF/gamma.png", baseUrl + "wave/Gamma_Waves_86+89Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "گاما ویلو", "https://img.icons8.com/ios-filled/50/FFFFFF/gamma.png", baseUrl + "wave/Gamma_Willow_29-71Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "مطالعه داخلی", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Inner_Study_110-115Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "زندگی", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Living_150-158Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "لوز آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Luz_Alpha_100-108Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "مانترا آلفا-تتا", "https://img.icons8.com/ios-filled/50/FFFFFF/t.png", baseUrl + "wave/Mantra_Alpha-Theta.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "فولیا تتا", "https://img.icons8.com/ios-filled/50/FFFFFF/t.png", baseUrl + "wave/Theta_Follia_41-45Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "رم تتا", "https://img.icons8.com/ios-filled/50/FFFFFF/t.png", baseUrl + "wave/Theta_Rem_60-66Hz.mp3.mp3", 50, false, false));
-        allSounds.add(new Sound("wave", "راهب آب", "https://img.icons8.com/ios-filled/50/FFFFFF/water.png", baseUrl + "wave/Water_Monk.mp3.mp3", 50, false, false));
+        allSounds.add(new Sound("wave", "آداجیو آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Adagio_Alpha_105-115Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "آلفا سعادت", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Bliss_107-115Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "امواج آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Brain_Waves.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "تمرکز آلفا ۱", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Focus_107-115Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "تمرکز آلفا ۲", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Focus_127-135Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "تمرکز آلفا ۳", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Focus_97-104Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "آلفا اینرورس", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Innerverse_Reso.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "امواج شفاف", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Lucid_Waves.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "مدیتیشن آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Meditation.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "شب آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Night_106-114Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "مسیر آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/path.png", baseUrl + "wave/Alpha_Path_96-105Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "رفاه آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Prosperity_127-135Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "شانت آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Shaant_74-82Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "سینوس آلفا ۱", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Sinus_54.8-57.3Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "سینوس آلفا ۲", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Sinus_62.5-66Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "سینوس آلفا ۳", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Sinus_88-94Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "سینوس آلفا ۴", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Sinus_91-101Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "روح آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Soul_110-117Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "کره آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Sphere_10Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "ترانسند آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Transcend_106-114Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "یونیورسال آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Universal_65-73Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "امواج آلفا ۸۸", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Waves_88-96Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "زون آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Alpha_Zone_93-104Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "سینوس بتا", "https://img.icons8.com/ios-filled/50/FFFFFF/beta.png", baseUrl + "wave/Beta_Sinus_100-114Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "امواج بتا", "https://img.icons8.com/ios-filled/50/FFFFFF/beta.png", baseUrl + "wave/Beta_Waves_110-130Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "چرخش دلتا", "https://img.icons8.com/ios-filled/50/FFFFFF/d.png", baseUrl + "wave/Delta_Revolve_125-128Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "اکریورم", "https://img.icons8.com/ios-filled/50/FFFFFF/beta.png", baseUrl + "wave/Ecriurem_100-108Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "تعادل", "https://img.icons8.com/ios-filled/50/FFFFFF/balance.png", baseUrl + "wave/Equilibrium_96-104Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "فلو آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Flow_Alpha_203-211Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "حافظه گاما", "https://img.icons8.com/ios-filled/50/FFFFFF/gamma.png", baseUrl + "wave/Gamma_Memory_Training.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "سینوس گاما ۱", "https://img.icons8.com/ios-filled/50/FFFFFF/gamma.png", baseUrl + "wave/Gamma_Sinus_100-140Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "سینوس گاما ۲", "https://img.icons8.com/ios-filled/50/FFFFFF/gamma.png", baseUrl + "wave/Gamma_Sinus_300-350Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "امواج گاما ۸۶", "https://img.icons8.com/ios-filled/50/FFFFFF/gamma.png", baseUrl + "wave/Gamma_Waves_86+89Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "گاما ویلو", "https://img.icons8.com/ios-filled/50/FFFFFF/gamma.png", baseUrl + "wave/Gamma_Willow_29-71Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "مطالعه داخلی", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Inner_Study_110-115Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "زندگی", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Living_150-158Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "لوز آلفا", "https://img.icons8.com/ios-filled/50/FFFFFF/alpha.png", baseUrl + "wave/Luz_Alpha_100-108Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "مانترا آلفا-تتا", "https://img.icons8.com/ios-filled/50/FFFFFF/t.png", baseUrl + "wave/Mantra_Alpha-Theta.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "فولیا تتا", "https://img.icons8.com/ios-filled/50/FFFFFF/t.png", baseUrl + "wave/Theta_Follia_41-45Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "رم تتا", "https://img.icons8.com/ios-filled/50/FFFFFF/t.png", baseUrl + "wave/Theta_Rem_60-66Hz.mp3.mp3", 40, false, false));
+        allSounds.add(new Sound("wave", "راهب آب", "https://img.icons8.com/ios-filled/50/FFFFFF/water.png", baseUrl + "wave/Water_Monk.mp3.mp3", 40, false, false));
 
         allSounds.add(new Sound("story", "داستان غواصی", "https://img.icons8.com/ios-filled/50/FFFFFF/cliff.png","", 50, false, false));
         allSounds.add(new Sound("story", "داستان قایق سواری", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png","", 50, false, false));
