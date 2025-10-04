@@ -420,7 +420,7 @@ public class AudioManager {
                     public void onPrepared(MediaPlayer mp) {
                         // محاسبه 10% آخر آهنگ
                         int duration = mp.getDuration();
-                        int seekPosition = (int) (duration * 0.97); // 90% ابتدا رو رد کن، برو به 10% آخر
+                        int seekPosition = (int) (duration * 0.90); // 90% ابتدا رو رد کن، برو به 10% آخر
 
                         if (duration > 0 && seekPosition < duration) {
                             mp.seekTo(seekPosition);

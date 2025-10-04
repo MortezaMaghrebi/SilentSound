@@ -182,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
                         updateItemAppearance(sound);
 
                     }
+                    updateAllItemsAppearance();
                 }else toggleSoundPlayback(sound);
             }
 
@@ -329,6 +330,7 @@ public class MainActivity extends AppCompatActivity {
             // توقف پخش
             audioManager.stopSound(sound);
             playingStatus.put(soundName, false);
+            sound.setSelected(false);
             updateAllItemsAppearance();
         } else {
             if (!audioManager.isSoundDownloaded(sound)) {
@@ -401,10 +403,10 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // اگر آهنگ بعدی همان آهنگ فعلی است، متوقف کن (لیست فقط یک آهنگ دارد)
-            if (musicPlaylist.size() == 1) {
-                audioManager.stopSound(currentSound);
-                return;
-            }
+            //if (musicPlaylist.size() == 1) {
+            //    audioManager.stopSound(currentSound);
+            //    return;
+            //}
 
             // آهنگ بعدی را پخش کن
             Sound nextSound = musicPlaylist.get(currentMusicIndex);
@@ -418,13 +420,25 @@ public class MainActivity extends AppCompatActivity {
 
     // متد برای به‌روزرسانی لیست پخش music
     private void updateMusicPlaylist() {
-        musicPlaylist.clear();
+        //.clear();
 
         // فقط آهنگ‌های music که انتخاب شده‌اند و دانلود شده‌اند را اضافه کن
         for (Sound sound : allSounds) {
             if (sound.isMusicGroup() && sound.isSelected() && audioManager.isSoundDownloaded(sound)) {
-                musicPlaylist.add(sound);
+                if(!musicPlaylist.contains(sound)) musicPlaylist.add(sound);
             }
+        }
+
+        for(int i=musicPlaylist.size()-1;i>=0;i--)
+        {
+            Sound sound=musicPlaylist.get(i);
+            if(sound.isMusicGroup() && sound.isSelected() && audioManager.isSoundDownloaded(sound))
+            {
+                //noting
+            }else {
+                musicPlaylist.remove(i);
+            }
+
         }
 
         Log.d("MusicPlaylist", "Updated playlist: " + musicPlaylist.size() + " songs");
@@ -453,7 +467,8 @@ public class MainActivity extends AppCompatActivity {
         if (!sound.isMusicGroup()) return;
         if (isSoundPlaying(sound.getName())) {
             audioManager.stopSound(sound);
-            playNextMusicTrack(sound);
+            playingStatus.put(sound.getName(), false);
+            if(musicPlaylist.size()>1) playNextMusicTrack(sound);
         }
         musicPlaylist.remove(sound);
 
