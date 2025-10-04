@@ -40,6 +40,12 @@ public class AudioManager {
     private Map<String, Integer> downloadProgressMap;
     private Map<String, DownloadCallback> downloadCallbacks;
 
+    // اضافه کردن Map برای نگهداری ارتباط بین soundKey و Sound
+    private Map<String, Sound> soundKeyToSoundMap = new HashMap<>();
+
+    // اضافه کردن reference به MainActivity
+    private MainActivity mainActivityRef;
+
     private AudioManager(Context context) {
         this.context = context.getApplicationContext();
         this.executorService = Executors.newFixedThreadPool(3);
@@ -53,6 +59,9 @@ public class AudioManager {
         // بارگذاری وضعیت دانلود‌های قبلی
         loadDownloadStatus();
     }
+
+
+
 
     public static synchronized AudioManager getInstance(Context context) {
         if (instance == null) {
@@ -71,6 +80,10 @@ public class AudioManager {
         void onPlaybackStarted(String soundName);
         void onPlaybackStopped(String soundName);
         void onPlaybackError(String soundName, String error);
+    }
+
+    public interface MusicPlaybackCallback {
+        void onMusicTrackCompleted(Sound completedSound);
     }
 
     // تولید نام یکتا برای فایل بر اساس URL
@@ -142,6 +155,24 @@ public class AudioManager {
     // ایجاد کلید یکتا برای صدا
     private String getSoundKey(Sound sound) {
         return generateUniqueFileName(sound.getName(), sound.getAudioUrl());
+    }
+
+    // متد برای ثبت Sound در Map
+    private void registerSound(Sound sound) {
+        String soundKey = getSoundKey(sound);
+        soundKeyToSoundMap.put(soundKey, sound);
+        Log.d(TAG, "Registered sound: " + sound.getName() + " with key: " + soundKey);
+    }
+
+    // متد برای پیدا کردن Sound بر اساس soundKey
+    private Sound findSoundByKey(String soundKey) {
+        return soundKeyToSoundMap.get(soundKey);
+    }
+
+    // متد برای حذف Sound از Map
+    private void unregisterSound(Sound sound) {
+        String soundKey = getSoundKey(sound);
+        soundKeyToSoundMap.remove(soundKey);
     }
 
     // دانلود آهنگ
@@ -344,6 +375,14 @@ public class AudioManager {
         try {
             String soundKey = getSoundKey(sound);
 
+            // ثبت Sound در Map
+            registerSound(sound);
+
+            // اگر از گروه music است و قبلاً در حال پخش است، متوقفش کن
+            if (sound.isMusicGroup()) {
+                stopAllMusicSounds();
+            }
+
             // اگر قبلاً در حال پخش است، متوقفش کن
             if (mediaPlayers.containsKey(soundKey)) {
                 MediaPlayer oldPlayer = mediaPlayers.get(soundKey);
@@ -354,12 +393,12 @@ public class AudioManager {
             }
 
             String filePath = getLocalPath(soundKey);
-            Log.d(TAG, "Playing sound from: " + filePath);
+            Log.d(TAG, "Playing sound from: " + filePath + ", Group: " + sound.getGroup() + ", Looping: " + sound.isLoopingGroup());
 
             // بررسی وجود فایل
             File audioFile = new File(filePath);
             if (!audioFile.exists()) {
-                // اگر فایل وجود ندارد، وضعیت دانلود را ریست کن
+
                 downloadStatus.put(soundKey, false);
                 removeFromDownloadedSounds(soundKey);
 
@@ -380,13 +419,25 @@ public class AudioManager {
             float volumeLevel = volume / 100.0f;
             mediaPlayer.setVolume(volumeLevel, volumeLevel);
 
+            // تنظیم looping بر اساس گروه
+            mediaPlayer.setLooping(sound.isLoopingGroup());
+
             mediaPlayer.setOnCompletionListener(mp -> {
                 mediaPlayers.remove(soundKey);
-                runOnUiThread(() -> callback.onPlaybackStopped(sound.getName()));
+                unregisterSound(sound);
+                runOnUiThread(() -> {
+                    callback.onPlaybackStopped(sound.getName());
+
+                    // اگر از گروه music است، آهنگ بعدی را پخش کن
+                    if (sound.isMusicGroup()) {
+                        playNextMusicSound(sound);
+                    }
+                });
             });
 
             mediaPlayer.setOnErrorListener((mp, what, extra) -> {
                 mediaPlayers.remove(soundKey);
+                unregisterSound(sound);
                 String errorMsg = "MediaPlayer error: " + what + ", extra: " + extra;
                 Log.e(TAG, errorMsg);
                 runOnUiThread(() -> callback.onPlaybackError(sound.getName(), errorMsg));
@@ -396,7 +447,7 @@ public class AudioManager {
             mediaPlayer.start();
             mediaPlayers.put(soundKey, mediaPlayer);
 
-            Log.d(TAG, "Playback started: " + sound.getName());
+            Log.d(TAG, "Playback started: " + sound.getName() + ", Looping: " + sound.isLoopingGroup());
             runOnUiThread(() -> callback.onPlaybackStarted(sound.getName()));
 
         } catch (Exception e) {
@@ -404,6 +455,53 @@ public class AudioManager {
             runOnUiThread(() -> callback.onPlaybackError(sound.getName(), "Playback error: " + e.getMessage()));
         }
     }
+
+    // متد برای توقف همه آهنگ‌های music
+    private void stopAllMusicSounds() {
+        Set<String> keysToRemove = new HashSet<>();
+
+        for (Map.Entry<String, MediaPlayer> entry : mediaPlayers.entrySet()) {
+            String soundKey = entry.getKey();
+            MediaPlayer mediaPlayer = entry.getValue();
+
+            // پیدا کردن sound از روی soundKey
+            Sound sound = findSoundByKey(soundKey);
+            if (sound != null && sound.isMusicGroup()) {
+                if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    Log.d(TAG, "Stopped music sound: " + sound.getName());
+                }
+                keysToRemove.add(soundKey);
+            }
+        }
+
+        for (String key : keysToRemove) {
+            mediaPlayers.remove(key);
+            Sound sound = findSoundByKey(key);
+            if (sound != null) {
+                unregisterSound(sound);
+            }
+        }
+    }
+
+    // متد برای پخش آهنگ music بعدی
+    private void playNextMusicSound(Sound currentSound) {
+
+
+        runOnUiThread(() -> {
+            if (mainActivityRef != null) {
+                mainActivityRef.playNextMusicTrack(currentSound);
+            }
+        });
+    }
+
+
+
+
+
+
+
 
     // توقف آهنگ
     public void stopSound(Sound sound) {
@@ -417,6 +515,7 @@ public class AudioManager {
             }
             mediaPlayers.remove(soundKey);
         }
+        unregisterSound(sound);
     }
 
     // توقف همه آهنگ‌ها
@@ -428,6 +527,7 @@ public class AudioManager {
             }
         }
         mediaPlayers.clear();
+        soundKeyToSoundMap.clear();
         Log.d(TAG, "All sounds stopped");
     }
 
@@ -455,6 +555,26 @@ public class AudioManager {
         }
 
         return false;
+    }
+
+    // به روزرسانی ولوم صدا در حال پخش
+    public void updateSoundVolume(Sound sound, int volume) {
+        executorService.execute(() -> {
+            String soundKey = getSoundKey(sound);
+
+            if (mediaPlayers.containsKey(soundKey)) {
+                MediaPlayer mediaPlayer = mediaPlayers.get(soundKey);
+                if (mediaPlayer != null) {
+                    try {
+                        float volumeLevel = volume / 100.0f;
+                        mediaPlayer.setVolume(volumeLevel, volumeLevel);
+                        Log.d(TAG, "Volume updated for " + sound.getName() + ": " + volume + "%");
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error updating volume for " + sound.getName() + ": " + e.getMessage());
+                    }
+                }
+            }
+        });
     }
 
     // دریافت لیست صداهای دانلود شده
@@ -486,6 +606,7 @@ public class AudioManager {
         downloadStatus.clear();
         downloadProgressMap.clear();
         downloadCallbacks.clear();
+        soundKeyToSoundMap.clear();
 
         // پاک کردن SharedPreferences
         sharedPreferences.edit().clear().apply();
@@ -507,6 +628,11 @@ public class AudioManager {
         }
 
         return deleted;
+    }
+
+    // تنظیم reference به MainActivity
+    public void setMainActivityRef(MainActivity mainActivity) {
+        this.mainActivityRef = mainActivity;
     }
 
     // اجرا روی thread اصلی

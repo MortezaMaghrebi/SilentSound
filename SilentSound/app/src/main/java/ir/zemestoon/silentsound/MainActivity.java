@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         audioManager = AudioManager.getInstance(this);
+        audioManager.setMainActivityRef(this);
         showDownloadStatus();
         playingStatus = new HashMap<>();
 
@@ -166,6 +167,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onVolumeChanged(Sound sound, int volume) {
                 sound.setVolume(volume);
+                if (isSoundPlaying(sound.getName())) {
+                    audioManager.updateSoundVolume(sound, volume);
+                }
                 updateItemAppearance(sound);
             }
 
@@ -200,8 +204,10 @@ public class MainActivity extends AppCompatActivity {
 
                 // آپدیت آیتم در آداپتر
                 if (position != -1) {
-                    soundAdapter.notifyItemChanged(position);
-
+                    //if(progress>=10+filteredSounds.get(position).getLastDownloadProgress() || progress==0 || progress==100) {
+                        soundAdapter.notifyItemChanged(position);
+                        filteredSounds.get(position).setLastDownloadProgress(progress);
+                    //}
                     // لاگ برای دیباگ
                     Log.d("UI_Update", "Updating UI for: " + soundName + " at position: " + position + " progress: " + progress);
                 } else {
@@ -349,14 +355,60 @@ public class MainActivity extends AppCompatActivity {
         return playingStatus.containsKey(soundName) && playingStatus.get(soundName);
     }
 
-    private void playAllSounds() {
+    public void playNextMusicTrack(Sound currentSound) {
+        List<Sound> selectedMusicSounds = getSelectedMusicSounds();
+
+        if (selectedMusicSounds.isEmpty()) {
+            return;
+        }
+
+        int currentIndex = -1;
+        for (int i = 0; i < selectedMusicSounds.size(); i++) {
+            if (selectedMusicSounds.get(i).getName().equals(currentSound.getName())) {
+                currentIndex = i;
+                break;
+            }
+        }
+
+        int nextIndex = (currentIndex + 1) % selectedMusicSounds.size();
+        Sound nextSound = selectedMusicSounds.get(nextIndex);
+
+        // پخش آهنگ بعدی
+        toggleSoundPlayback(nextSound);
+    }
+
+    // دریافت لیست آهنگ‌های music انتخاب شده
+    private List<Sound> getSelectedMusicSounds() {
+        List<Sound> selectedMusic = new ArrayList<>();
         for (Sound sound : filteredSounds) {
-            if (sound.isSelected() && !isSoundPlaying(sound.getName())) {
+            if (sound.isMusicGroup() && sound.isSelected() && audioManager.isSoundDownloaded(sound)) {
+                selectedMusic.add(sound);
+            }
+        }
+        return selectedMusic;
+    }
+
+
+    // اصلاح متد playAllSounds برای مدیریت منطق پخش
+    private void playAllSounds() {
+        // اول همه صداهای غیر music را پخش کن
+        for (Sound sound : filteredSounds) {
+            if (sound.isSelected() && !isSoundPlaying(sound.getName()) && !sound.isMusicGroup()) {
                 toggleSoundPlayback(sound);
+            }
+        }
+
+        // سپس اولین آهنگ music را پخش کن
+        List<Sound> selectedMusic = getSelectedMusicSounds();
+        if (!selectedMusic.isEmpty()) {
+            Sound firstMusic = selectedMusic.get(0);
+            if (!isSoundPlaying(firstMusic.getName())) {
+                toggleSoundPlayback(firstMusic);
             }
         }
     }
 
+    // اصلاح متد stopAllSounds برای توقف همه صداها
     private void stopAllSounds() {
         audioManager.stopAllSounds();
         playingStatus.clear();
@@ -368,6 +420,9 @@ public class MainActivity extends AppCompatActivity {
 
         if (selectedTimer != -1) {
             // توقف تایمر
+            if(countDownTimer != null){
+                countDownTimer.cancel();
+            }
         }
         timerDisplay.setText("تایمر فعال: ندارد");
         selectedTimer = -1;
@@ -375,6 +430,7 @@ public class MainActivity extends AppCompatActivity {
 
         showToast("همه صداها متوقف شدند");
     }
+
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
@@ -420,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
             );
-            params.setMargins(0, 0, 8, 0);
+            params.setMargins(8, 0, 8, 0);
             timerButton.setLayoutParams(params);
 
             timerButton.setOnClickListener(v -> {
@@ -445,12 +501,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    CountDownTimer countDownTimer=null;
 
     private void setTimer(int minutes) {
         timerDisplay.setText("تایمر فعال: " + minutes + " دقیقه");
-
+        if(countDownTimer!=null){
+            countDownTimer.cancel();
+        }
         // منطق تایمر
-        new CountDownTimer(minutes * 60 * 1000, 1000) {
+        countDownTimer=new CountDownTimer(minutes * 60 * 1000, 1000) {
             public void onTick(long millisUntilFinished) {
                 long minutesLeft = millisUntilFinished / (60 * 1000);
                 long secondsLeft = (millisUntilFinished % (60 * 1000)) / 1000;

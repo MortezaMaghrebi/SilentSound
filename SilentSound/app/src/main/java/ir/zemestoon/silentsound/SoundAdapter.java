@@ -133,6 +133,7 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
 
             // مدیریت نمایش progress
             if (!isDownloaded && downloadProgress > 0) {
+                progressBackground.setVisibility(View.VISIBLE);
                 // تنظیم level برای ClipDrawable (0-10000)
                 Drawable backgroundDrawable = progressBackground.getBackground();
                 if (backgroundDrawable instanceof LayerDrawable) {
@@ -153,6 +154,7 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
                 itemView.setAlpha(0.9f);
 
             } else if (!isDownloaded && downloadProgress == 0) {
+                progressBackground.setVisibility(View.VISIBLE);
                 // آماده برای دانلود - پنهان کردن progress
                 Drawable backgroundDrawable = progressBackground.getBackground();
                 if (backgroundDrawable instanceof LayerDrawable) {
@@ -169,6 +171,7 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
 
             } else {
                 // دانلود کامل شده - پنهان کردن progress
+                progressBackground.setVisibility(View.INVISIBLE);
                 Drawable backgroundDrawable = progressBackground.getBackground();
                 if (backgroundDrawable instanceof LayerDrawable) {
                     LayerDrawable layerDrawable = (LayerDrawable) backgroundDrawable;

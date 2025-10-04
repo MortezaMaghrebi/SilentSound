@@ -9,7 +9,7 @@ public class Sound {
     private boolean selected;
     private boolean vip;
     private String localPath; // مسیر فایل دانلود شده روی دستگاه
-
+    private int lastDownloadProgress=0;
     public Sound() {
     }
 
@@ -21,6 +21,22 @@ public class Sound {
         this.volume = volume;
         this.selected = selected;
         this.vip = vip;
+    }
+
+    public boolean isLoopingGroup() {
+        return "nature".equals(group) || "noise".equals(group) || "wave".equals(group);
+    }
+
+    public boolean isMusicGroup() {
+        return "music".equals(group);
+    }
+
+    public boolean isStoryGroup() {
+        return "story".equals(group);
+    }
+
+    public boolean isPresetGroup() {
+        return "preset".equals(group);
     }
 
     // Getter and Setter methods
@@ -87,4 +103,8 @@ public class Sound {
     public void setLocalPath(String localPath) {
         this.localPath = localPath;
     }
+
+    public void setLastDownloadProgress(int progress){this.lastDownloadProgress=progress;}
+
+    public int getLastDownloadProgress() {return lastDownloadProgress;}
 }
