@@ -1,4 +1,5 @@
 package ir.zemestoon.silentsound;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -8,21 +9,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.tabs.TabLayout;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +28,7 @@ import java.util.Set;
 public class MainActivity extends AppCompatActivity {
 
     private RecyclerView soundsRecyclerView;
-    private LinearLayout tabNature, tabMusic, tabNoise,tabWaves, tabStories, tabPresets;
+    private LinearLayout tabNature, tabMusic, tabNoise, tabWaves, tabStories, tabPresets;
     private LinearLayout timerButtonsLayout;
     private TextView timerDisplay;
     private Button playButton, stopButton;
@@ -45,7 +41,15 @@ public class MainActivity extends AppCompatActivity {
     private int selectedTimer = -1;
 
     private AudioManager audioManager;
-    private Map<String, Boolean> playingStatus; // وضعیت پخش هر صدا
+    private Map<String, Boolean> playingStatus;
+
+    // اضافه کردن لیست برای مدیریت ترتیب پخش آهنگ‌های music
+    private List<Sound> musicPlaylist = new ArrayList<>();
+    private int currentMusicIndex = -1;
+    private Map<String, Sound> soundMap = new HashMap<>();
+
+    // اضافه کردن flag برای جلوگیری از حلقه بی‌نهایت
+    private boolean isAutoPlayingNext = false;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -63,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    private Map<String, Sound> soundMap = new HashMap<>(); // اضافه کردن این خط
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
             soundMap.put(sound.getName(), sound);
         }
     }
+
     private void initViews() {
         soundsRecyclerView = findViewById(R.id.soundsRecyclerView);
 
@@ -98,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         tabNoise = findViewById(R.id.tabNoise);
         tabWaves = findViewById(R.id.tabWaves);
         tabStories = findViewById(R.id.tabStories);
-        tabPresets = findViewById(R.id.tabPresets);// ... بقیه تب‌ها
+        tabPresets = findViewById(R.id.tabPresets);
 
         timerButtonsLayout = findViewById(R.id.timerButtonsLayout);
         timerDisplay = findViewById(R.id.timerDisplay);
@@ -135,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void resetTabs() {
-        LinearLayout[] tabs = {tabNature, tabMusic, tabNoise,tabWaves, tabStories, tabPresets};
+        LinearLayout[] tabs = {tabNature, tabMusic, tabNoise, tabWaves, tabStories, tabPresets};
         for (LinearLayout tab : tabs) {
             if (tab != null) {
                 tab.setBackgroundResource(R.drawable.tab_background);
@@ -147,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // آپدیت آداپتر برای پخش آهنگ هنگام کلیک
     private void setupRecyclerView() {
         filteredSounds = new ArrayList<>();
 
@@ -161,7 +164,25 @@ public class MainActivity extends AppCompatActivity {
         soundAdapter = new SoundAdapter(filteredSounds, new SoundAdapter.OnSoundClickListener() {
             @Override
             public void onSoundClick(Sound sound) {
-                toggleSoundPlayback(sound);
+                if(sound.isMusicGroup())
+                {
+                    if(!sound.isSelected()) {
+                        if (!audioManager.isSoundDownloaded(sound)) {
+                            updateSoundDownloadProgress(sound.getName(), 5);
+                            startDownloadWithProgress(sound);
+                        } else {
+                            sound.setSelected(true);
+                            addToPlaylist(sound);
+                            updateItemAppearance(sound);
+                        }
+                    }else {
+                        sound.setSelected(false);
+                        removeFromPlaylist(sound);
+                        //updateMusicPlaylist();
+                        updateItemAppearance(sound);
+
+                    }
+                }else toggleSoundPlayback(sound);
             }
 
             @Override
@@ -175,25 +196,21 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSelectionChanged(Sound sound, boolean selected) {
-                sound.setSelected(selected);
                 updateItemAppearance(sound);
             }
 
             @Override
             public void onDownloadProgress(Sound sound, int progress) {
-
+                // مدیریت پیشرفت دانلود
             }
-        }, screenWidth, MainActivity.this); // ارسال this به آداپتر
+        }, screenWidth, MainActivity.this);
         soundsRecyclerView.setAdapter(soundAdapter);
     }
-
-
 
     public void updateSoundDownloadProgress(final String soundName, final int progress) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                // پیدا کردن صدا در لیست فیلتر شده
                 int position = -1;
                 for (int i = 0; i < filteredSounds.size(); i++) {
                     if (filteredSounds.get(i).getName().equals(soundName)) {
@@ -202,13 +219,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
-                // آپدیت آیتم در آداپتر
                 if (position != -1) {
-                    //if(progress>=10+filteredSounds.get(position).getLastDownloadProgress() || progress==0 || progress==100) {
-                        soundAdapter.notifyItemChanged(position);
-                        filteredSounds.get(position).setLastDownloadProgress(progress);
-                    //}
-                    // لاگ برای دیباگ
+                    soundAdapter.notifyItemChanged(position);
+                    filteredSounds.get(position).setLastDownloadProgress(progress);
                     Log.d("UI_Update", "Updating UI for: " + soundName + " at position: " + position + " progress: " + progress);
                 } else {
                     Log.d("UI_Update", "Sound not found in filtered list: " + soundName);
@@ -228,7 +241,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startDownloadWithProgress(Sound sound) {
         sound.setSelected(true);
-        updateItemAppearance(sound); // آپدیت UI برای نمایش انتخاب
+        updateItemAppearance(sound);
         audioManager.downloadSound(sound, new AudioManager.DownloadCallback() {
             @Override
             public void onDownloadProgress(String soundName, int progress) {
@@ -238,7 +251,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDownloadComplete(String soundName, String localPath) {
-                // آپدیت صدا و UI
                 Sound currentSound = soundMap.get(soundName);
                 if (currentSound != null) {
                     currentSound.setLocalPath(localPath);
@@ -246,13 +258,16 @@ public class MainActivity extends AppCompatActivity {
                 updateSoundDownloadProgress(soundName, 100);
                 showToast(soundName + " دانلود شد");
 
-                // یک آپدیت نهایی بعد از 500ms برای اطمینان
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         updateSoundDownloadProgress(soundName, 100);
                         if (currentSound != null) {
-                            playSoundAfterDownload(currentSound);
+                            if(sound.isMusicGroup()) {
+                                sound.setSelected(true);
+                                addToPlaylist(sound);
+                                updateItemAppearance(sound);
+                            }else playSoundAfterDownload(currentSound);
                         }
                     }
                 }, 500);
@@ -271,19 +286,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void playSoundAfterDownload(Sound sound) {
-        // مطمئن شو صدا انتخاب شده
         sound.setSelected(true);
-
-        // پخش صدا
         audioManager.playSound(sound, sound.getVolume(), new AudioManager.PlaybackCallback() {
             @Override
             public void onPlaybackStarted(String soundName) {
                 playingStatus.put(soundName, true);
-                //showToast(soundName + " در حال پخش...");
                 updateAllItemsAppearance();
-
-                // لاگ برای دیباگ
                 Log.d("Playback", "Playback started after download: " + soundName);
+
+                // اگر آهنگ music است، ایندکس فعلی را تنظیم کن
+                if (sound.isMusicGroup()) {
+                    //updateMusicPlaylist();
+                    currentMusicIndex = musicPlaylist.indexOf(sound);
+                }
             }
 
             @Override
@@ -299,8 +314,6 @@ public class MainActivity extends AppCompatActivity {
                 updateAllItemsAppearance();
             }
         });
-
-        // آپدیت UI برای نمایش وضعیت پخش
         updateAllItemsAppearance();
     }
 
@@ -316,38 +329,47 @@ public class MainActivity extends AppCompatActivity {
             // توقف پخش
             audioManager.stopSound(sound);
             playingStatus.put(soundName, false);
-            //showToast(soundName + " متوقف شد");
             updateAllItemsAppearance();
         } else {
             if (!audioManager.isSoundDownloaded(sound)) {
-                // فوراً UI رو آپدیت کن
-                updateSoundDownloadProgress(soundName, 5); // 5% برای شروع
-                // سپس دانلود رو شروع کن
+                updateSoundDownloadProgress(soundName, 5);
                 startDownloadWithProgress(sound);
-            } else { // شروع پخش با نمایش progress دانلود
-                audioManager.playSound(sound, sound.getVolume(), new AudioManager.PlaybackCallback() {
-                    @Override
-                    public void onPlaybackStarted(String soundName) {
-                        playingStatus.put(soundName, true);
-                        //showToast(soundName + " در حال پخش...");
-                        updateAllItemsAppearance();
-                    }
+            } else {
+                // برای آهنگ‌های music، اگر در حال پخش هستیم، فقط به لیست اضافه کن
+                if (sound.isMusicGroup() && getCurrentlyPlayingMusic() != null && !isAutoPlayingNext) {
+                    // آهنگ دیگری در حال پخش است، فقط لیست را به‌روزرسانی کن
+                    //updateMusicPlaylist();
+                    showToast(sound.getName() + " به لیست پخش اضافه شد");
+                } else {
+                    // هیچ آهنگی در حال پخش نیست یا این پخش خودکار است، پس پخش کن
+                    audioManager.playSound(sound, sound.getVolume(), new AudioManager.PlaybackCallback() {
+                        @Override
+                        public void onPlaybackStarted(String soundName) {
+                            playingStatus.put(soundName, true);
+                            updateAllItemsAppearance();
 
-                    @Override
-                    public void onPlaybackStopped(String soundName) {
-                        playingStatus.put(soundName, false);
-                        updateAllItemsAppearance();
-                    }
+                            // اگر آهنگ music است، ایندکس فعلی را تنظیم کن
+                            if (sound.isMusicGroup()) {
+                                //updateMusicPlaylist();
+                                currentMusicIndex = musicPlaylist.indexOf(sound);
+                            }
+                        }
 
-                    @Override
-                    public void onPlaybackError(String soundName, String error) {
-                        playingStatus.put(soundName, false);
-                        showToast("خطا در پخش " + soundName + ": " + error);
-                        updateAllItemsAppearance();
-                    }
-                });
+                        @Override
+                        public void onPlaybackStopped(String soundName) {
+                            playingStatus.put(soundName, false);
+                            updateAllItemsAppearance();
+                        }
+
+                        @Override
+                        public void onPlaybackError(String soundName, String error) {
+                            playingStatus.put(soundName, false);
+                            showToast("خطا در پخش " + soundName + ": " + error);
+                            updateAllItemsAppearance();
+                        }
+                    });
+                }
             }
-
         }
     }
 
@@ -355,26 +377,121 @@ public class MainActivity extends AppCompatActivity {
         return playingStatus.containsKey(soundName) && playingStatus.get(soundName);
     }
 
+    // متد برای پخش آهنگ music بعدی
     public void playNextMusicTrack(Sound currentSound) {
-        List<Sound> selectedMusicSounds = getSelectedMusicSounds();
+        isAutoPlayingNext = true;
 
-        if (selectedMusicSounds.isEmpty()) {
-            return;
+        try {
+            //updateMusicPlaylist();
+
+            if (musicPlaylist.isEmpty()) {
+                currentMusicIndex = -1;
+                return;
+            }
+
+            // پیدا کردن ایندکس آهنگ فعلی
+            int currentIndex = musicPlaylist.indexOf(currentSound);
+
+            if (currentIndex == -1) {
+                // اگر آهنگ فعلی در لیست نیست، از اول شروع کن
+                currentMusicIndex = 0;
+            } else {
+                // آهنگ بعدی را پیدا کن
+                currentMusicIndex = (currentIndex + 1) % musicPlaylist.size();
+            }
+
+            // اگر آهنگ بعدی همان آهنگ فعلی است، متوقف کن (لیست فقط یک آهنگ دارد)
+            if (musicPlaylist.size() == 1) {
+                audioManager.stopSound(currentSound);
+                return;
+            }
+
+            // آهنگ بعدی را پخش کن
+            Sound nextSound = musicPlaylist.get(currentMusicIndex);
+            if (!isSoundPlaying(nextSound.getName())) {
+                toggleSoundPlayback(nextSound);
+            }
+        } finally {
+            isAutoPlayingNext = false;
         }
+    }
 
-        int currentIndex = -1;
-        for (int i = 0; i < selectedMusicSounds.size(); i++) {
-            if (selectedMusicSounds.get(i).getName().equals(currentSound.getName())) {
-                currentIndex = i;
-                break;
+    // متد برای به‌روزرسانی لیست پخش music
+    private void updateMusicPlaylist() {
+        musicPlaylist.clear();
+
+        // فقط آهنگ‌های music که انتخاب شده‌اند و دانلود شده‌اند را اضافه کن
+        for (Sound sound : allSounds) {
+            if (sound.isMusicGroup() && sound.isSelected() && audioManager.isSoundDownloaded(sound)) {
+                musicPlaylist.add(sound);
             }
         }
 
-        int nextIndex = (currentIndex + 1) % selectedMusicSounds.size();
-        Sound nextSound = selectedMusicSounds.get(nextIndex);
+        Log.d("MusicPlaylist", "Updated playlist: " + musicPlaylist.size() + " songs");
+        for (Sound sound : musicPlaylist) {
+            Log.d("MusicPlaylist", "- " + sound.getName());
+        }
+    }
 
-        // پخش آهنگ بعدی
-        toggleSoundPlayback(nextSound);
+    // اضافه کردن به لیست پخش
+    private void addToPlaylist(Sound sound) {
+        if (!sound.isMusicGroup()) return;
+        if (!audioManager.isSoundDownloaded(sound)) return;
+        if (musicPlaylist.contains(sound)) return; // جلوگیری از اضافه کردن تکراری
+        musicPlaylist.add(sound);
+
+        if (musicPlaylist.size()==1 && !isSoundPlaying(sound.getName())) {
+            if (musicPlaylist.isEmpty() || getCurrentlyPlayingMusic() == null) {
+                toggleSoundPlayback(sound);
+            }
+        }
+
+    }
+
+    // حذف از لیست پخش
+    private void removeFromPlaylist(Sound sound) {
+        if (!sound.isMusicGroup()) return;
+        if (isSoundPlaying(sound.getName())) {
+            audioManager.stopSound(sound);
+            playNextMusicTrack(sound);
+        }
+        musicPlaylist.remove(sound);
+
+    }
+
+    // متد برای پیدا کردن آهنگ music در حال پخش
+    private Sound getCurrentlyPlayingMusic() {
+        for (Sound sound : musicPlaylist) {
+            if (isSoundPlaying(sound.getName())) {
+                return sound;
+            }
+        }
+        return null;
+    }
+
+    // متد برای بررسی و مدیریت زمانی که آهنگ آنسلکت می‌شود
+    private void onMusicDeselected(Sound deselectedSound) {
+        if (!deselectedSound.isMusicGroup()) return;
+
+        // اگر آهنگی که آنسلکت شده در حال پخش است، آن را متوقف کن و آهنگ بعدی را پخش کن
+        if (isSoundPlaying(deselectedSound.getName())) {
+            audioManager.stopSound(deselectedSound);
+
+            // لیست پخش را به‌روزرسانی کن
+            //updateMusicPlaylist();
+
+            if (!musicPlaylist.isEmpty()) {
+                // آهنگ بعدی را پخش کن
+                currentMusicIndex = 0;
+                Sound nextSound = musicPlaylist.get(currentMusicIndex);
+                toggleSoundPlayback(nextSound);
+            } else {
+                currentMusicIndex = -1;
+            }
+        } else {
+            // فقط لیست پخش را به‌روزرسانی کن
+            //updateMusicPlaylist();
+        }
     }
 
     // دریافت لیست آهنگ‌های music انتخاب شده
@@ -389,7 +506,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    // اصلاح متد playAllSounds برای مدیریت منطق پخش
+
     private void playAllSounds() {
         // اول همه صداهای غیر music را پخش کن
         for (Sound sound : filteredSounds) {
@@ -398,28 +515,30 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        // سپس اولین آهنگ music را پخش کن
-        List<Sound> selectedMusic = getSelectedMusicSounds();
-        if (!selectedMusic.isEmpty()) {
-            Sound firstMusic = selectedMusic.get(0);
+        // سپس اولین آهنگ music را پخش کن (اگر هیچ آهنگی در حال پخش نیست)
+        //updateMusicPlaylist();
+        if (!musicPlaylist.isEmpty() && getCurrentlyPlayingMusic() == null) {
+            currentMusicIndex = 0;
+            Sound firstMusic = musicPlaylist.get(currentMusicIndex);
             if (!isSoundPlaying(firstMusic.getName())) {
                 toggleSoundPlayback(firstMusic);
             }
         }
     }
 
-    // اصلاح متد stopAllSounds برای توقف همه صداها
     private void stopAllSounds() {
         audioManager.stopAllSounds();
         playingStatus.clear();
+        musicPlaylist.clear();
+        currentMusicIndex = -1;
+        isAutoPlayingNext = false;
 
-        // آپدیت ظاهر همه آیتم‌ها
         for (Sound sound : filteredSounds) {
             updateItemAppearance(sound);
         }
 
         if (selectedTimer != -1) {
-            // توقف تایمر
+
             if(countDownTimer != null){
                 countDownTimer.cancel();
             }
@@ -442,13 +561,15 @@ public class MainActivity extends AppCompatActivity {
             audioManager.stopAllSounds();
         }
     }
+
     private void updateAllItemsAppearance() {
         if (soundAdapter != null) {
             soundAdapter.notifyDataSetChanged();
         }
     }
+
     private void updateItemAppearance(Sound sound) {
-        // پیدا کردن موقعیت صدا در لیست فیلتر شده
+
         int position = -1;
         for (int i = 0; i < filteredSounds.size(); i++) {
             if (filteredSounds.get(i).getName().equals(sound.getName())) {
@@ -501,15 +622,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    CountDownTimer countDownTimer=null;
+
+    CountDownTimer countDownTimer = null;
 
     private void setTimer(int minutes) {
         timerDisplay.setText("تایمر فعال: " + minutes + " دقیقه");
-        if(countDownTimer!=null){
+        if(countDownTimer != null){
             countDownTimer.cancel();
         }
-        // منطق تایمر
-        countDownTimer=new CountDownTimer(minutes * 60 * 1000, 1000) {
+
+        countDownTimer = new CountDownTimer(minutes * 60 * 1000, 1000) {
             public void onTick(long millisUntilFinished) {
                 long minutesLeft = millisUntilFinished / (60 * 1000);
                 long secondsLeft = (millisUntilFinished % (60 * 1000)) / 1000;
@@ -532,11 +654,12 @@ public class MainActivity extends AppCompatActivity {
             Log.d("DownloadStatus", "- " + sound);
         }
     }
+
     private void loadSounds() {
         allSounds = new ArrayList<>();
         String baseUrl = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/main/";
-// صداهای طبیعت
-// صداهای طبیعت
+
+
         // صداهای طبیعت
         allSounds.add(new Sound("nature", "پرنده", "https://img.icons8.com/ios-filled/50/FFFFFF/bird.png", baseUrl + "nature/bird.mp3", 50, false, false));
         allSounds.add(new Sound("nature", "پرندگان", "https://img.icons8.com/ios-filled/50/FFFFFF/hummingbird.png", baseUrl + "nature/birds.mp3", 50, false, false));
@@ -709,9 +832,12 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         soundAdapter.updateList(filteredSounds);
+
+
+
+        // لیست پخش را به‌روزرسانی کن وقتی تب تغییر می‌کند
+        if ("music".equals(group)) {
+            //updateMusicPlaylist();
+        }
     }
-
-
-
-
 }
