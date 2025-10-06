@@ -14,6 +14,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/dark_progress_background"
         android:layout_margin="8dp"
+        android:visibility="invisible"
         android:layout_alignParentBottom="true" />
 
     <!-- Dark overlay for better text readability -->
@@ -147,7 +148,7 @@
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:gravity="center"
-                android:visibility="gone"
+                android:visibility="invisible"
                 android:background="@drawable/dark_progress_text_bg"
                 android:paddingHorizontal="12dp"
                 android:paddingVertical="4dp"

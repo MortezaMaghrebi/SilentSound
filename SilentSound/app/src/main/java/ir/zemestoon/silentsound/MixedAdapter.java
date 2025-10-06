@@ -135,49 +135,49 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
                     ", All Downloaded: " + allSoundsDownloaded +
                     ", Progress: " + downloadProgress);
 
-            // مدیریت نمایش progress
-            if (!allSoundsDownloaded && downloadProgress > 0) {
-                progressBackground.setVisibility(View.VISIBLE);
-                // تنظیم level برای ClipDrawable
-                Drawable backgroundDrawable = progressBackground.getBackground();
-                if (backgroundDrawable instanceof LayerDrawable) {
-                    LayerDrawable layerDrawable = (LayerDrawable) backgroundDrawable;
-                    Drawable clipDrawable = layerDrawable.getDrawable(1);
-                    if (clipDrawable instanceof ClipDrawable) {
-                        int level = downloadProgress * 100;
-                        clipDrawable.setLevel(level);
-                    }
-                }
-
-                downloadProgressText.setVisibility(View.VISIBLE);
-                downloadProgressText.setText(downloadProgress + "%");
-                itemView.setEnabled(false);
-                itemView.setAlpha(0.9f);
-                playPauseButton.setEnabled(false);
-
-            } else if (!allSoundsDownloaded && downloadProgress == 0) {
-                progressBackground.setVisibility(View.VISIBLE);
-                Drawable backgroundDrawable = progressBackground.getBackground();
-                if (backgroundDrawable instanceof LayerDrawable) {
-                    LayerDrawable layerDrawable = (LayerDrawable) backgroundDrawable;
-                    Drawable clipDrawable = layerDrawable.getDrawable(1);
-                    if (clipDrawable instanceof ClipDrawable) {
-                        clipDrawable.setLevel(0);
-                    }
-                }
-
-                downloadProgressText.setVisibility(View.GONE);
-                itemView.setEnabled(true);
-                itemView.setAlpha(1.0f);
-                playPauseButton.setEnabled(true);
-
-            } else {
-                progressBackground.setVisibility(View.INVISIBLE);
-                downloadProgressText.setVisibility(View.GONE);
-                itemView.setEnabled(true);
-                itemView.setAlpha(1.0f);
-                playPauseButton.setEnabled(true);
-            }
+           // // مدیریت نمایش progress
+           // if (!allSoundsDownloaded && downloadProgress > 0) {
+           //     //progressBackground.setVisibility(View.VISIBLE);
+           //     // تنظیم level برای ClipDrawable
+           //    //Drawable backgroundDrawable = progressBackground.getBackground();
+           //    //if (backgroundDrawable instanceof LayerDrawable) {
+           //    //    LayerDrawable layerDrawable = (LayerDrawable) backgroundDrawable;
+           //    //    Drawable clipDrawable = layerDrawable.getDrawable(1);
+           //    //    if (clipDrawable instanceof ClipDrawable) {
+           //    //        int level = downloadProgress * 100;
+           //    //        clipDrawable.setLevel(level);
+           //    //    }
+           //    //}
+//
+           //     downloadProgressText.setVisibility(View.VISIBLE);
+           //     downloadProgressText.setText(downloadProgress + "%");
+           //     itemView.setEnabled(false);
+           //     itemView.setAlpha(0.9f);
+           //     playPauseButton.setEnabled(false);
+//
+           // } else if (!allSoundsDownloaded && downloadProgress == 0) {
+           //     progressBackground.setVisibility(View.VISIBLE);
+           //     Drawable backgroundDrawable = progressBackground.getBackground();
+           //     if (backgroundDrawable instanceof LayerDrawable) {
+           //         LayerDrawable layerDrawable = (LayerDrawable) backgroundDrawable;
+           //         Drawable clipDrawable = layerDrawable.getDrawable(1);
+           //         if (clipDrawable instanceof ClipDrawable) {
+           //             clipDrawable.setLevel(0);
+           //         }
+           //     }
+//
+           //     downloadProgressText.setVisibility(View.GONE);
+           //     itemView.setEnabled(true);
+           //     itemView.setAlpha(1.0f);
+           //     playPauseButton.setEnabled(true);
+//
+           // } else {
+           //     progressBackground.setVisibility(View.INVISIBLE);
+           //     downloadProgressText.setVisibility(View.GONE);
+           //     itemView.setEnabled(true);
+           //     itemView.setAlpha(1.0f);
+           //     playPauseButton.setEnabled(true);
+           // }
 
             // مدیریت ظاهر بر اساس وضعیت پخش
             if (isMixedPlaying(mixed.getId())) {
