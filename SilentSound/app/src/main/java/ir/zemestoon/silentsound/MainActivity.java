@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView soundsRecyclerView;
     private LinearLayout tabNature, tabMusic, tabNoise, tabWaves, tabStories, tabPresets;
     private LinearLayout timerButtonsLayout;
+    private LinearLayout llMixesButton,llSoundsButton;
+    private RelativeLayout rlMixes,rlSounds;
     private TextView timerDisplay;
     private ImageButton playPauseButton, nextButton, prevButton;
     private SoundAdapter soundAdapter;
@@ -116,6 +119,18 @@ public class MainActivity extends AppCompatActivity {
         playPauseButton.setOnClickListener(v -> playPauseButtonClick());
         nextButton.setOnClickListener(v -> nextButtonClick());
         prevButton.setOnClickListener(v -> prevButtonClick());
+
+        rlMixes=findViewById(R.id.rlMixes);
+        rlSounds=findViewById(R.id.rlSounds);
+        llMixesButton=findViewById(R.id.llMixesButton);
+        llSoundsButton=findViewById(R.id.llSoundsButton);
+
+        llMixesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
     }
 

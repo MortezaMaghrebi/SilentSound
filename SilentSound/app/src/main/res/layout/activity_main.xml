@@ -4,379 +4,450 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0F172A">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvTitle"
-        android:text="صداهای خواب"
-        android:fontFamily="@font/yekan"
-        android:gravity="center"
-        android:layout_marginTop="20dp"
-        android:textColor="#4080f0"
-        android:textSize="30dp"
-        android:layout_marginBottom="10dp"/>
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/llFooter"
-        android:layout_margin="10dp"
-        android:layout_below="@+id/tvTitle"
-        android:background="@drawable/tablayout_background"
-        >
-        <!-- Tab Layout -->
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/tabLayout"
-            android:paddingHorizontal="10dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/tabNature"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@drawable/tab_background_selected"
-                    android:padding="15dp"
-                    android:gravity="center"
-                    android:layout_margin="5dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/cave_96px"
-                        android:layout_marginEnd="8dp"
-                        app:tint="#3B82F6" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="طبیعت"
-                        android:fontFamily="@font/yekan"
-
-                        android:textColor="#3B82F6"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tabMusic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@drawable/tab_background"
-                    android:padding="15dp"
-                    android:gravity="center"
-                    android:layout_margin="5dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/creek_96px"
-                        android:layout_marginEnd="8dp"
-                        app:tint="#64748B" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="آهنگ‌ها"
-                        android:fontFamily="@font/yekan"
-
-                        android:textColor="#64748B"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tabNoise"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@drawable/tab_background"
-                    android:padding="15dp"
-                    android:gravity="center"
-                    android:layout_margin="5dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/creek_96px"
-                        android:layout_marginEnd="8dp"
-                        app:tint="#64748B" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="نویزها"
-                        android:fontFamily="@font/yekan"
-
-                        android:textColor="#64748B"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tabWaves"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@drawable/tab_background"
-                    android:padding="15dp"
-                    android:gravity="center"
-                    android:layout_margin="5dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_waves"
-                        android:layout_marginEnd="8dp"
-                        app:tint="#64748B" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="موج‌ها"
-                        android:fontFamily="@font/yekan"
-                        android:textColor="#64748B"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tabStories"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@drawable/tab_background"
-                    android:padding="15dp"
-                    android:gravity="center"
-                    android:layout_margin="5dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/creek_96px"
-                        android:layout_marginEnd="8dp"
-                        app:tint="#64748B" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="داستان ها"
-                        android:fontFamily="@font/yekan"
-                        android:textColor="#64748B"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/tabPresets"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@drawable/tab_background"
-                    android:padding="15dp"
-                    android:gravity="center"
-                    android:layout_margin="5dp">
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/creek_96px"
-                        android:layout_marginEnd="8dp"
-                        app:tint="#64748B" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="ترکیب ها"
-                        android:fontFamily="@font/yekan"
-                        android:textColor="#64748B"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <!-- RecyclerView for Sounds -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/soundsRecyclerView"
+        android:layout_above="@id/rlViewPagerButtons"
+        android:orientation="horizontal">
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/tabLayout"
-            android:layout_margin="5dp"
-            android:clipToPadding="false" />
-
-    </RelativeLayout>
-
-
-    <LinearLayout
-        android:id="@+id/llFooter"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/timerlayout_background"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:padding="10dp"
-        >
-        <RelativeLayout
-            android:id="@+id/timerSection"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="تنظیمات زمان‌بندی"
-                android:textColor="#3B82F6"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:drawablePadding="8dp"
-                android:fontFamily="@font/yekan"
-                android:id="@+id/timerTitle"
-                android:drawableStart="@drawable/ic_timer" />
-            <TextView
-                android:id="@+id/timerDisplay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:text="تایمر فعال: ندارد"
-                android:fontFamily="@font/yekan"
-                android:textColor="#3B82F6"
-                android:textSize="16sp" />
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_below="@id/timerTitle">
-
-                <LinearLayout
-                    android:id="@+id/timerButtonsLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal" />
-            </HorizontalScrollView>
-
-
+            android:id="@+id/rlMixes">
 
         </RelativeLayout>
-
-        <!-- Playback Controls -->
-        <LinearLayout
-            android:id="@+id/playbackControls"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_alignParentBottom="true"
-            android:orientation="horizontal"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/player_background"
-            android:padding="5dp"
-            android:gravity="center_vertical">
-            <!-- آیکون آهنگ -->
-            <ImageView
-                android:id="@+id/songArt"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginEnd="12dp"
-                android:src="@drawable/ic_music"
-                android:scaleType="centerCrop"
-                android:background="@drawable/rounded_corners" />
-
-            <!-- اطلاعات آهنگ -->
-            <LinearLayout
-                android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/rlSounds">
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:id="@+id/tvTitle"
+                android:text="صداهای خواب"
+                android:fontFamily="@font/yekan"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:textColor="#4080f0"
+                android:textSize="30dp"
+                android:layout_marginBottom="10dp"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/llFooter"
+                android:layout_margin="10dp"
+                android:layout_below="@+id/tvTitle"
+                android:background="@drawable/tablayout_background"
+                >
+                <!-- Tab Layout -->
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tabLayout"
+                    android:paddingHorizontal="10dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:id="@+id/tabNature"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/tab_background_selected"
+                            android:padding="15dp"
+                            android:gravity="center"
+                            android:layout_margin="5dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/cave_96px"
+                                android:layout_marginEnd="8dp"
+                                app:tint="#3B82F6" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="طبیعت"
+                                android:fontFamily="@font/yekan"
+
+                                android:textColor="#3B82F6"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/tabMusic"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/tab_background"
+                            android:padding="15dp"
+                            android:gravity="center"
+                            android:layout_margin="5dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/creek_96px"
+                                android:layout_marginEnd="8dp"
+                                app:tint="#64748B" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="آهنگ‌ها"
+                                android:fontFamily="@font/yekan"
+
+                                android:textColor="#64748B"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/tabNoise"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/tab_background"
+                            android:padding="15dp"
+                            android:gravity="center"
+                            android:layout_margin="5dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/creek_96px"
+                                android:layout_marginEnd="8dp"
+                                app:tint="#64748B" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="نویزها"
+                                android:fontFamily="@font/yekan"
+
+                                android:textColor="#64748B"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/tabWaves"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/tab_background"
+                            android:padding="15dp"
+                            android:gravity="center"
+                            android:layout_margin="5dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_waves"
+                                android:layout_marginEnd="8dp"
+                                app:tint="#64748B" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="موج‌ها"
+                                android:fontFamily="@font/yekan"
+                                android:textColor="#64748B"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/tabStories"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/tab_background"
+                            android:padding="15dp"
+                            android:gravity="center"
+                            android:layout_margin="5dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/creek_96px"
+                                android:layout_marginEnd="8dp"
+                                app:tint="#64748B" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="داستان ها"
+                                android:fontFamily="@font/yekan"
+                                android:textColor="#64748B"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/tabPresets"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:background="@drawable/tab_background"
+                            android:padding="15dp"
+                            android:gravity="center"
+                            android:layout_margin="5dp">
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/creek_96px"
+                                android:layout_marginEnd="8dp"
+                                app:tint="#64748B" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="ترکیب ها"
+                                android:fontFamily="@font/yekan"
+                                android:textColor="#64748B"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+                </HorizontalScrollView>
+
+                <!-- RecyclerView for Sounds -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/soundsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/tabLayout"
+                    android:layout_margin="5dp"
+                    android:clipToPadding="false" />
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:id="@+id/llFooter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/songTitle"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/timerlayout_background"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:padding="10dp"
+                >
+                <RelativeLayout
+                    android:id="@+id/timerSection"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="نام آهنگ"
-                    android:textColor="#FFFFFF"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/yekan"
-                    android:gravity="center"
-                    android:ellipsize="end"
-                    android:maxLines="1" />
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/artistName"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="تنظیمات زمان‌بندی"
+                        android:textColor="#3B82F6"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentLeft="true"
+                        android:drawablePadding="8dp"
+                        android:fontFamily="@font/yekan"
+                        android:id="@+id/timerTitle"
+                        android:drawableStart="@drawable/ic_timer" />
+                    <TextView
+                        android:id="@+id/timerDisplay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:text="تایمر فعال: ندارد"
+                        android:fontFamily="@font/yekan"
+                        android:textColor="#3B82F6"
+                        android:textSize="16sp" />
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:layout_below="@id/timerTitle">
+
+                        <LinearLayout
+                            android:id="@+id/timerButtonsLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal" />
+                    </HorizontalScrollView>
+
+
+
+                </RelativeLayout>
+
+                <!-- Playback Controls -->
+                <LinearLayout
+                    android:id="@+id/playbackControls"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="نام هنرمند"
-                    android:gravity="center"
-                    android:textColor="#B3FFFFFF"
-                    android:textSize="12sp"
-                    android:fontFamily="@font/yekan"
-                    android:ellipsize="end"
-                    android:maxLines="1" />
+                    android:layout_height="60dp"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/player_background"
+                    android:padding="5dp"
+                    android:gravity="center_vertical">
+                    <!-- آیکون آهنگ -->
+                    <ImageView
+                        android:id="@+id/songArt"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="12dp"
+                        android:src="@drawable/ic_music"
+                        android:scaleType="centerCrop"
+                        android:background="@drawable/rounded_corners" />
 
+                    <!-- اطلاعات آهنگ -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center_vertical">
+
+                        <TextView
+                            android:id="@+id/songTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="نام آهنگ"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"
+                            android:fontFamily="@font/yekan"
+                            android:gravity="center"
+                            android:ellipsize="end"
+                            android:maxLines="1" />
+
+                        <TextView
+                            android:id="@+id/artistName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="نام هنرمند"
+                            android:gravity="center"
+                            android:textColor="#B3FFFFFF"
+                            android:textSize="12sp"
+                            android:fontFamily="@font/yekan"
+                            android:ellipsize="end"
+                            android:maxLines="1" />
+
+                    </LinearLayout>
+
+                    <!-- کنترل‌های پخش -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginRight="15dp"
+                        android:layoutDirection="ltr"
+                        android:gravity="center">
+
+                        <!-- دکمه قبلی -->
+                        <ImageButton
+                            android:id="@+id/prevButton"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="5dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_skip_previous"
+                            android:contentDescription="آهنگ قبلی"
+                            />
+
+                        <!-- دکمه پخش/مکث -->
+                        <ImageButton
+                            android:id="@+id/playPauseButton"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_play"
+                            android:contentDescription="پخش/مکث"
+                            />
+
+                        <!-- دکمه بعدی -->
+                        <ImageButton
+                            android:id="@+id/nextButton"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_marginStart="5dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_skip_next"
+                            android:contentDescription="آهنگ بعدی"
+                            />
+
+                    </LinearLayout>
+
+                </LinearLayout>
             </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
 
-            <!-- کنترل‌های پخش -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginRight="15dp"
-                android:layoutDirection="ltr"
-                android:gravity="center">
-
-                <!-- دکمه قبلی -->
-                <ImageButton
-                    android:id="@+id/prevButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="5dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_skip_previous"
-                    android:contentDescription="آهنگ قبلی"
-                    />
-
-                <!-- دکمه پخش/مکث -->
-                <ImageButton
-                    android:id="@+id/playPauseButton"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_play"
-                    android:contentDescription="پخش/مکث"
-                    />
-
-                <!-- دکمه بعدی -->
-                <ImageButton
-                    android:id="@+id/nextButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="5dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:src="@drawable/ic_skip_next"
-                    android:contentDescription="آهنگ بعدی"
-                    />
-
-            </LinearLayout>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="2"
+        android:background="#30000000"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/rlViewPagerButtons">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:id="@+id/llMixesButton"
+            android:layout_margin="5dp"
+            android:layout_weight="1">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_mixes"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Mixes"
+                android:textSize="12dp"
+                android:textColor="#ffff"
+                android:gravity="center"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:id="@+id/llSoundsButton"
+            android:gravity="center"
+            android:layout_margin="5dp"
+            android:layout_weight="1">
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_sounds"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Sounds"
+                android:textSize="12dp"
+                android:textColor="#ffff"
+                android:gravity="center"
+                />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Timer Section -->
+
 
 
 </RelativeLayout>
