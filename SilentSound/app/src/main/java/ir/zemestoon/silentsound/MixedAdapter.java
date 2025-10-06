@@ -19,6 +19,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 
 import java.util.List;
 
@@ -33,13 +35,16 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
     public interface OnMixedClickListener {
         void onMixedClick(Mixed mixed);
         void onMixedPlayPause(Mixed mixed);
+
+        void onMixedDetails(Mixed mixed);
+
         void onDownloadProgress(Mixed mixed, int progress);
     }
 
     public MixedAdapter(List<Mixed> mixedList, OnMixedClickListener listener, int screenWidth, MainActivity mainActivity) {
         this.mixedList = mixedList;
         this.listener = listener;
-        this.itemWidth = (screenWidth - convertDpToPx(60) - convertDpToPx(20)) / 3;
+        this.itemWidth = (screenWidth - convertDpToPx(60)) / 2;
         this.mainActivity = mainActivity;
         this.audioManager = AudioManager.getInstance(mainActivity);
     }
@@ -195,12 +200,14 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
                 playPauseButton.setImageResource(R.drawable.ic_play);
             }
 
-            // Load icon using Glide
+
             Glide.with(itemView.getContext())
                     .load(mixed.getIcon())
-                    .placeholder(R.drawable.music_50px)
-                    .error(R.drawable.music_50px)
+                    .placeholder(R.drawable.rounded_corners_background)
+                    .error(R.drawable.rounded_corners_background)
+                    .transform(new CenterCrop(), new RoundedCorners(convertDpToPx(20)))
                     .into(iconImageView);
+
         }
 
         private boolean checkAllSoundsDownloaded(Mixed mixed) {

@@ -24,8 +24,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.load.resource.bitmap.BitmapImageDecoderResourceDecoder;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +32,8 @@ import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView soundsRecyclerView;
+    private RecyclerView soundsRecyclerView,mixesRecyclerView;
+
     private LinearLayout tabNature, tabMusic, tabNoise, tabWaves, tabStories, tabPresets;
     private LinearLayout timerButtonsLayout;
     private LinearLayout llMixesButton,llSoundsButton;
@@ -44,15 +43,17 @@ public class MainActivity extends AppCompatActivity {
     private TextView timerDisplay;
     private ImageButton playPauseButton, nextButton, prevButton;
     private SoundAdapter soundAdapter;
+    private MixedAdapter mixedAdapter;
     private List<Sound> allSounds;
     private List<Sound> filteredSounds;
 
-
+    private List<Mixed> allMixes;
     private String currentTab = "nature";
     private int selectedTimer = -1;
 
     private AudioManager audioManager;
     private Map<String, Boolean> playingStatus;
+    private Map<String, Boolean> mixedPlayingStatus;
 
     // اضافه کردن لیست برای مدیریت ترتیب پخش آهنگ‌های music
     private List<Sound> musicPlaylist = new ArrayList<>();
@@ -88,12 +89,14 @@ public class MainActivity extends AppCompatActivity {
         audioManager.setMainActivityRef(this);
         showDownloadStatus();
         playingStatus = new HashMap<>();
-
+        mixedPlayingStatus = new HashMap<>();
         initViews();
         setupTabs();
         setupRecyclerView();
+        setupMixesRecyclerView();
         setupTimerButtons();
         loadSounds();
+        loadMixes();
         initializeSoundMap();
     }
 
@@ -106,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViews() {
         soundsRecyclerView = findViewById(R.id.soundsRecyclerView);
+        mixesRecyclerView = findViewById(R.id.mixesRecyclerView);
 
         // تب‌ها
         tabNature = findViewById(R.id.tabNature);
@@ -367,7 +371,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private Sound findSoundByName(String soundName) {
+    public boolean isMixedPlaying(String mixedId) {
+        return mixedPlayingStatus.containsKey(mixedId) && mixedPlayingStatus.get(mixedId);
+    }
+    public Sound findSoundByName(String soundName) {
         for (Sound sound : allSounds) {
             if (sound.getName().equals(soundName)) {
                 return sound;
@@ -1023,6 +1030,224 @@ public class MainActivity extends AppCompatActivity {
         allSounds.add(new Sound("preset", "آتش‌گاه جنگلی", "https://img.icons8.com/ios-filled/50/FFFFFF/campfire.png","", 50, false, false));
 
         filterSoundsByGroup("nature");
+    }
+
+    private void setupMixesRecyclerView() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenWidth = displayMetrics.widthPixels;
+
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
+        mixesRecyclerView.setLayoutManager(layoutManager);
+
+        mixedAdapter = new MixedAdapter(allMixes, new MixedAdapter.OnMixedClickListener() {
+            @Override
+            public void onMixedClick(Mixed mixed) {
+                List<Mixed.MixedSound> mixedSounds= mixed.getSounds();
+                for (Mixed.MixedSound mixedSound:mixedSounds) {
+                    Sound sound = findSoundByName(mixedSound.getSoundName());
+                    
+                    if(sound!=null) {
+                        if (!playingStatus.containsKey(sound.getName()) || !playingStatus.get(sound.getName())) {
+                            toggleSoundPlayback(sound);
+                        }else {
+                            stopAllSounds();
+                            for (Sound _sound : allSounds) {
+                                _sound.setSelected(false);
+                            }
+                            break;
+                        }
+                    }
+                }
+
+            }
+
+            @Override
+            public void onMixedPlayPause(Mixed mixed) {
+                //toggleMixedPlayback(mixed);
+            }
+
+            @Override
+            public void onMixedDetails(Mixed mixed) {
+
+            }
+
+            @Override
+            public void onDownloadProgress(Mixed mixed, int progress) {
+                // مدیریت پیشرفت دانلود
+            }
+        }, screenWidth, this);
+
+        mixesRecyclerView.setAdapter(mixedAdapter);
+    }
+
+    private void loadMixes() {
+        allMixes=new ArrayList<>();
+        String baseUrl = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/main/";
+
+        // ترکیب‌های طبیعت
+        Mixed beachMix = new Mixed("1", "ساحل آرام",
+                baseUrl + "covers/beach_sea_coast_sunset.jpg",
+                "ترکیبی آرامش‌بخش از صدای دریا و مرغان دریایی");
+        beachMix.addSound(new Mixed.MixedSound("دریا", "sea", 70, 0, 1800, true));
+        beachMix.addSound(new Mixed.MixedSound("مرغ دریایی", "seagull", 40, 30, 300, false));
+        beachMix.addSound(new Mixed.MixedSound("باد", "wind", 30, 0, 1800, true));
+        allMixes.add(beachMix);
+
+        Mixed forestMix = new Mixed("2", "جنگل بارانی",
+                baseUrl + "covers/forest_trees_green_nature.jpg",
+                "تجربه جنگل در یک روز بارانی");
+        forestMix.addSound(new Mixed.MixedSound("جنگل", "forest", 60, 0, 1800, true));
+        forestMix.addSound(new Mixed.MixedSound("باران", "rain", 50, 0, 1800, true));
+        forestMix.addSound(new Mixed.MixedSound("پرنده", "bird", 30, 60, 400, false));
+        forestMix.addSound(new Mixed.MixedSound("رعد و برق", "thunder", 40, 120, 180, false));
+        allMixes.add(forestMix);
+
+        Mixed mountainMix = new Mixed("3", "کوهستان مه‌آلود",
+                baseUrl + "covers/mountain_peak_fog.jpg",
+                "صدای طبیعت بکر کوهستان");
+        mountainMix.addSound(new Mixed.MixedSound("باد کوهستان", "wind", 45, 0, 1800, true));
+        mountainMix.addSound(new Mixed.MixedSound("جریان آب", "water_flow", 35, 20, 1780, true));
+        mountainMix.addSound(new Mixed.MixedSound("پرنده کوهی", "bird", 25, 90, 350, false));
+        allMixes.add(mountainMix);
+
+        Mixed lakeMix = new Mixed("4", "دریاچه آرام",
+                baseUrl + "covers/lake_reflection_water.jpg",
+                "انعکاس آرامش در آب‌های دریاچه");
+        lakeMix.addSound(new Mixed.MixedSound("آب دریاچه", "water_flow", 55, 0, 1800, true));
+        lakeMix.addSound(new Mixed.MixedSound("قورباغه", "frog", 35, 45, 180, false));
+        lakeMix.addSound(new Mixed.MixedSound("جیرجیرک", "cricket", 30, 90, 240, true));
+        allMixes.add(lakeMix);
+
+        Mixed waterfallMix = new Mixed("5", "آبشار خروشان",
+                baseUrl + "covers/waterfall_river_nature.jpg",
+                "انرژی بخش و نشاط آور");
+        waterfallMix.addSound(new Mixed.MixedSound("آبشار", "waterfall", 65, 0, 1800, true));
+        waterfallMix.addSound(new Mixed.MixedSound("جریان آب", "water_flow", 45, 0, 1800, true));
+        waterfallMix.addSound(new Mixed.MixedSound("پرندگان جنگل", "bird", 30, 45, 200, false));
+        allMixes.add(waterfallMix);
+
+        // ترکیب‌های داستانی
+        Mixed divingStoryMix = new Mixed("6", "ماجرای غواصی",
+                baseUrl + "covers/scuba_diving_ocean.jpg",
+                "سفر به اعماق اقیانوس");
+        divingStoryMix.addSound(new Mixed.MixedSound("زیر آب", "under_water", 60, 0, 1800, true));
+        divingStoryMix.addSound(new Mixed.MixedSound("دلفین", "whale", 35, 45, 120, false));
+        divingStoryMix.addSound(new Mixed.MixedSound("حباب", "dripping", 25, 30, 150, false));
+        allMixes.add(divingStoryMix);
+
+        Mixed boatStoryMix = new Mixed("7", "قایق سواری ماجراجویانه",
+                baseUrl + "covers/wooden_boat_lake.jpg",
+                "ماجرای یک سفر دریایی");
+        boatStoryMix.addSound(new Mixed.MixedSound("دریا", "sea", 65, 0, 1800, true));
+        boatStoryMix.addSound(new Mixed.MixedSound("باد", "wind", 40, 0, 1800, true));
+        boatStoryMix.addSound(new Mixed.MixedSound("مرغ دریایی", "seagull", 30, 60, 200, false));
+        allMixes.add(boatStoryMix);
+
+        Mixed cabinMix = new Mixed("8", "کلبه جنگلی",
+                baseUrl + "covers/log_cabin_forest.jpg",
+                "پناهگاهی در دل طبیعت");
+        cabinMix.addSound(new Mixed.MixedSound("آتش هیزم", "firewood", 50, 0, 1800, true));
+        cabinMix.addSound(new Mixed.MixedSound("باران", "rain", 45, 0, 1800, true));
+        cabinMix.addSound(new Mixed.MixedSound("جیرجیرک", "cricket", 30, 60, 240, true));
+        allMixes.add(cabinMix);
+
+        Mixed lanternMix = new Mixed("9", "فانوس جادویی",
+                baseUrl + "covers/old_lantern_light.jpg",
+                "ماجرای فانوس در شب تاریک");
+        lanternMix.addSound(new Mixed.MixedSound("شب", "wind", 45, 0, 1800, true));
+        lanternMix.addSound(new Mixed.MixedSound("جیرجیرک", "cricket", 35, 30, 1770, true));
+        lanternMix.addSound(new Mixed.MixedSound("جغد", "owl", 30, 150, 200, false));
+        allMixes.add(lanternMix);
+
+        Mixed chocolateMix = new Mixed("10", "کارخانه شکلات سازی",
+                baseUrl + "covers/chocolate_factory_sweet.jpg",
+                "ماجرای شیرین در کارخانه شکلات");
+        chocolateMix.addSound(new Mixed.MixedSound("ماشین‌آلات", "water_flow", 50, 0, 1800, true));
+        chocolateMix.addSound(new Mixed.MixedSound("قطره‌های شکلات", "dripping", 40, 45, 150, false));
+        chocolateMix.addSound(new Mixed.MixedSound("شادی کودکان", "bird", 30, 90, 200, false));
+        allMixes.add(chocolateMix);
+
+        Mixed spiderMix = new Mixed("11", "خاله سوسکه",
+                baseUrl + "covers/spider_web_dew.jpg",
+                "ماجرای خاله سوسکه در خانه قدیمی");
+        spiderMix.addSound(new Mixed.MixedSound("باران روی پنجره", "rain_on_window", 50, 0, 1800, true));
+        spiderMix.addSound(new Mixed.MixedSound("تار عنکبوت", "dripping", 35, 60, 150, false));
+        spiderMix.addSound(new Mixed.MixedSound("جیرجیرک", "cricket", 30, 120, 240, true));
+        allMixes.add(spiderMix);
+
+        Mixed arcticMix = new Mixed("12", "ماجرای قطب شمال",
+                baseUrl + "covers/arctic_ice_landscape.jpg",
+                "سفر به سرزمین یخ‌ها");
+        arcticMix.addSound(new Mixed.MixedSound("باد سرد", "wind", 55, 0, 1800, true));
+        arcticMix.addSound(new Mixed.MixedSound("ترک خوردن یخ", "thunder", 40, 45, 120, false));
+        arcticMix.addSound(new Mixed.MixedSound("برف", "snow", 30, 0, 1800, true));
+        allMixes.add(arcticMix);
+
+        Mixed goatMix = new Mixed("13", "بزغاله کوچولو",
+                baseUrl + "covers/goat_farm_animal.jpg",
+                "ماجراهای بزغاله در مزرعه");
+        goatMix.addSound(new Mixed.MixedSound("چمنزار", "grassland", 50, 0, 1800, true));
+        goatMix.addSound(new Mixed.MixedSound("صدای حیوانات", "bird", 35, 90, 200, false));
+        goatMix.addSound(new Mixed.MixedSound("زنگوله", "dripping", 40, 150, 180, false));
+        allMixes.add(goatMix);
+
+        // ترکیب‌های مدیتیشن و آرامش
+        Mixed meditationMix = new Mixed("14", "مدیتیشن عمیق",
+                baseUrl + "covers/yoga_meditation_peace.jpg",
+                "مناسب برای تمرین مدیتیشن و یوگا");
+        meditationMix.addSound(new Mixed.MixedSound("نویز سفید", "white_noise", 40, 0, 1800, true));
+        meditationMix.addSound(new Mixed.MixedSound("آبشار", "waterfall", 35, 10, 1790, true));
+        meditationMix.addSound(new Mixed.MixedSound("زنگ مدیتیشن", "bell", 60, 300, 320, false));
+        allMixes.add(meditationMix);
+
+        Mixed nightMix = new Mixed("15", "شب آرام",
+                baseUrl + "covers/starry_night_sky.jpg",
+                "صدای طبیعت در یک شب آرام");
+        nightMix.addSound(new Mixed.MixedSound("جیرجیرک", "cricket", 50, 0, 1800, true));
+        nightMix.addSound(new Mixed.MixedSound("جغد", "owl", 35, 45, 200, false));
+        nightMix.addSound(new Mixed.MixedSound("باد", "wind", 25, 0, 1800, true));
+        allMixes.add(nightMix);
+
+        Mixed desertMix = new Mixed("16", "بیابان ستاره‌ها",
+                baseUrl + "covers/desert_sand_dunes.jpg",
+                "شبی آرام در دل بیابان");
+        desertMix.addSound(new Mixed.MixedSound("باد بیابان", "wind", 50, 0, 1800, true));
+        desertMix.addSound(new Mixed.MixedSound("صدای شن", "snow", 30, 90, 240, true));
+        allMixes.add(desertMix);
+
+        Mixed zenMix = new Mixed("17", "باغ ذن",
+                baseUrl + "covers/zen_garden_calm.jpg",
+                "آرامش در باغ ژاپنی");
+        zenMix.addSound(new Mixed.MixedSound("آب جاری", "water_flow", 45, 0, 1800, true));
+        zenMix.addSound(new Mixed.MixedSound("زنگ باد", "dripping", 35, 60, 120, false));
+        zenMix.addSound(new Mixed.MixedSound("پرندگان", "bird", 25, 90, 200, false));
+        allMixes.add(zenMix);
+
+        Mixed candleMix = new Mixed("18", "نور شمع",
+                baseUrl + "covers/candle_light_relax.jpg",
+                "آرامش در نور شمع");
+        candleMix.addSound(new Mixed.MixedSound("نویز قهوه‌ای", "brown_noise", 40, 0, 1800, true));
+        candleMix.addSound(new Mixed.MixedSound("ترق تروق شمع", "dripping", 30, 45, 150, false));
+        allMixes.add(candleMix);
+
+        Mixed tropicalMix = new Mixed("19", "ساحل گرمسیری",
+                baseUrl + "covers/tropical_beach_palm_trees.jpg",
+                "گرمای آفتاب و نسیم دریا");
+        tropicalMix.addSound(new Mixed.MixedSound("امواج دریا", "sea", 70, 0, 1800, true));
+        tropicalMix.addSound(new Mixed.MixedSound("نخل‌ها", "wind", 35, 0, 1800, true));
+        tropicalMix.addSound(new Mixed.MixedSound("مرغان دریایی", "seagull", 40, 30, 300, false));
+        allMixes.add(tropicalMix);
+
+        Mixed rainforestMix = new Mixed("20", "جنگل بارانی استوایی",
+                baseUrl + "covers/rainforest_jungle_plants.jpg",
+                "تنوع صوتی جنگل‌های بارانی");
+        rainforestMix.addSound(new Mixed.MixedSound("جنگل", "forest", 60, 0, 1800, true));
+        rainforestMix.addSound(new Mixed.MixedSound("میمون", "bird", 35, 45, 180, false));
+        rainforestMix.addSound(new Mixed.MixedSound("باران استوایی", "rain", 50, 0, 1800, true));
+        allMixes.add(rainforestMix);
+
+        mixedAdapter.updateList(allMixes);
     }
 
     private void filterSoundsByGroup(String group) {
