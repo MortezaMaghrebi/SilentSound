@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,11 +39,14 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout timerButtonsLayout;
     private LinearLayout llMixesButton,llSoundsButton;
     private RelativeLayout rlMixes,rlSounds;
+    TextView tvMixes,tvSounds;
+    ImageView ivMixes,ivSounds;
     private TextView timerDisplay;
     private ImageButton playPauseButton, nextButton, prevButton;
     private SoundAdapter soundAdapter;
     private List<Sound> allSounds;
     private List<Sound> filteredSounds;
+
 
     private String currentTab = "nature";
     private int selectedTimer = -1;
@@ -124,11 +129,51 @@ public class MainActivity extends AppCompatActivity {
         rlSounds=findViewById(R.id.rlSounds);
         llMixesButton=findViewById(R.id.llMixesButton);
         llSoundsButton=findViewById(R.id.llSoundsButton);
+         tvMixes = findViewById(R.id.tvMixes);
+         tvSounds = findViewById(R.id.tvSounds);
+         ivMixes = findViewById(R.id.ivMixes);
+         ivSounds = findViewById(R.id.ivSounds);
 
-        llMixesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        rlMixes.setVisibility(View.VISIBLE);
+        rlSounds.setVisibility(View.GONE);
 
+
+
+        llMixesButton.setOnClickListener(v -> {
+            if (rlMixes.getVisibility() == View.GONE) {
+                Animation slideInLeft = AnimationUtils.loadAnimation(this, R.anim.slide_in_left);
+                Animation slideOutRight = AnimationUtils.loadAnimation(this, R.anim.slide_out_right);
+
+                rlMixes.startAnimation(slideInLeft);
+                rlSounds.startAnimation(slideOutRight);
+
+                rlMixes.setVisibility(View.VISIBLE);
+                rlSounds.setVisibility(View.GONE);
+
+                // تغییر رنگ دکمه‌ها
+                tvMixes.setTextColor(getResources().getColor(R.color.active_blue));
+                ivMixes.setColorFilter(getResources().getColor(R.color.active_blue));
+                tvSounds.setTextColor(getResources().getColor(R.color.inactive_white));
+                ivSounds.setColorFilter(getResources().getColor(R.color.inactive_white));
+            }
+        });
+
+        llSoundsButton.setOnClickListener(v -> {
+            if (rlSounds.getVisibility() == View.GONE) {
+                Animation slideInRight = AnimationUtils.loadAnimation(this, R.anim.slide_in_right);
+                Animation slideOutLeft = AnimationUtils.loadAnimation(this, R.anim.slide_out_left);
+
+                rlSounds.startAnimation(slideInRight);
+                rlMixes.startAnimation(slideOutLeft);
+
+                rlSounds.setVisibility(View.VISIBLE);
+                rlMixes.setVisibility(View.GONE);
+
+                // تغییر رنگ دکمه‌ها
+                tvSounds.setTextColor(getResources().getColor(R.color.active_blue));
+                ivSounds.setColorFilter(getResources().getColor(R.color.active_blue));
+                tvMixes.setTextColor(getResources().getColor(R.color.inactive_white));
+                ivMixes.setColorFilter(getResources().getColor(R.color.inactive_white));
             }
         });
 

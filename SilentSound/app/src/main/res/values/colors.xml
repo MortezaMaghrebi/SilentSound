@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="card_background">#801E293B</color>
     <color name="light_blue">#FF06B6D4</color>
+    <color name="active_blue">#2196F3</color>
+     <color name="inactive_white">#FFFFFF</color>
 </resources>

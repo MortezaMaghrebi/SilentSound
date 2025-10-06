@@ -13,7 +13,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/rlMixes">
-
+            <!-- RecyclerView for Sounds -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/mixesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:clipToPadding="false" />
         </RelativeLayout>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -413,6 +419,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/ic_mixes"
+                android:id="@+id/ivMixes"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -420,6 +427,7 @@
                 android:text="Mixes"
                 android:textSize="12dp"
                 android:textColor="#ffff"
+                android:id="@+id/tvMixes"
                 android:gravity="center"
                 />
         </LinearLayout>
@@ -435,6 +443,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:src="@drawable/ic_sounds"
+                android:id="@+id/ivSounds"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -443,6 +452,7 @@
                 android:textSize="12dp"
                 android:textColor="#ffff"
                 android:gravity="center"
+                android:id="@+id/tvSounds"
                 />
         </LinearLayout>
     </LinearLayout>
