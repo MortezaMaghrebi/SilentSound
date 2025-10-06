@@ -549,6 +549,8 @@ public class AudioManager {
         Log.d(TAG, "All sounds stopped");
     }
 
+
+
     // بررسی آیا آهنگ دانلود شده است
     public boolean isSoundDownloaded(Sound sound) {
         String soundKey = getSoundKey(sound);

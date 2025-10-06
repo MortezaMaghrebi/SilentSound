@@ -18,7 +18,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/timerSection"
+        android:layout_above="@id/llFooter"
         android:layout_margin="10dp"
         android:layout_below="@+id/tvTitle"
         android:background="@drawable/tablayout_background"
@@ -215,93 +215,168 @@
     </RelativeLayout>
 
 
-    <!-- Timer Section -->
-    <RelativeLayout
-        android:id="@+id/timerSection"
+    <LinearLayout
+        android:id="@+id/llFooter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/playbackControls"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true"
         android:background="@drawable/timerlayout_background"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:padding="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="تنظیمات زمان‌بندی"
-            android:textColor="#3B82F6"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:drawablePadding="8dp"
-            android:fontFamily="@font/yekan"
-            android:id="@+id/timerTitle"
-            android:drawableStart="@drawable/ic_timer" />
-        <TextView
-            android:id="@+id/timerDisplay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
-            android:text="تایمر فعال: ندارد"
-            android:fontFamily="@font/yekan"
-            android:textColor="#3B82F6"
-            android:textSize="16sp" />
-        <HorizontalScrollView
+        android:padding="10dp"
+        >
+        <RelativeLayout
+            android:id="@+id/timerSection"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_below="@id/timerTitle">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:id="@+id/timerButtonsLayout"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" />
-        </HorizontalScrollView>
+                android:text="تنظیمات زمان‌بندی"
+                android:textColor="#3B82F6"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:drawablePadding="8dp"
+                android:fontFamily="@font/yekan"
+                android:id="@+id/timerTitle"
+                android:drawableStart="@drawable/ic_timer" />
+            <TextView
+                android:id="@+id/timerDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:text="تایمر فعال: ندارد"
+                android:fontFamily="@font/yekan"
+                android:textColor="#3B82F6"
+                android:textSize="16sp" />
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_below="@id/timerTitle">
+
+                <LinearLayout
+                    android:id="@+id/timerButtonsLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+            </HorizontalScrollView>
 
 
 
-    </RelativeLayout>
+        </RelativeLayout>
 
-    <!-- Playback Controls -->
-    <LinearLayout
-        android:id="@+id/playbackControls"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:padding="10dp">
+        <!-- Playback Controls -->
+        <LinearLayout
+            android:id="@+id/playbackControls"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/player_background"
+            android:padding="5dp"
+            android:gravity="center_vertical">
+            <!-- آیکون آهنگ -->
+            <ImageView
+                android:id="@+id/songArt"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="12dp"
+                android:src="@drawable/ic_music"
+                android:scaleType="centerCrop"
+                android:background="@drawable/rounded_corners" />
 
-        <Button
-            android:id="@+id/playButton"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/button_primary"
-            android:text="پخش همه ▶"
-            android:fontFamily="@font/yekan"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-           />
+            <!-- اطلاعات آهنگ -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
 
-        <Button
-            android:id="@+id/stopButton"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:layout_marginStart="10dp"
-            android:background="@drawable/button_stop"
-            android:fontFamily="@font/yekan"
-            android:text="توقف همه ■"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            />
+                <TextView
+                    android:id="@+id/songTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="نام آهنگ"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/yekan"
+                    android:gravity="center"
+                    android:ellipsize="end"
+                    android:maxLines="1" />
 
+                <TextView
+                    android:id="@+id/artistName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="نام هنرمند"
+                    android:gravity="center"
+                    android:textColor="#B3FFFFFF"
+                    android:textSize="12sp"
+                    android:fontFamily="@font/yekan"
+                    android:ellipsize="end"
+                    android:maxLines="1" />
+
+            </LinearLayout>
+
+            <!-- کنترل‌های پخش -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginRight="15dp"
+                android:layoutDirection="ltr"
+                android:gravity="center">
+
+                <!-- دکمه قبلی -->
+                <ImageButton
+                    android:id="@+id/prevButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_skip_previous"
+                    android:contentDescription="آهنگ قبلی"
+                    />
+
+                <!-- دکمه پخش/مکث -->
+                <ImageButton
+                    android:id="@+id/playPauseButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_play"
+                    android:contentDescription="پخش/مکث"
+                    />
+
+                <!-- دکمه بعدی -->
+                <ImageButton
+                    android:id="@+id/nextButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="5dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:src="@drawable/ic_skip_next"
+                    android:contentDescription="آهنگ بعدی"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
+
+    <!-- Timer Section -->
+
 
 </RelativeLayout>

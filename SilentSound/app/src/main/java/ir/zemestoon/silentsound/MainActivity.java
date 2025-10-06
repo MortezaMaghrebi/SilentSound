@@ -1,5 +1,6 @@
 package ir.zemestoon.silentsound;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,6 +20,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.load.resource.bitmap.BitmapImageDecoderResourceDecoder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,8 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout tabNature, tabMusic, tabNoise, tabWaves, tabStories, tabPresets;
     private LinearLayout timerButtonsLayout;
     private TextView timerDisplay;
-    private Button playButton, stopButton;
-
+    private ImageButton playPauseButton, nextButton, prevButton;
     private SoundAdapter soundAdapter;
     private List<Sound> allSounds;
     private List<Sound> filteredSounds;
@@ -106,11 +109,84 @@ public class MainActivity extends AppCompatActivity {
 
         timerButtonsLayout = findViewById(R.id.timerButtonsLayout);
         timerDisplay = findViewById(R.id.timerDisplay);
-        playButton = findViewById(R.id.playButton);
-        stopButton = findViewById(R.id.stopButton);
+        playPauseButton = findViewById(R.id.playPauseButton);
+        nextButton = findViewById(R.id.nextButton);
+        prevButton = findViewById(R.id.prevButton);
 
-        playButton.setOnClickListener(v -> playAllSounds());
-        stopButton.setOnClickListener(v -> stopAllSounds());
+        playPauseButton.setOnClickListener(v -> playPauseButtonClick());
+        nextButton.setOnClickListener(v -> nextButtonClick());
+        prevButton.setOnClickListener(v -> prevButtonClick());
+
+    }
+
+    boolean isPlaying = false;
+
+    private void playPauseButtonClick() {
+        if (!isPlaying) {
+            playAllSounds();
+        } else {
+            stopAllSounds();
+        }
+
+    }
+
+    public void updatePlayPauseAppearance() {
+        if (!musicPlaylist.isEmpty()) {
+            Sound currentsound=getCurrentlyPlayingMusic();
+            isPlaying = currentsound != null;
+            playPauseButton.setImageResource(isPlaying ? R.drawable.ic_pause : R.drawable.ic_play);
+            if(isPlaying)
+            {
+                TextView songTitle = findViewById(R.id.songTitle);
+                TextView artistName = findViewById(R.id.artistName);
+                ImageView songArt = findViewById(R.id.songArt);
+                songTitle.setText(currentsound.getName());
+                String url=currentsound.getAudioUrl();
+                String[] urlparts=currentsound.getAudioUrl().toString().split("/");
+                String[] artistNameParts = urlparts[urlparts.length-2].split("_");
+                StringBuilder  artistname=new StringBuilder();
+                for (String word:artistNameParts) {
+                    if (!word.isEmpty()) {
+                        artistname.append(Character.toUpperCase(word.charAt(0)))
+                                .append(word.substring(1).toLowerCase())
+                                .append(" ");
+                    }
+                }
+                artistName.setText(artistname);
+                songArt.setImageResource(R.drawable.ic_music);
+            }
+        }
+    }
+
+
+    private void nextButtonClick()
+    {
+        if (!musicPlaylist.isEmpty() ) {
+            //currentMusicIndex = 0;
+            Sound selectedMusic = musicPlaylist.get(currentMusicIndex);
+            if (isSoundPlaying(selectedMusic.getName())) {
+                // توقف پخش
+                audioManager.stopSound(selectedMusic);
+                playingStatus.put(selectedMusic.getName(), false);
+            }
+            playNextMusicTrack(selectedMusic);
+            updateAllItemsAppearance();
+        }
+    }
+
+    private void prevButtonClick()
+    {
+        if (!musicPlaylist.isEmpty() ) {
+            //currentMusicIndex = 0;
+            Sound selectedMusic = musicPlaylist.get(currentMusicIndex);
+            if (isSoundPlaying(selectedMusic.getName())) {
+                // توقف پخش
+                audioManager.stopSound(selectedMusic);
+                playingStatus.put(selectedMusic.getName(), false);
+            }
+            playPreviousMusicTrack(selectedMusic);
+            updateAllItemsAppearance();
+        }
     }
 
     private void setupTabs() {
@@ -419,6 +495,38 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // متد برای پخش آهنگ music بعدی
+    public void playPreviousMusicTrack(Sound currentSound) {
+        isAutoPlayingNext = true;
+
+        try {
+
+            if (musicPlaylist.isEmpty()) {
+                currentMusicIndex = -1;
+                return;
+            }
+
+            // پیدا کردن ایندکس آهنگ فعلی
+            int currentIndex = musicPlaylist.indexOf(currentSound);
+
+            if (currentIndex == -1) {
+                // اگر آهنگ فعلی در لیست نیست، از اول شروع کن
+                currentMusicIndex = 0;
+            } else {
+                // آهنگ بعدی را پیدا کن
+                currentMusicIndex = (currentIndex - 1) % musicPlaylist.size();
+            }
+
+            // آهنگ بعدی را پخش کن
+            Sound nextSound = musicPlaylist.get(currentMusicIndex);
+            if (!isSoundPlaying(nextSound.getName())) {
+                toggleSoundPlayback(nextSound);
+            }
+        } finally {
+            isAutoPlayingNext = false;
+        }
+    }
+
     // متد برای به‌روزرسانی لیست پخش music
     private void updateMusicPlaylist() {
         //.clear();
@@ -540,8 +648,10 @@ public class MainActivity extends AppCompatActivity {
                 toggleSoundPlayback(selectedMusic);
             }
         }
+        updatePlayPauseAppearance();
     }
 
+    @SuppressLint("SuspiciousIndentation")
     private void stopAllSounds() {
         audioManager.stopAllSounds();
         for (Sound sound:allSounds) {
@@ -566,8 +676,8 @@ public class MainActivity extends AppCompatActivity {
         timerDisplay.setText("تایمر فعال: ندارد");
         selectedTimer = -1;
         updateTimerButtonsAppearance(null);
-
-        showToast("همه صداها متوقف شدند");
+        updatePlayPauseAppearance();
+        //showToast("همه صداها متوقف شدند");
     }
 
     private void showToast(String message) {
@@ -586,6 +696,7 @@ public class MainActivity extends AppCompatActivity {
         if (soundAdapter != null) {
             soundAdapter.notifyDataSetChanged();
         }
+        updatePlayPauseAppearance();
     }
 
     private void updateItemAppearance(Sound sound) {
@@ -611,7 +722,7 @@ public class MainActivity extends AppCompatActivity {
             timerButton.setText(minutes + " دقیقه");
             timerButton.setBackgroundResource(R.drawable.timer_button);
             timerButton.setTextColor(Color.WHITE);
-            timerButton.setPadding(20, 10, 20, 10);
+            timerButton.setPadding(0, 0, 0, 0);
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
