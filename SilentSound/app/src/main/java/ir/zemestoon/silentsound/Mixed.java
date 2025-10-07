@@ -32,7 +32,7 @@ public class Mixed {
         private int startTime; // زمان شروع به ثانیه
         private int endTime; // زمان پایان به ثانیه
         private boolean loop;
-
+        private boolean playing=false;
         public MixedSound() {}
 
         public MixedSound(String soundName, String soundId, int volume, int startTime, int endTime, boolean loop) {
@@ -62,6 +62,9 @@ public class Mixed {
 
         public boolean isLoop() { return loop; }
         public void setLoop(boolean loop) { this.loop = loop; }
+
+        public boolean isPlaying(){return playing;}
+        public void setPlaying(boolean playing){this.playing=playing;}
     }
 
     // Getter and Setter methods
@@ -85,6 +88,8 @@ public class Mixed {
 
     public int getTotalDuration() { return totalDuration; }
     public void setTotalDuration(int totalDuration) { this.totalDuration = totalDuration; }
+
+
 
     // متدهای کمکی
     public void addSound(MixedSound sound) {

@@ -51,14 +51,14 @@ public class MainActivity extends AppCompatActivity {
     private String currentTab = "nature";
     private int selectedTimer = -1;
 
-    private AudioManager audioManager;
-    private Map<String, Boolean> playingStatus;
-    private Map<String, Boolean> mixedPlayingStatus;
+    public AudioManager audioManager;
+    public Map<String, Boolean> playingStatus;
+    public Map<String, Boolean> mixedPlayingStatus;
 
     // اضافه کردن لیست برای مدیریت ترتیب پخش آهنگ‌های music
-    private List<Sound> musicPlaylist = new ArrayList<>();
-    private int currentMusicIndex = -1;
-    private Map<String, Sound> soundMap = new HashMap<>();
+    public List<Sound> musicPlaylist = new ArrayList<>();
+    public int currentMusicIndex = -1;
+    public Map<String, Sound> soundMap = new HashMap<>();
 
     // اضافه کردن flag برای جلوگیری از حلقه بی‌نهایت
     private boolean isAutoPlayingNext = false;
@@ -393,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    private void startDownloadWithProgress(Sound sound) {
+    public void startDownloadWithProgress(Sound sound) {
         sound.setSelected(true);
         updateItemAppearance(sound);
         audioManager.downloadSound(sound, new AudioManager.DownloadCallback() {
@@ -472,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
         updateAllItemsAppearance();
     }
 
-    private void toggleSoundPlayback(Sound sound) {
+    public void toggleSoundPlayback(Sound sound) {
         String soundId = sound.getId();
 
         if (sound.getAudioUrl() == null || sound.getAudioUrl().isEmpty()) {
@@ -635,7 +635,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // اضافه کردن به لیست پخش
-    private void addToPlaylist(Sound sound) {
+    public void addToPlaylist(Sound sound) {
         if (!sound.isMusicGroup()) return;
         if (!audioManager.isSoundDownloaded(sound)) return;
         if (musicPlaylist.contains(sound)) return; // جلوگیری از اضافه کردن تکراری
@@ -650,7 +650,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // حذف از لیست پخش
-    private void removeFromPlaylist(Sound sound) {
+    public void removeFromPlaylist(Sound sound) {
         if (!sound.isMusicGroup()) return;
         if (isSoundPlaying(sound.getId())) {
             audioManager.stopSound(sound);
@@ -770,7 +770,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void updateAllItemsAppearance() {
+    public void updateAllItemsAppearance() {
         if (soundAdapter != null) {
             soundAdapter.notifyDataSetChanged();
         }
@@ -781,7 +781,7 @@ public class MainActivity extends AppCompatActivity {
         updatePlayPauseAppearance();
     }
 
-    private void updateItemAppearance(Sound sound) {
+    public void updateItemAppearance(Sound sound) {
 
         int position = -1;
         for (int i = 0; i < filteredSounds.size(); i++) {
@@ -1047,7 +1047,23 @@ public class MainActivity extends AppCompatActivity {
         filterSoundsByGroup("nature");
     }
 
+    public void StopAllSoundsAndMixes() {
+        if(mixedPlayer!=null){
+            mixedPlayer.Dispose();
+        }
+        stopAllSounds();
+        for (Sound _sound : allSounds) {
+            _sound.setSelected(false);
+        }
+        playingStatus.clear();
+        musicPlaylist.clear();
+        updateAllItemsAppearance();
+        mixedPlayingStatus.clear();
+        mixedPlaying = false;
+        updateAllItemsAppearance();
+    }
     boolean mixedPlaying=false;
+    MixedPlayer mixedPlayer=null;
     private void setupMixesRecyclerView() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -1073,7 +1089,10 @@ public class MainActivity extends AppCompatActivity {
                     if(isMixedPlaying(mixed.getId()))returnAfterStop=true;
                     mixedPlayingStatus.clear();
                     updateAllItemsAppearance();
-                    if(returnAfterStop)return;
+                    if(returnAfterStop){
+                        mixedPlaying=false;
+                        return;
+                    }
                 }
                 for (Mixed.MixedSound mixedSound:mixedSounds) {
                     for (Sound sound : allSounds) {
@@ -1081,22 +1100,7 @@ public class MainActivity extends AppCompatActivity {
                         if (sound.getId().equals(mixedSound.getSoundId())) {
                             if(sound!=null) {
                                 if (!playingStatus.containsKey(sound.getId()) || !playingStatus.get(sound.getId())) {
-                                    if (sound.isMusicGroup() ) {
-                                        if (!audioManager.isSoundDownloaded(sound)) {
-                                            updateSoundDownloadProgress(sound.getId(), 5);
-                                            startDownloadWithProgress(sound);
-                                            sound.setSelected(true);
-                                        }else {
-                                            addToPlaylist(sound);
-                                            updateItemAppearance(sound);
-                                            //showToast(sound.getName() + " به لیست پخش اضافه شد");
-                                        }
-                                    }else {
-                                        toggleSoundPlayback(sound);
-                                    }
-                                    mixedPlayingStatus.put(mixed.getId(),true);
-                                    mixedPlaying=true;
-                                    updateAllItemsAppearance();
+
                                 }else {
                                     stopAllSounds();
                                     playingStatus.clear();
@@ -1113,6 +1117,14 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 }
+                if(mixedPlayer!=null){
+                    mixedPlayer.Dispose();
+                }
+                mixedPlayer= new MixedPlayer(MainActivity.this,mixed);
+                mixedPlayer.startPlaying();
+                mixedPlayingStatus.put(mixed.getId(),true);
+                mixedPlaying=true;
+                updateAllItemsAppearance();
 
             }
 
@@ -1146,7 +1158,6 @@ public class MainActivity extends AppCompatActivity {
         beachMix.addSound(new Mixed.MixedSound("دریا", "sea", 70, 0, 1800, true));
         beachMix.addSound(new Mixed.MixedSound("مرغ دریایی", "seagull", 40, 30, 300, false));
         beachMix.addSound(new Mixed.MixedSound("باد", "wind", 30, 0, 1800, true));
-        beachMix.addSound(new Mixed.MixedSound("آب روان", "dg_water_flow", 35, 0, 400, false));
         beachMix.addSound(new Mixed.MixedSound("رهروی در سرزمین خواب", "dg_drifting_in_dreamland", 45, 0, 1800, false));
         allMixes.add(beachMix);
 
