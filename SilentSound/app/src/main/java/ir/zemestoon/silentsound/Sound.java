@@ -52,6 +52,14 @@ public class Sound {
         return name;
     }
 
+    public String getId(){
+        String[] parts= audioUrl.split("/");
+        String soundId = parts[parts.length-1];
+        //parts = soundId.split(".");
+        soundId = soundId.replace(".mp3","");
+        return soundId;
+    }
+
     public void setName(String name) {
         this.name = name;
     }

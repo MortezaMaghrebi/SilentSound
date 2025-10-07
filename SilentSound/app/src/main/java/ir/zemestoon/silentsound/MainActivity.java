@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
     private void initializeSoundMap() {
         soundMap.clear();
         for (Sound sound : allSounds) {
-            soundMap.put(sound.getName(), sound);
+            soundMap.put(sound.getId(), sound);
         }
     }
 
@@ -228,10 +228,10 @@ public class MainActivity extends AppCompatActivity {
         if (!musicPlaylist.isEmpty() ) {
             //currentMusicIndex = 0;
             Sound selectedMusic = musicPlaylist.get(currentMusicIndex);
-            if (isSoundPlaying(selectedMusic.getName())) {
+            if (isSoundPlaying(selectedMusic.getId())) {
                 // توقف پخش
                 audioManager.stopSound(selectedMusic);
-                playingStatus.put(selectedMusic.getName(), false);
+                playingStatus.put(selectedMusic.getId(), false);
             }
             playNextMusicTrack(selectedMusic);
             updateAllItemsAppearance();
@@ -243,10 +243,10 @@ public class MainActivity extends AppCompatActivity {
         if (!musicPlaylist.isEmpty() ) {
             //currentMusicIndex = 0;
             Sound selectedMusic = musicPlaylist.get(currentMusicIndex);
-            if (isSoundPlaying(selectedMusic.getName())) {
+            if (isSoundPlaying(selectedMusic.getId())) {
                 // توقف پخش
                 audioManager.stopSound(selectedMusic);
-                playingStatus.put(selectedMusic.getName(), false);
+                playingStatus.put(selectedMusic.getId(), false);
             }
             playPreviousMusicTrack(selectedMusic);
             updateAllItemsAppearance();
@@ -308,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     if(!sound.isSelected()) {
                         if (!audioManager.isSoundDownloaded(sound)) {
-                            updateSoundDownloadProgress(sound.getName(), 5);
+                            updateSoundDownloadProgress(sound.getId(), 5);
                             startDownloadWithProgress(sound);
                         } else {
                             sound.setSelected(true);
@@ -329,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onVolumeChanged(Sound sound, int volume) {
                 sound.setVolume(volume);
-                if (isSoundPlaying(sound.getName())) {
+                if (isSoundPlaying(sound.getId())) {
                     audioManager.updateSoundVolume(sound, volume);
                 }
                 updateItemAppearance(sound);
@@ -348,13 +348,13 @@ public class MainActivity extends AppCompatActivity {
         soundsRecyclerView.setAdapter(soundAdapter);
     }
 
-    public void updateSoundDownloadProgress(final String soundName, final int progress) {
+    public void updateSoundDownloadProgress(final String soundId, final int progress) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 int position = -1;
                 for (int i = 0; i < filteredSounds.size(); i++) {
-                    if (filteredSounds.get(i).getName().equals(soundName)) {
+                    if (filteredSounds.get(i).getId().equals(soundId)) {
                         position = i;
                         break;
                     }
@@ -363,9 +363,9 @@ public class MainActivity extends AppCompatActivity {
                 if (position != -1) {
                     soundAdapter.notifyItemChanged(position);
                     filteredSounds.get(position).setLastDownloadProgress(progress);
-                    Log.d("UI_Update", "Updating UI for: " + soundName + " at position: " + position + " progress: " + progress);
+                    Log.d("UI_Update", "Updating UI for: " + soundId + " at position: " + position + " progress: " + progress);
                 } else {
-                    Log.d("UI_Update", "Sound not found in filtered list: " + soundName);
+                    Log.d("UI_Update", "Sound not found in filtered list: " + soundId);
                 }
             }
         });
@@ -374,9 +374,19 @@ public class MainActivity extends AppCompatActivity {
     public boolean isMixedPlaying(String mixedId) {
         return mixedPlayingStatus.containsKey(mixedId) && mixedPlayingStatus.get(mixedId);
     }
+
     public Sound findSoundByName(String soundName) {
         for (Sound sound : allSounds) {
             if (sound.getName().equals(soundName)) {
+                return sound;
+            }
+        }
+        return null;
+    }
+
+    public Sound findSoundById(String soundId) {
+        for (Sound sound : allSounds) {
+            if (sound.getId().equals(soundId)) {
                 return sound;
             }
         }
@@ -388,24 +398,25 @@ public class MainActivity extends AppCompatActivity {
         updateItemAppearance(sound);
         audioManager.downloadSound(sound, new AudioManager.DownloadCallback() {
             @Override
-            public void onDownloadProgress(String soundName, int progress) {
-                updateSoundDownloadProgress(soundName, progress);
-                Log.d("DownloadProgress", soundName + ": " + progress + "%");
+            public void onDownloadProgress(String soundId, int progress) {
+                updateSoundDownloadProgress(soundId, progress);
+                Log.d("DownloadProgress", soundId + ": " + progress + "%");
             }
 
             @Override
-            public void onDownloadComplete(String soundName, String localPath) {
-                Sound currentSound = soundMap.get(soundName);
+            public void onDownloadComplete(String soundId, String localPath) {
+                Sound currentSound = soundMap.get(soundId);
                 if (currentSound != null) {
                     currentSound.setLocalPath(localPath);
                 }
-                updateSoundDownloadProgress(soundName, 100);
-                showToast(soundName + " دانلود شد");
+                updateSoundDownloadProgress(soundId, 100);
+                showToast(findSoundById(soundId).getName()
+                        + " دانلود شد");
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        updateSoundDownloadProgress(soundName, 100);
+                        updateSoundDownloadProgress(soundId, 100);
                         if (currentSound != null) {
                             if(sound.isMusicGroup()) {
                                 sound.setSelected(true);
@@ -418,13 +429,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onDownloadError(String soundName, String error) {
-                Sound currentSound = soundMap.get(soundName);
+            public void onDownloadError(String soundId, String error) {
+                Sound currentSound = soundMap.get(soundId);
                 if (currentSound != null) {
                     currentSound.setSelected(false);
                 }
-                updateSoundDownloadProgress(soundName, 0);
-                showToast("خطا در دانلود " + soundName + ": " + error);
+                updateSoundDownloadProgress(soundId, 0);
+                showToast("خطا در دانلود " + soundId + ": " + error);
             }
         });
     }
@@ -433,10 +444,10 @@ public class MainActivity extends AppCompatActivity {
         sound.setSelected(true);
         audioManager.playSound(sound, sound.getVolume(), new AudioManager.PlaybackCallback() {
             @Override
-            public void onPlaybackStarted(String soundName) {
-                playingStatus.put(soundName, true);
+            public void onPlaybackStarted(String soundId) {
+                playingStatus.put(soundId, true);
                 updateAllItemsAppearance();
-                Log.d("Playback", "Playback started after download: " + soundName);
+                Log.d("Playback", "Playback started after download: " + soundId);
 
                 // اگر آهنگ music است، ایندکس فعلی را تنظیم کن
                 if (sound.isMusicGroup()) {
@@ -446,15 +457,15 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onPlaybackStopped(String soundName) {
-                playingStatus.put(soundName, false);
+            public void onPlaybackStopped(String soundId) {
+                playingStatus.put(soundId, false);
                 updateAllItemsAppearance();
             }
 
             @Override
-            public void onPlaybackError(String soundName, String error) {
-                playingStatus.put(soundName, false);
-                showToast("خطا در پخش " + soundName + ": " + error);
+            public void onPlaybackError(String soundId, String error) {
+                playingStatus.put(soundId, false);
+                showToast("خطا در پخش " + soundId + ": " + error);
                 updateAllItemsAppearance();
             }
         });
@@ -462,35 +473,35 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void toggleSoundPlayback(Sound sound) {
-        String soundName = sound.getName();
+        String soundId = sound.getId();
 
         if (sound.getAudioUrl() == null || sound.getAudioUrl().isEmpty()) {
-            showToast("آهنگ " + soundName + " در دسترس نیست");
+            showToast("آهنگ " + soundId + " در دسترس نیست");
             return;
         }
 
-        if (isSoundPlaying(soundName)) {
+        if (isSoundPlaying(soundId)) {
             // توقف پخش
             audioManager.stopSound(sound);
-            playingStatus.put(soundName, false);
+            playingStatus.put(soundId, false);
             sound.setSelected(false);
             updateAllItemsAppearance();
         } else {
             if (!audioManager.isSoundDownloaded(sound)) {
-                updateSoundDownloadProgress(soundName, 5);
+                updateSoundDownloadProgress(soundId, 5);
                 startDownloadWithProgress(sound);
             } else {
                 // برای آهنگ‌های music، اگر در حال پخش هستیم، فقط به لیست اضافه کن
                 if (sound.isMusicGroup() && getCurrentlyPlayingMusic() != null && !isAutoPlayingNext) {
                     // آهنگ دیگری در حال پخش است، فقط لیست را به‌روزرسانی کن
                     //updateMusicPlaylist();
-                    showToast(sound.getName() + " به لیست پخش اضافه شد");
+                    //showToast(sound.getName() + " به لیست پخش اضافه شد");
                 } else {
                     // هیچ آهنگی در حال پخش نیست یا این پخش خودکار است، پس پخش کن
                     audioManager.playSound(sound, sound.getVolume(), new AudioManager.PlaybackCallback() {
                         @Override
-                        public void onPlaybackStarted(String soundName) {
-                            playingStatus.put(soundName, true);
+                        public void onPlaybackStarted(String soundId) {
+                            playingStatus.put(soundId, true);
                             sound.setSelected(true);
                             updateAllItemsAppearance();
 
@@ -502,15 +513,15 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         @Override
-                        public void onPlaybackStopped(String soundName) {
-                            playingStatus.put(soundName, false);
+                        public void onPlaybackStopped(String soundId) {
+                            playingStatus.put(soundId, false);
                             updateAllItemsAppearance();
                         }
 
                         @Override
-                        public void onPlaybackError(String soundName, String error) {
-                            playingStatus.put(soundName, false);
-                            showToast("خطا در پخش " + soundName + ": " + error);
+                        public void onPlaybackError(String soundId, String error) {
+                            playingStatus.put(soundId, false);
+                            showToast("خطا در پخش " + soundId + ": " + error);
                             updateAllItemsAppearance();
                         }
                     });
@@ -519,8 +530,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public boolean isSoundPlaying(String soundName) {
-        return playingStatus.containsKey(soundName) && playingStatus.get(soundName);
+    public boolean isSoundPlaying(String soundId) {
+        return playingStatus.containsKey(soundId) && playingStatus.get(soundId);
     }
 
     // متد برای پخش آهنگ music بعدی
@@ -554,7 +565,7 @@ public class MainActivity extends AppCompatActivity {
 
             // آهنگ بعدی را پخش کن
             Sound nextSound = musicPlaylist.get(currentMusicIndex);
-            if (!isSoundPlaying(nextSound.getName())) {
+            if (!isSoundPlaying(nextSound.getId())) {
                 toggleSoundPlayback(nextSound);
             }
         } finally {
@@ -586,7 +597,7 @@ public class MainActivity extends AppCompatActivity {
 
             // آهنگ بعدی را پخش کن
             Sound nextSound = musicPlaylist.get(currentMusicIndex);
-            if (!isSoundPlaying(nextSound.getName())) {
+            if (!isSoundPlaying(nextSound.getId())) {
                 toggleSoundPlayback(nextSound);
             }
         } finally {
@@ -630,7 +641,7 @@ public class MainActivity extends AppCompatActivity {
         if (musicPlaylist.contains(sound)) return; // جلوگیری از اضافه کردن تکراری
         musicPlaylist.add(sound);
 
-        if (musicPlaylist.size()==1 && !isSoundPlaying(sound.getName())) {
+        if (musicPlaylist.size()==1 && !isSoundPlaying(sound.getId())) {
             if (musicPlaylist.isEmpty() || getCurrentlyPlayingMusic() == null) {
                 toggleSoundPlayback(sound);
             }
@@ -641,9 +652,9 @@ public class MainActivity extends AppCompatActivity {
     // حذف از لیست پخش
     private void removeFromPlaylist(Sound sound) {
         if (!sound.isMusicGroup()) return;
-        if (isSoundPlaying(sound.getName())) {
+        if (isSoundPlaying(sound.getId())) {
             audioManager.stopSound(sound);
-            playingStatus.put(sound.getName(), false);
+            playingStatus.put(sound.getId(), false);
             if(musicPlaylist.size()>1) playNextMusicTrack(sound);
         }
         musicPlaylist.remove(sound);
@@ -653,7 +664,7 @@ public class MainActivity extends AppCompatActivity {
     // متد برای پیدا کردن آهنگ music در حال پخش
     private Sound getCurrentlyPlayingMusic() {
         for (Sound sound : musicPlaylist) {
-            if (isSoundPlaying(sound.getName())) {
+            if (isSoundPlaying(sound.getId())) {
                 return sound;
             }
         }
@@ -665,7 +676,7 @@ public class MainActivity extends AppCompatActivity {
         if (!deselectedSound.isMusicGroup()) return;
 
         // اگر آهنگی که آنسلکت شده در حال پخش است، آن را متوقف کن و آهنگ بعدی را پخش کن
-        if (isSoundPlaying(deselectedSound.getName())) {
+        if (isSoundPlaying(deselectedSound.getId())) {
             audioManager.stopSound(deselectedSound);
 
             // لیست پخش را به‌روزرسانی کن
@@ -701,7 +712,7 @@ public class MainActivity extends AppCompatActivity {
     private void playAllSounds() {
         // اول همه صداهای غیر music را پخش کن
         for (Sound sound : allSounds) {
-            if (sound.isSelected() && !isSoundPlaying(sound.getName()) && !sound.isMusicGroup()) {
+            if (sound.isSelected() && !isSoundPlaying(sound.getId()) && !sound.isMusicGroup()) {
                 toggleSoundPlayback(sound);
             }
         }
@@ -711,7 +722,7 @@ public class MainActivity extends AppCompatActivity {
         if (!musicPlaylist.isEmpty() && getCurrentlyPlayingMusic() == null) {
             //currentMusicIndex = 0;
             Sound selectedMusic = musicPlaylist.get(currentMusicIndex);
-            if (!isSoundPlaying(selectedMusic.getName())) {
+            if (!isSoundPlaying(selectedMusic.getId())) {
                 toggleSoundPlayback(selectedMusic);
             }
         }
@@ -723,7 +734,7 @@ public class MainActivity extends AppCompatActivity {
         audioManager.stopAllSounds();
         for (Sound sound:allSounds) {
             if(sound.isSelected())
-            playingStatus.put(sound.getName(), false);
+            playingStatus.put(sound.getId(), false);
         }
         //playingStatus.clear();
         //musicPlaylist.clear();
@@ -763,6 +774,10 @@ public class MainActivity extends AppCompatActivity {
         if (soundAdapter != null) {
             soundAdapter.notifyDataSetChanged();
         }
+        if(mixedAdapter !=null)
+        {
+            mixedAdapter.notifyDataSetChanged();
+        }
         updatePlayPauseAppearance();
     }
 
@@ -770,7 +785,7 @@ public class MainActivity extends AppCompatActivity {
 
         int position = -1;
         for (int i = 0; i < filteredSounds.size(); i++) {
-            if (filteredSounds.get(i).getName().equals(sound.getName())) {
+            if (filteredSounds.get(i).getId().equals(sound.getId())) {
                 position = i;
                 break;
             }
@@ -885,6 +900,7 @@ public class MainActivity extends AppCompatActivity {
         allSounds.add(new Sound("nature", "نهنگ", "https://img.icons8.com/ios-filled/50/FFFFFF/whale.png", baseUrl + "nature/whale.mp3", 10, false, false));
         allSounds.add(new Sound("nature", "باد", "https://img.icons8.com/ios-filled/50/FFFFFF/wind.png", baseUrl + "nature/wind.mp3", 10, false, false));
         allSounds.add(new Sound("nature", "گرگ", "https://img.icons8.com/ios-filled/50/FFFFFF/wolf.png", baseUrl + "nature/wolf.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "آب روان", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_water_flow.mp3", 50, false, false));
 
 // موسیقی
         allSounds.add(new Sound("music", "نوازش فرشته ای", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_an_angles_caress.mp3", 50, false, false));
@@ -894,7 +910,6 @@ public class MainActivity extends AppCompatActivity {
         allSounds.add(new Sound("music", "نیمه شب نیلی", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_midnight_blue.mp3", 50, false, false));
         allSounds.add(new Sound("music", "آرام و آسوده", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_safe_and_sound.mp3", 50, false, false));
         allSounds.add(new Sound("music", "سایه روشن های شفق", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_twilight_fades.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "آب روان", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_water_flow.mp3", 50, false, false));
         allSounds.add(new Sound("music", "جهانی دور", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_worlds_away.mp3", 50, false, false));
 
         allSounds.add(new Sound("music", "پاییز", "https://img.icons8.com/ios-filled/50/FFFFFF/autumn.png", baseUrl + "music/brian_crain/brian_autumn.mp3", 50, false, false));
@@ -1045,28 +1060,52 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onMixedClick(Mixed mixed) {
                 List<Mixed.MixedSound> mixedSounds= mixed.getSounds();
+                stopAllSounds();
+                for (Sound _sound : allSounds) {
+                    _sound.setSelected(false);
+                }
+                playingStatus.clear();
+                musicPlaylist.clear();
+                updateAllItemsAppearance();
                 if(mixedPlaying)
                 {
-                    stopAllSounds();
-                    playingStatus.clear();
-                    for (Sound _sound : allSounds) {
-                        _sound.setSelected(false);
-                    }
+                    boolean returnAfterStop=false;
+                    if(isMixedPlaying(mixed.getId()))returnAfterStop=true;
+                    mixedPlayingStatus.clear();
+                    updateAllItemsAppearance();
+                    if(returnAfterStop)return;
                 }
                 for (Mixed.MixedSound mixedSound:mixedSounds) {
                     for (Sound sound : allSounds) {
-                        if (sound.getName().equals(mixedSound.getSoundName())) {
+
+                        if (sound.getId().equals(mixedSound.getSoundId())) {
                             if(sound!=null) {
-                                if (!playingStatus.containsKey(sound.getName()) || !playingStatus.get(sound.getName())) {
-                                    toggleSoundPlayback(sound);
+                                if (!playingStatus.containsKey(sound.getId()) || !playingStatus.get(sound.getId())) {
+                                    if (sound.isMusicGroup() ) {
+                                        if (!audioManager.isSoundDownloaded(sound)) {
+                                            updateSoundDownloadProgress(sound.getId(), 5);
+                                            startDownloadWithProgress(sound);
+                                            sound.setSelected(true);
+                                        }else {
+                                            addToPlaylist(sound);
+                                            updateItemAppearance(sound);
+                                            //showToast(sound.getName() + " به لیست پخش اضافه شد");
+                                        }
+                                    }else {
+                                        toggleSoundPlayback(sound);
+                                    }
+                                    mixedPlayingStatus.put(mixed.getId(),true);
                                     mixedPlaying=true;
+                                    updateAllItemsAppearance();
                                 }else {
                                     stopAllSounds();
                                     playingStatus.clear();
                                     for (Sound _sound : allSounds) {
                                         _sound.setSelected(false);
                                     }
+                                    mixedPlayingStatus.clear();
                                     mixedPlaying=false;
+                                    updateAllItemsAppearance();
                                     return;
                                 }
                             }
@@ -1107,7 +1146,8 @@ public class MainActivity extends AppCompatActivity {
         beachMix.addSound(new Mixed.MixedSound("دریا", "sea", 70, 0, 1800, true));
         beachMix.addSound(new Mixed.MixedSound("مرغ دریایی", "seagull", 40, 30, 300, false));
         beachMix.addSound(new Mixed.MixedSound("باد", "wind", 30, 0, 1800, true));
-        beachMix.addSound(new Mixed.MixedSound("آب روان", "dg_water_flow", 45, 0, 1800, false));
+        beachMix.addSound(new Mixed.MixedSound("آب روان", "dg_water_flow", 35, 0, 400, false));
+        beachMix.addSound(new Mixed.MixedSound("رهروی در سرزمین خواب", "dg_drifting_in_dreamland", 45, 0, 1800, false));
         allMixes.add(beachMix);
 
         Mixed forestMix = new Mixed("2", "جنگل بارانی",
@@ -1135,7 +1175,8 @@ public class MainActivity extends AppCompatActivity {
         lakeMix.addSound(new Mixed.MixedSound("آب", "brian_water", 55, 0, 1800, false));
         lakeMix.addSound(new Mixed.MixedSound("قورباغه", "frog", 35, 45, 180, false));
         lakeMix.addSound(new Mixed.MixedSound("جیرجیرک", "cricket", 30, 90, 240, true));
-        lakeMix.addSound(new Mixed.MixedSound("آب روان", "dg_water_flow", 40, 0, 1800, false));
+        lakeMix.addSound(new Mixed.MixedSound("آب روان", "dg_water_flow", 30, 0, 300 , false));
+        lakeMix.addSound(new Mixed.MixedSound("رقص پروانه", "yanni_butterfly_dance", 45, 0, 1800, false));
         allMixes.add(lakeMix);
 
         Mixed waterfallMix = new Mixed("5", "آبشار خروشان",
@@ -1279,7 +1320,7 @@ public class MainActivity extends AppCompatActivity {
         rainforestMix.addSound(new Mixed.MixedSound("جنگل", "forest", 60, 0, 1800, true));
         rainforestMix.addSound(new Mixed.MixedSound("پرنده", "bird", 35, 45, 180, false));
         rainforestMix.addSound(new Mixed.MixedSound("باران", "rain", 50, 0, 1800, true));
-        rainforestMix.addSound(new Mixed.MixedSound("باران عشق", "rain_of_love", 50, 0, 1800, false));
+        rainforestMix.addSound(new Mixed.MixedSound("سونا", "sg_sona", 50, 0, 1800, false));
         allMixes.add(rainforestMix);
 
         mixedAdapter.updateList(allMixes);

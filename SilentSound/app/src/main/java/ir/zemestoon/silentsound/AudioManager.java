@@ -7,6 +7,8 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -71,15 +73,15 @@ public class AudioManager {
     }
 
     public interface DownloadCallback {
-        void onDownloadProgress(String soundName, int progress);
-        void onDownloadComplete(String soundName, String localPath);
-        void onDownloadError(String soundName, String error);
+        void onDownloadProgress(String soundId, int progress);
+        void onDownloadComplete(String soundId, String localPath);
+        void onDownloadError(String soundId, String error);
     }
 
     public interface PlaybackCallback {
-        void onPlaybackStarted(String soundName);
-        void onPlaybackStopped(String soundName);
-        void onPlaybackError(String soundName, String error);
+        void onPlaybackStarted(String soundId);
+        void onPlaybackStopped(String soundId);
+        void onPlaybackError(String soundId, String error);
     }
 
     public interface MusicPlaybackCallback {
@@ -180,7 +182,7 @@ public class AudioManager {
         String soundKey = getSoundKey(sound);
 
         if (isSoundDownloaded(sound)) {
-            runOnUiThread(() -> callback.onDownloadComplete(sound.getName(), getLocalPath(soundKey)));
+            runOnUiThread(() -> callback.onDownloadComplete(sound.getId(), getLocalPath(soundKey)));
             return;
         }
 
@@ -199,7 +201,7 @@ public class AudioManager {
                     runOnUiThread(() -> {
                         DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
                         if (currentCallback != null) {
-                            currentCallback.onDownloadError(sound.getName(), "Audio URL is empty");
+                            currentCallback.onDownloadError(sound.getId(), "Audio URL is empty");
                         }
                     });
                     return;
@@ -208,7 +210,7 @@ public class AudioManager {
                 // Encode برای URL هایی که فاصله یا کاراکتر خاص دارند
                 audioUrl = audioUrl.replace(" ", "%20");
 
-                Log.d(TAG, "Starting download: " + sound.getName() + " from: " + audioUrl);
+                Log.d(TAG, "Starting download: " + sound.getId() + " from: " + audioUrl);
 
                 URL url = new URL(audioUrl);
                 connection = (HttpURLConnection) url.openConnection();
@@ -222,7 +224,7 @@ public class AudioManager {
                     runOnUiThread(() -> {
                         DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
                         if (currentCallback != null) {
-                            currentCallback.onDownloadError(sound.getName(), "Server returned HTTP " + responseCode);
+                            currentCallback.onDownloadError(sound.getId(), "Server returned HTTP " + responseCode);
                         }
                     });
                     return;
@@ -261,7 +263,7 @@ public class AudioManager {
                             runOnUiThread(() -> {
                                 DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
                                 if (currentCallback != null) {
-                                    currentCallback.onDownloadProgress(sound.getName(), progress);
+                                    currentCallback.onDownloadProgress(sound.getId(), progress);
                                 }
                             });
                         }
@@ -280,13 +282,13 @@ public class AudioManager {
                     downloadStatus.put(soundKey, true);
                     saveDownloadStatus(soundKey);
 
-                    Log.d(TAG, "Download completed successfully: " + sound.getName() +
+                    Log.d(TAG, "Download completed successfully: " + sound.getId() +
                             ", size: " + outputFile.length() + " bytes");
 
                     runOnUiThread(() -> {
                         DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
                         if (currentCallback != null) {
-                            currentCallback.onDownloadComplete(sound.getName(), outputFile.getAbsolutePath());
+                            currentCallback.onDownloadComplete(sound.getId(), outputFile.getAbsolutePath());
                         }
                         // حالا می‌تونیم callback رو پاک کنیم
                         downloadCallbacks.remove(soundKey);
@@ -297,18 +299,18 @@ public class AudioManager {
                     runOnUiThread(() -> {
                         DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
                         if (currentCallback != null) {
-                            currentCallback.onDownloadError(sound.getName(), "Downloaded file is incomplete or corrupted");
+                            currentCallback.onDownloadError(sound.getId(), "Downloaded file is incomplete or corrupted");
                         }
                         downloadCallbacks.remove(soundKey);
                     });
                 }
 
             } catch (Exception e) {
-                Log.e(TAG, "Download error for " + sound.getName() + ": " + e.getMessage(), e);
+                Log.e(TAG, "Download error for " + sound.getId() + ": " + e.getMessage(), e);
                 runOnUiThread(() -> {
                     DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
                     if (currentCallback != null) {
-                        currentCallback.onDownloadError(sound.getName(), e.getMessage());
+                        currentCallback.onDownloadError(sound.getId(), e.getMessage());
                     }
                     downloadCallbacks.remove(soundKey);
                 });
@@ -323,7 +325,7 @@ public class AudioManager {
                 downloadProgressMap.remove(soundKey);
 
                 // لاگ برای دیباگ
-                Log.d(TAG, "Finally block executed for: " + sound.getName() +
+                Log.d(TAG, "Finally block executed for: " + sound.getId() +
                         ", Callback exists: " + downloadCallbacks.containsKey(soundKey));
             }
         });
@@ -343,22 +345,22 @@ public class AudioManager {
                 if (!isSoundDownloaded(sound)) {
                     downloadSound(sound, new DownloadCallback() {
                         @Override
-                        public void onDownloadProgress(String soundName, int progress) {
+                        public void onDownloadProgress(String soundId, int progress) {
                             // نمایش progress دانلود
-                            Log.d(TAG, "Download progress for " + soundName + ": " + progress + "%");
+                            Log.d(TAG, "Download progress for " + soundId + ": " + progress + "%");
                         }
 
                         @Override
-                        public void onDownloadComplete(String soundName, String localPath) {
-                            Log.d(TAG, "Download complete, now playing: " + soundName);
+                        public void onDownloadComplete(String soundId, String localPath) {
+                            Log.d(TAG, "Download complete, now playing: " + soundId);
                             // بعد از دانلود، پخش کن
                             playDownloadedSound(sound, volume, callback);
                         }
 
                         @Override
-                        public void onDownloadError(String soundName, String error) {
-                            Log.e(TAG, "Download failed for " + soundName + ": " + error);
-                            runOnUiThread(() -> callback.onPlaybackError(soundName, "Download failed: " + error));
+                        public void onDownloadError(String soundId, String error) {
+                            Log.e(TAG, "Download failed for " + soundId + ": " + error);
+                            runOnUiThread(() -> callback.onPlaybackError(soundId, "Download failed: " + error));
                         }
                     });
                 } else {
@@ -366,7 +368,7 @@ public class AudioManager {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Play sound error: " + e.getMessage(), e);
-                runOnUiThread(() -> callback.onPlaybackError(sound.getName(), e.getMessage()));
+                runOnUiThread(() -> callback.onPlaybackError(sound.getId(), e.getMessage()));
             }
         });
     }
@@ -402,7 +404,7 @@ public class AudioManager {
                 downloadStatus.put(soundKey, false);
                 removeFromDownloadedSounds(soundKey);
 
-                runOnUiThread(() -> callback.onPlaybackError(sound.getName(), "File not found, please download again"));
+                runOnUiThread(() -> callback.onPlaybackError(sound.getId(), "File not found, please download again"));
                 return;
             }
 
@@ -444,7 +446,7 @@ public class AudioManager {
                 mediaPlayers.remove(soundKey);
                 unregisterSound(sound);
                 runOnUiThread(() -> {
-                    callback.onPlaybackStopped(sound.getName());
+                    callback.onPlaybackStopped(sound.getId());
 
                     // اگر از گروه music است، آهنگ بعدی را پخش کن
                     if (sound.isMusicGroup()) {
@@ -458,19 +460,19 @@ public class AudioManager {
                 unregisterSound(sound);
                 String errorMsg = "MediaPlayer error: " + what + ", extra: " + extra;
                 Log.e(TAG, errorMsg);
-                runOnUiThread(() -> callback.onPlaybackError(sound.getName(), errorMsg));
+                runOnUiThread(() -> callback.onPlaybackError(sound.getId(), errorMsg));
                 return false;
             });
 
             mediaPlayer.start();
             mediaPlayers.put(soundKey, mediaPlayer);
 
-            Log.d(TAG, "Playback started: " + sound.getName() + ", Looping: " + sound.isLoopingGroup());
-            runOnUiThread(() -> callback.onPlaybackStarted(sound.getName()));
+            Log.d(TAG, "Playback started: " + sound.getId() + ", Looping: " + sound.isLoopingGroup());
+            runOnUiThread(() -> callback.onPlaybackStarted(sound.getId()));
 
         } catch (Exception e) {
-            Log.e(TAG, "Playback error for " + sound.getName() + ": " + e.getMessage(), e);
-            runOnUiThread(() -> callback.onPlaybackError(sound.getName(), "Playback error: " + e.getMessage()));
+            Log.e(TAG, "Playback error for " + sound.getId() + ": " + e.getMessage(), e);
+            runOnUiThread(() -> callback.onPlaybackError(sound.getId(), "Playback error: " + e.getMessage()));
         }
     }
 
@@ -488,7 +490,7 @@ public class AudioManager {
                 if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                     mediaPlayer.stop();
                     mediaPlayer.release();
-                    Log.d(TAG, "Stopped music sound: " + sound.getName());
+                    Log.d(TAG, "Stopped music sound: " + sound.getId());
                 }
                 keysToRemove.add(soundKey);
             }
@@ -529,7 +531,7 @@ public class AudioManager {
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
                 mediaPlayer.release();
-                Log.d(TAG, "Stopped: " + sound.getName());
+                Log.d(TAG, "Stopped: " + sound.getId());
             }
             mediaPlayers.remove(soundKey);
         }
@@ -538,15 +540,32 @@ public class AudioManager {
 
     // توقف همه آهنگ‌ها
     public void stopAllSounds() {
-        for (MediaPlayer mediaPlayer : mediaPlayers.values()) {
-            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-                mediaPlayer.release();
+        try {
+            for (MediaPlayer mediaPlayer : mediaPlayers.values()) {
+                if (mediaPlayer != null){
+                    if(mediaPlayer.isPlaying()) {
+                        mediaPlayer.stop();
+                        mediaPlayer.release();
+                    }
+                }
             }
+            mediaPlayers.clear();
+            soundKeyToSoundMap.clear();
+            Log.d(TAG, "All sounds stopped");
+        }catch (Exception e){
+            try {
+                for (MediaPlayer mediaPlayer : mediaPlayers.values()) {
+                    if (mediaPlayer != null) {
+                        mediaPlayer.release();
+
+                    }
+                }
+                mediaPlayers.clear();
+                soundKeyToSoundMap.clear();
+            }catch (Exception e1){}
+            //Toast.makeText(context,"Error: "+e.getMessage(),Toast.LENGTH_LONG).show();
         }
-        mediaPlayers.clear();
-        soundKeyToSoundMap.clear();
-        Log.d(TAG, "All sounds stopped");
+
     }
 
 
@@ -588,9 +607,9 @@ public class AudioManager {
                     try {
                         float volumeLevel = volume / 100.0f;
                         mediaPlayer.setVolume(volumeLevel, volumeLevel);
-                        Log.d(TAG, "Volume updated for " + sound.getName() + ": " + volume + "%");
+                        Log.d(TAG, "Volume updated for " + sound.getId() + ": " + volume + "%");
                     } catch (Exception e) {
-                        Log.e(TAG, "Error updating volume for " + sound.getName() + ": " + e.getMessage());
+                        Log.e(TAG, "Error updating volume for " + sound.getId() + ": " + e.getMessage());
                     }
                 }
             }
@@ -644,7 +663,7 @@ public class AudioManager {
         if (deleted) {
             downloadStatus.put(soundKey, false);
             removeFromDownloadedSounds(soundKey);
-            Log.d(TAG, "Deleted: " + sound.getName());
+            Log.d(TAG, "Deleted: " + sound.getId());
         }
 
         return deleted;

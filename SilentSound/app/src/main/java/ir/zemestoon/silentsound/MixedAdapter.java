@@ -117,7 +117,7 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
             // کلیک روی دکمه پخش/توقف
             playPauseButton.setOnClickListener(v -> {
                 if (listener != null) {
-                    listener.onMixedPlayPause(mixedList.get(getAdapterPosition()));
+                    listener.onMixedClick(mixedList.get(getAdapterPosition()));
                 }
             });
         }
@@ -183,7 +183,7 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
             if (isMixedPlaying(mixed.getId())) {
                 itemView.setBackgroundResource(R.drawable.sound_item_background_playing);
                 selectionOverlay.setVisibility(View.VISIBLE);
-                nameTextView.setTextColor(Color.parseColor("#3B82F6"));
+                nameTextView.setTextColor(Color.parseColor("#aBe2F6"));
                 nameTextView.setTypeface(nameTextView.getTypeface(), Typeface.BOLD);
                 playPauseButton.setImageResource(R.drawable.ic_pause);
             } else if (mixed.isSelected()) {
@@ -212,7 +212,7 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
 
         private boolean checkAllSoundsDownloaded(Mixed mixed) {
             for (Mixed.MixedSound mixedSound : mixed.getSounds()) {
-                Sound sound = findSoundByName(mixedSound.getSoundName());
+                Sound sound = findSoundById(mixedSound.getSoundName());
                 if (sound != null && !audioManager.isSoundDownloaded(sound)) {
                     return false;
                 }
@@ -226,7 +226,7 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
 
             int downloadedCount = 0;
             for (Mixed.MixedSound mixedSound : mixed.getSounds()) {
-                Sound sound = findSoundByName(mixedSound.getSoundName());
+                Sound sound = findSoundById(mixedSound.getSoundId());
                 if (sound != null && audioManager.isSoundDownloaded(sound)) {
                     downloadedCount++;
                 }
@@ -238,6 +238,14 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
             // این متد باید به MainActivity دسترسی داشته باشد
             if (mainActivity != null) {
                 return mainActivity.findSoundByName(soundName);
+            }
+            return null;
+        }
+
+        private Sound findSoundById(String soundId) {
+            // این متد باید به MainActivity دسترسی داشته باشد
+            if (mainActivity != null) {
+                return mainActivity.findSoundById(soundId);
             }
             return null;
         }

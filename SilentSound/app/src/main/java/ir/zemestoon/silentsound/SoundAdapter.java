@@ -43,8 +43,8 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
         this.audioManager = AudioManager.getInstance(mainActivity);
     }
 
-    private boolean isSoundPlaying(String soundName) {
-        return mainActivity != null && mainActivity.isSoundPlaying(soundName);
+    private boolean isSoundPlaying(String soundId) {
+        return mainActivity != null && mainActivity.isSoundPlaying(soundId);
     }
     private int convertDpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
@@ -188,7 +188,7 @@ public class SoundAdapter extends RecyclerView.Adapter<SoundAdapter.SoundViewHol
 
 
             // **مدیریت ظاهر بر اساس وضعیت پخش و انتخاب - اصلاح شده**
-            if (isSoundPlaying(sound.getName())) {
+            if (isSoundPlaying(sound.getId())) {
                 // اگر در حال پخش است - حاشیه آبی
                 itemView.setBackgroundResource(R.drawable.sound_item_background_playing);
                 selectionOverlay.setVisibility(View.VISIBLE);
