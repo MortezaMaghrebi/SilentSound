@@ -271,9 +271,9 @@ public class MainActivity extends AppCompatActivity {
         // ست کردن تب انتخاب شده
         selectedTab.setBackgroundResource(R.drawable.tab_background_selected);
         TextView textView = (TextView) selectedTab.getChildAt(1);
-        textView.setTextColor(Color.parseColor("#3B82F6"));
+        textView.setTextColor(Color.parseColor("#ffffff"));
         ImageView imageView = (ImageView) selectedTab.getChildAt(0);
-        imageView.setColorFilter(Color.parseColor("#3B82F6"));
+        imageView.setColorFilter(Color.parseColor("#ffffff"));
 
         filterSoundsByGroup(tabName);
     }
@@ -900,7 +900,7 @@ public class MainActivity extends AppCompatActivity {
         allSounds.add(new Sound("nature", "نهنگ", "https://img.icons8.com/ios-filled/50/FFFFFF/whale.png", baseUrl + "nature/whale.mp3", 10, false, false));
         allSounds.add(new Sound("nature", "باد", "https://img.icons8.com/ios-filled/50/FFFFFF/wind.png", baseUrl + "nature/wind.mp3", 10, false, false));
         allSounds.add(new Sound("nature", "گرگ", "https://img.icons8.com/ios-filled/50/FFFFFF/wolf.png", baseUrl + "nature/wolf.mp3", 10, false, false));
-        allSounds.add(new Sound("nature", "آب روان", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_water_flow.mp3", 50, false, false));
+        allSounds.add(new Sound("nature", "آب روان", "https://img.icons8.com/ios-filled/50/FFFFFF/water.png", baseUrl + "music/dan_gibson/dg_water_flow.mp3", 50, false, false));
         //new sounds
         allSounds.add(new Sound("nature", "پرنده در باران", "https://img.icons8.com/ios-filled/50/FFFFFF/bird.png", baseUrl + "nature/bird_in_rain.mp3", 10, false, false));
         allSounds.add(new Sound("nature", "پرندگان پاییزی", "https://img.icons8.com/ios-filled/50/FFFFFF/hummingbird.png", baseUrl + "nature/birds_autumn.mp3", 10, false, false));
