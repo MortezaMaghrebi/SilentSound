@@ -901,8 +901,28 @@ public class MainActivity extends AppCompatActivity {
         allSounds.add(new Sound("nature", "باد", "https://img.icons8.com/ios-filled/50/FFFFFF/wind.png", baseUrl + "nature/wind.mp3", 10, false, false));
         allSounds.add(new Sound("nature", "گرگ", "https://img.icons8.com/ios-filled/50/FFFFFF/wolf.png", baseUrl + "nature/wolf.mp3", 10, false, false));
         allSounds.add(new Sound("nature", "آب روان", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_water_flow.mp3", 50, false, false));
+        //new sounds
+        allSounds.add(new Sound("nature", "پرنده در باران", "https://img.icons8.com/ios-filled/50/FFFFFF/bird.png", baseUrl + "nature/bird_in_rain.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "پرندگان پاییزی", "https://img.icons8.com/ios-filled/50/FFFFFF/hummingbird.png", baseUrl + "nature/birds_autumn.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "آواز پرندگان", "https://img.icons8.com/ios-filled/50/FFFFFF/bird.png", baseUrl + "nature/birds_singing.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "بلبل", "https://img.icons8.com/ios-filled/50/FFFFFF/bird.png", baseUrl + "nature/bulbul.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "جنگل تاریک", "https://img.icons8.com/ios-filled/50/FFFFFF/forest.png", baseUrl + "nature/dark_jungle.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "جنگل شب", "https://img.icons8.com/ios-filled/50/FFFFFF/forest.png", baseUrl + "nature/jungle_night.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "طبیعت ظهر", "https://img.icons8.com/ios-filled/50/FFFFFF/sun.png", baseUrl + "nature/nature_noon.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "طاووس", "https://img.icons8.com/ios-filled/50/FFFFFF/peacock.png", baseUrl + "nature/peacock.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "قطرات باران", "https://img.icons8.com/ios-filled/50/FFFFFF/rain.png", baseUrl + "nature/rain_drops.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "باران روی سقف ۲", "https://img.icons8.com/ios-filled/50/FFFFFF/rain.png", baseUrl + "nature/rain_on_roof2.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "رودخانه", "https://img.icons8.com/ios-filled/50/FFFFFF/river.png", baseUrl + "nature/river.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "دریای آرام", "https://img.icons8.com/ios-filled/50/FFFFFF/sea.png", baseUrl + "nature/sea_calm.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "دریای شب", "https://img.icons8.com/ios-filled/50/FFFFFF/sea.png", baseUrl + "nature/sea_night.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "امواج دریا", "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png", baseUrl + "nature/sea_waves.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "امواج آرام دریا ۲", "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png", baseUrl + "nature/sea_waves_calm2.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "امواج دریا با باد ملایم", "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png", baseUrl + "nature/sea_waves_light_wind.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "رعد و برق ۲", "https://img.icons8.com/ios-filled/50/FFFFFF/storm.png", baseUrl + "nature/thunder2.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "باد ۲", "https://img.icons8.com/ios-filled/50/FFFFFF/wind.png", baseUrl + "nature/wind2.mp3", 10, false, false));
 
-// موسیقی
+        // موسیقی
+        //dan gibson
         allSounds.add(new Sound("music", "نوازش فرشته ای", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_an_angles_caress.mp3", 50, false, false));
         allSounds.add(new Sound("music", "رهروی در سرزمین خواب", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_drifting_in_dreamland.mp3", 50, false, false));
         allSounds.add(new Sound("music", "نخستین ستاره افق", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_first_star_in_sky.mp3", 50, false, false));
@@ -911,7 +931,53 @@ public class MainActivity extends AppCompatActivity {
         allSounds.add(new Sound("music", "آرام و آسوده", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_safe_and_sound.mp3", 50, false, false));
         allSounds.add(new Sound("music", "سایه روشن های شفق", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_twilight_fades.mp3", 50, false, false));
         allSounds.add(new Sound("music", "جهانی دور", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/dan_gibson/dg_worlds_away.mp3", 50, false, false));
-
+        //kitaro
+        allSounds.add(new Sound("music", "کاروانسرا", "https://img.icons8.com/ios-filled/50/FFFFFF/k.png", baseUrl + "music/kitaro/kitaro_caravansary.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "آکوا", "https://img.icons8.com/ios-filled/50/FFFFFF/water.png", baseUrl + "music/kitaro/kitaro_aqua.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "عاشقانه", "https://img.icons8.com/ios-filled/50/FFFFFF/k.png", baseUrl + "music/kitaro/kitaro_romance.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "افق درخشان", "https://img.icons8.com/ios-filled/50/FFFFFF/sun.png", baseUrl + "music/kitaro/kitaro_shimmering_horizon.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "روح دریاچه", "https://img.icons8.com/ios-filled/50/FFFFFF/lake.png", baseUrl + "music/kitaro/kitaro_spirit_of_the_west_lake.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "فال نیک", "https://img.icons8.com/ios-filled/50/FFFFFF/lucky.png", baseUrl + "music/kitaro/kitaro_auspicious_omen.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "کاروان", "https://img.icons8.com/ios-filled/50/FFFFFF/caravan.png", baseUrl + "music/kitaro/kitaro_caravan.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "دکتر سان و چینگ لینگ", "https://img.icons8.com/ios-filled/50/FFFFFF/doctor.png", baseUrl + "music/kitaro/kitaro_dr_sun_and_ching_ling.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "کوی", "https://img.icons8.com/ios-filled/50/FFFFFF/carp.png", baseUrl + "music/kitaro/kitaro_koi.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "زیارت", "https://img.icons8.com/ios-filled/50/FFFFFF/pilgrimage.png", baseUrl + "music/kitaro/kitaro_pilgrimage.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "فواره مقدس", "https://img.icons8.com/ios-filled/50/FFFFFF/fountain.png", baseUrl + "music/kitaro/kitaro_sacred_fountain.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "جاده ابریشم", "https://img.icons8.com/ios-filled/50/FFFFFF/road.png", baseUrl + "music/kitaro/kitaro_silk_road.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "خواهران سونگ", "https://img.icons8.com/ios-filled/50/FFFFFF/sisters.png", baseUrl + "music/kitaro/kitaro_soong_sisters.mp3", 50, false, false));
+        //secret garden
+        allSounds.add(new Sound("music", "آداجیو", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/secret_garden/sg_adagio.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "همیشه آنجا", "https://img.icons8.com/ios-filled/50/FFFFFF/pin.png", baseUrl + "music/secret_garden/sg_always_there.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "آپاسیوناتا", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/secret_garden/sg_apassionata.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "کانتولونا", "https://img.icons8.com/ios-filled/50/FFFFFF/moon.png", baseUrl + "music/secret_garden/sg_cantoluna.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "شانونه", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/secret_garden/sg_chanonne.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "رویاگیر", "https://img.icons8.com/ios-filled/50/FFFFFF/dreamcatcher.png", baseUrl + "music/secret_garden/sg_dreamcatcher.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "رویای تو", "https://img.icons8.com/ios-filled/50/FFFFFF/swing.png", baseUrl + "music/secret_garden/sg_dreamed_of_you.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "دوئت", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/secret_garden/sg_duo.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "یخ‌زده در زمان", "https://img.icons8.com/ios-filled/50/FFFFFF/winter.png", baseUrl + "music/secret_garden/sg_fozen_in_time.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "موج‌های سبز", "https://img.icons8.com/ios-filled/50/FFFFFF/deezer.png", baseUrl + "music/secret_garden/sg_greenwaves.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "سرود امید", "https://img.icons8.com/ios-filled/50/FFFFFF/lullaby.png", baseUrl + "music/secret_garden/sg_hymn_to_hope.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "لوتوس", "https://img.icons8.com/ios-filled/50/FFFFFF/lotus.png", baseUrl + "music/secret_garden/sg_lotus.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "شب تاریک", "https://img.icons8.com/ios-filled/50/FFFFFF/midnight.png", baseUrl + "music/secret_garden/sg_morketid.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "حرکت", "https://img.icons8.com/ios-filled/50/FFFFFF/dancing.png", baseUrl + "music/secret_garden/sg_moving.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "قرن جدید", "https://img.icons8.com/ios-filled/50/FFFFFF/clock.png", baseUrl + "music/secret_garden/sg_new_century.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "نوكتورن", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/secret_garden/sg_nocturn.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "سادگی", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/secret_garden/sg_ode_to_simplicity.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "پروانه", "https://img.icons8.com/ios-filled/50/FFFFFF/butterfly.png", baseUrl + "music/secret_garden/sg_papillon.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "پاساكالیا", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/secret_garden/sg_passacaglia.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "پاستورال", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/secret_garden/sg_pastorale.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "شب مقدس", "https://img.icons8.com/ios-filled/50/FFFFFF/owl.png", baseUrl + "music/secret_garden/sg_sacred_night.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "پناهگاه", "https://img.icons8.com/ios-filled/50/FFFFFF/tent.png", baseUrl + "music/secret_garden/sg_sanctuary.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "باغ مخفی", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/secret_garden/sg_secret_garden.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "سرناد", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/secret_garden/sg_serenade.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "سیگما", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/secret_garden/sg_sigma.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "آهنگ خواب", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/secret_garden/sg_sleepsong.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "سونا", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/secret_garden/sg_sona.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "شب طوفانی", "https://img.icons8.com/ios-filled/50/FFFFFF/storm.png", baseUrl + "music/secret_garden/sg_stormy_night.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "رویا", "https://img.icons8.com/ios-filled/50/FFFFFF/unicorn.png", baseUrl + "music/secret_garden/sg_the_dream.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "بی‌خیالی", "https://img.icons8.com/ios-filled/50/FFFFFF/easy.png", baseUrl + "music/secret_garden/sg_without_care.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "سفر", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/secret_garden/sg_voyage.mp3", 50, false, false));
+        //brian crain
         allSounds.add(new Sound("music", "پاییز", "https://img.icons8.com/ios-filled/50/FFFFFF/autumn.png", baseUrl + "music/brian_crain/brian_autumn.mp3", 50, false, false));
         allSounds.add(new Sound("music", "زمین", "https://img.icons8.com/ios-filled/50/FFFFFF/globe.png", baseUrl + "music/brian_crain/brian_earth.mp3", 50, false, false));
         allSounds.add(new Sound("music", "آتش", "https://img.icons8.com/ios-filled/50/FFFFFF/campfire.png", baseUrl + "music/brian_crain/brian_fire.mp3", 50, false, false));
@@ -923,6 +989,7 @@ public class MainActivity extends AppCompatActivity {
         allSounds.add(new Sound("music", "آب", "https://img.icons8.com/ios-filled/50/FFFFFF/water.png", baseUrl + "music/brian_crain/brian_water.mp3", 50, false, false));
         allSounds.add(new Sound("music", "باد", "https://img.icons8.com/ios-filled/50/FFFFFF/wind.png", baseUrl + "music/brian_crain/brian_wind.mp3", 50, false, false));
         allSounds.add(new Sound("music", "زمستان", "https://img.icons8.com/ios-filled/50/FFFFFF/winter.png", baseUrl + "music/brian_crain/brian_winter.mp3", 50, false, false));
+        //naser cheshmazar
         allSounds.add(new Sound("music", "انتظار", "https://img.icons8.com/ios-filled/50/FFFFFF/hourglass.png", baseUrl + "music/cheshmazar/awaiting.mp3", 50, false, false));
         allSounds.add(new Sound("music", "آزادی", "https://img.icons8.com/ios-filled/50/FFFFFF/freedom.png", baseUrl + "music/cheshmazar/freedom.mp3", 50, false, false));
         allSounds.add(new Sound("music", "عشق پرشور", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/cheshmazar/passion_of_love.mp3", 50, false, false));
@@ -931,42 +998,7 @@ public class MainActivity extends AppCompatActivity {
         allSounds.add(new Sound("music", "خیزش", "https://img.icons8.com/ios-filled/50/FFFFFF/sunrise.png", baseUrl + "music/cheshmazar/rising.mp3", 50, false, false));
         allSounds.add(new Sound("music", "خواب", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/cheshmazar/sleep.mp3", 50, false, false));
         allSounds.add(new Sound("music", "دیدار", "https://img.icons8.com/ios-filled/50/FFFFFF/handshake.png", baseUrl + "music/cheshmazar/visit.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "آکوا", "https://img.icons8.com/ios-filled/50/FFFFFF/water.png", baseUrl + "music/kitaro/kitaro_aqua.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "کاروانسرا", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/kitaro/kitaro_caravansary.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "عاشقانه", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/kitaro/kitaro_romance.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "افق درخشان", "https://img.icons8.com/ios-filled/50/FFFFFF/sun.png", baseUrl + "music/kitaro/kitaro_shimmering_horizon.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "روح دریاچه", "https://img.icons8.com/ios-filled/50/FFFFFF/lake.png", baseUrl + "music/kitaro/kitaro_spirit_of_the_west_lake.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "آداجیو", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/secret_garden/sg_adagio.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "همیشه آنجا", "https://img.icons8.com/ios-filled/50/FFFFFF/pin.png", baseUrl + "music/secret_garden/sg_always_there.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "آپاسیوناتا", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/secret_garden/sg_apassionata.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "کانتولونا", "https://img.icons8.com/ios-filled/50/FFFFFF/moon.png", baseUrl + "music/secret_garden/sg_cantoluna.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "شانونه", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/secret_garden/sg_chanonne.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "رویاگیر", "https://img.icons8.com/ios-filled/50/FFFFFF/dreamcatcher.png", baseUrl + "music/secret_garden/sg_dreamcatcher.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "رویای تو", "https://img.icons8.com/ios-filled/50/FFFFFF/swing.png", baseUrl + "music/secret_garden/sg_dreamed_of_you.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "دوئت", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/secret_garden/sg_duo.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "یخ‌زده در زمان", "https://img.icons8.com/ios-filled/50/FFFFFF/winter.png", baseUrl + "music/secret_garden/sg_fozen_in_time.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "موج‌های سبز", "https://img.icons8.com/ios-filled/50/FFFFFF/deezer.png", baseUrl + "music/secret_garden/sg_greenwaves.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "سرود امید", "https://img.icons8.com/ios-filled/50/FFFFFF/lullaby.png", baseUrl + "music/secret_garden/sg_hymn_to_hope.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "لوتوس", "https://img.icons8.com/ios-filled/50/FFFFFF/lotus.png", baseUrl + "music/secret_garden/sg_lotus.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "شب تاریک", "https://img.icons8.com/ios-filled/50/FFFFFF/midnight.png", baseUrl + "music/secret_garden/sg_morketid.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "حرکت", "https://img.icons8.com/ios-filled/50/FFFFFF/dancing.png", baseUrl + "music/secret_garden/sg_moving.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "قرن جدید", "https://img.icons8.com/ios-filled/50/FFFFFF/clock.png", baseUrl + "music/secret_garden/sg_new_century.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "نوكتورن", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/secret_garden/sg_nocturn.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "سادگی", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/secret_garden/sg_ode_to_simplicity.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "پروانه", "https://img.icons8.com/ios-filled/50/FFFFFF/butterfly.png", baseUrl + "music/secret_garden/sg_papillon.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "پاساكالیا", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/secret_garden/sg_passacaglia.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "پاستورال", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/secret_garden/sg_pastorale.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "شب مقدس", "https://img.icons8.com/ios-filled/50/FFFFFF/owl.png", baseUrl + "music/secret_garden/sg_sacred_night.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "پناهگاه", "https://img.icons8.com/ios-filled/50/FFFFFF/tent.png", baseUrl + "music/secret_garden/sg_sanctuary.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "باغ مخفی", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/secret_garden/sg_secret_garden.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "سرناد", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/secret_garden/sg_serenade.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "سیگما", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/secret_garden/sg_sigma.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "آهنگ خواب", "https://img.icons8.com/ios-filled/50/FFFFFF/sleep.png", baseUrl + "music/secret_garden/sg_sleepsong.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "سونا", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/secret_garden/sg_sona.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "شب طوفانی", "https://img.icons8.com/ios-filled/50/FFFFFF/storm.png", baseUrl + "music/secret_garden/sg_stormy_night.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "رویا", "https://img.icons8.com/ios-filled/50/FFFFFF/unicorn.png", baseUrl + "music/secret_garden/sg_the_dream.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "سفر", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/secret_garden/sg_voyage.mp3", 50, false, false));
-        allSounds.add(new Sound("music", "بی‌خیالی", "https://img.icons8.com/ios-filled/50/FFFFFF/easy.png", baseUrl + "music/secret_garden/sg_without_care.mp3", 50, false, false));
+        //yanni
         allSounds.add(new Sound("music", "رقص پروانه", "https://img.icons8.com/ios-filled/50/FFFFFF/butterfly.png", baseUrl + "music/yanni/yanni_butterfly_dance.mp3", 50, false, false));
         allSounds.add(new Sound("music", "فلیتسا", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "music/yanni/yanni_felitsa.mp3", 50, false, false));
         allSounds.add(new Sound("music", "در آینه", "https://img.icons8.com/ios-filled/50/FFFFFF/mirror.png", baseUrl + "music/yanni/yanni_in_the_mirror.mp3", 50, false, false));
@@ -974,8 +1006,30 @@ public class MainActivity extends AppCompatActivity {
         allSounds.add(new Sound("music", "سوگندهای مخفی", "https://img.icons8.com/ios-filled/50/FFFFFF/promise.png", baseUrl + "music/yanni/yanni_secret_vows.mp3", 50, false, false));
         allSounds.add(new Sound("music", "دوست قدیمی", "https://img.icons8.com/ios-filled/50/FFFFFF/children.png", baseUrl + "music/yanni/yanni_so_long_my_friend.mp3", 50, false, false));
         allSounds.add(new Sound("music", "به کسی که می‌داند", "https://img.icons8.com/ios-filled/50/FFFFFF/reading.png", baseUrl + "music/yanni/yanni_to_the_one_who_knows.mp3", 50, false, false));
+        // موسیقی AI
+        allSounds.add(new Sound("music", "نور شفابخش", "https://img.icons8.com/ios-filled/50/FFFFFF/sun.png", baseUrl + "music/ai/ai_healing_light.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "امواج شفابخش", "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png", baseUrl + "music/ai/ai_healing_waves.mp3", 50, false, false));
+        // موسیقی Chris Anes
+        allSounds.add(new Sound("music", "پژواک محیطی زمین", "https://img.icons8.com/ios-filled/50/FFFFFF/globe.png", baseUrl + "music/chris_anes/chris_anes_ambient_echoes_of_the_earth.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "سرزمین رویاها", "https://img.icons8.com/ios-filled/50/FFFFFF/dream.png", baseUrl + "music/chris_anes/chris_anes_ambient_land_of_dreams.mp3", 50, false, false));
+        // موسیقی David Tolk
+        allSounds.add(new Sound("music", "خاطرات", "https://img.icons8.com/ios-filled/50/FFFFFF/memories.png", baseUrl + "music/david_tolk/david_tolk_memories.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "دعا", "https://img.icons8.com/ios-filled/50/FFFFFF/pray.png", baseUrl + "music/david_tolk/david_tolk_pray.mp3", 50, false, false));
+        // موسیقی Dyathon
+        allSounds.add(new Sound("music", "پس از نیمه شب", "https://img.icons8.com/ios-filled/50/FFFFFF/midnight.png", baseUrl + "music/dyathon/dyathon_after_midnight.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "همه در دریا", "https://img.icons8.com/ios-filled/50/FFFFFF/sea.png", baseUrl + "music/dyathon/dyathon_all_at_sea.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "باغ کلمات", "https://img.icons8.com/ios-filled/50/FFFFFF/garden.png", baseUrl + "music/dyathon/dyathon_the_garden_of_words.mp3", 50, false, false));
+        // موسیقی Eamonn Watt
+        allSounds.add(new Sound("music", "یک بهار سرد", "https://img.icons8.com/ios-filled/50/FFFFFF/winter.png", baseUrl + "music/eamonn_watt/eamonn_watt_one_cold_spring.mp3", 50, false, false));
+        // موسیقی Paul Cardall
+        allSounds.add(new Sound("music", "شبی در پاریس", "https://img.icons8.com/ios-filled/50/FFFFFF/eiffel-tower.png", baseUrl + "music/paul_cardall/paul_cardall_an_evening_in_paris.mp3", 50, false, false));
+        // موسیقی Peder B. Helland
+        allSounds.add(new Sound("music", "گل سرخ من", "https://img.icons8.com/ios-filled/50/FFFFFF/rose.png", baseUrl + "music/peder_b_helland/peder_b_helland_my_rose.mp3", 50, false, false));// موسیقی Other
+        // موسیقی Other
+        allSounds.add(new Sound("music", "عمق جنگل", "https://img.icons8.com/ios-filled/50/FFFFFF/forest.png", baseUrl + "music/other/other_deep_in_the_forest.mp3", 50, false, false));
+        allSounds.add(new Sound("music", "جزر و مد متغیر", "https://img.icons8.com/ios-filled/50/FFFFFF/tides.png", baseUrl + "music/other/other_turning_tides.mp3", 50, false, false));
 
-// نویز
+        // نویز
         allSounds.add(new Sound("noise", "نویز قهوه‌ای", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "noise/brown_noise.mp3", 30, false, false));
         allSounds.add(new Sound("noise", "نویز سفید", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png", baseUrl + "noise/white_noise.mp3", 30, false, false));
 

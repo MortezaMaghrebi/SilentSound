@@ -4,32 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#0F172A">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvTitleMixes"
-        android:text="صداهای خواب"
-        android:fontFamily="@font/yekan"
-        android:gravity="center"
-        android:layout_marginTop="20dp"
-        android:textColor="#4080f0"
-        android:textSize="30dp"
-        android:layout_marginBottom="10dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tvTitleMixes"
         android:layout_above="@id/rlViewPagerButtons"
         android:orientation="horizontal">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/rlMixes">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvTitleMixes"
+                android:text="صداهای خواب"
+                android:fontFamily="@font/yekan"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:textColor="#4080f0"
+                android:textSize="30dp"
+                android:layout_marginBottom="10dp"/>
 
             <!-- RecyclerView for Sounds -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/mixesRecyclerView"
+                android:layout_below="@+id/tvTitleMixes"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="5dp"

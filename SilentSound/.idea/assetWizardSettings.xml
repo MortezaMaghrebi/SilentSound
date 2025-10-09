@@ -79,7 +79,8 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="C:\Users\Morteza\Pictures\unnamed.png" />
+                                                <entry key="imagePath" value="C:\Users\Morteza\Pictures\sleepsounds.jpg" />
+                                                <entry key="scalingPercent" value="86" />
                                               </map>
                                             </option>
                                           </PersistentState>
