@@ -1253,8 +1253,10 @@ public class MainActivity extends AppCompatActivity {
         darkSeaMix.addSound(new Mixed.MixedSound("رعد و برق", "thunder", 70, 10, 30, false));
         darkSeaMix.addSound(new Mixed.MixedSound("رعد و برق", "thunder", 80, 50, 70, false));
         darkSeaMix.addSound(new Mixed.MixedSound("رعد و برق", "thunder", 70, 120, 140, false));
+        darkSeaMix.addSound(new Mixed.MixedSound("رعد و برق", "thunder", 70, 190, 240, false));
         darkSeaMix.addSound(new Mixed.MixedSound("دریای شب", "sea_night", 70, 30, 60, true));
         darkSeaMix.addSound(new Mixed.MixedSound("کاروان", "kitaro_caravan", 100, 10, 1800, false));
+        darkSeaMix.addSound(new Mixed.MixedSound("شب طوفانی", "sg_stormy_night", 90, 40, 1800, false));
         darkSeaMix.addSound(new Mixed.MixedSound("امواج شفاف", "Alpha_Lucid_Waves", 25, 0, 1800, true));
        allMixes.add(darkSeaMix);
 
@@ -1268,7 +1270,7 @@ public class MainActivity extends AppCompatActivity {
         forestMix.addSound(new Mixed.MixedSound("بهار", "brian_spring", 50, 0, 1800, false));
         allMixes.add(forestMix);
 
-        Mixed mountainMix = new Mixed("5", "کوهستان مه‌آلود",
+        Mixed mountainMix = new Mixed("6", "کوهستان مه‌آلود",
                 baseUrl + "covers/mountain_peak_fog.jpg",
                 "صدای طبیعت بکر کوهستان");
         mountainMix.addSound(new Mixed.MixedSound("باد", "wind", 45, 0, 1800, true));
@@ -1277,7 +1279,7 @@ public class MainActivity extends AppCompatActivity {
         mountainMix.addSound(new Mixed.MixedSound("زمستان", "brian_winter", 50, 0, 1800, false));
         allMixes.add(mountainMix);
 
-        Mixed lakeMix = new Mixed("4", "دریاچه آرام",
+        Mixed lakeMix = new Mixed("7", "دریاچه آرام",
                 baseUrl + "covers/lake_reflection_water.jpg",
                 "انعکاس آرامش در آب‌های دریاچه");
         lakeMix.addSound(new Mixed.MixedSound("آب", "brian_water", 55, 0, 1800, false));
@@ -1287,7 +1289,7 @@ public class MainActivity extends AppCompatActivity {
         lakeMix.addSound(new Mixed.MixedSound("رقص پروانه", "yanni_butterfly_dance", 45, 0, 1800, false));
         allMixes.add(lakeMix);
 
-        Mixed waterfallMix = new Mixed("5", "آبشار خروشان",
+        Mixed waterfallMix = new Mixed("8", "آبشار خروشان",
                 baseUrl + "covers/waterfall_river_nature.jpg",
                 "انرژی بخش و نشاط آور");
         waterfallMix.addSound(new Mixed.MixedSound("آبشار", "waterfall", 65, 0, 1800, true));
@@ -1297,7 +1299,7 @@ public class MainActivity extends AppCompatActivity {
         allMixes.add(waterfallMix);
 
         // ترکیب‌های داستانی
-        Mixed divingStoryMix = new Mixed("6", "ماجرای غواصی",
+        Mixed divingStoryMix = new Mixed("9", "ماجرای غواصی",
                 baseUrl + "covers/scuba_diving_ocean.jpg",
                 "سفر به اعماق اقیانوس");
         divingStoryMix.addSound(new Mixed.MixedSound("زیر آب", "under_water", 60, 0, 1800, true));
@@ -1306,7 +1308,7 @@ public class MainActivity extends AppCompatActivity {
         divingStoryMix.addSound(new Mixed.MixedSound("افق درخشان", "kitaro_shimmering_horizon", 50, 0, 1800, false));
         allMixes.add(divingStoryMix);
 
-        Mixed boatStoryMix = new Mixed("7", "قایق سواری ماجراجویانه",
+        Mixed boatStoryMix = new Mixed("10", "قایق سواری ماجراجویانه",
                 baseUrl + "covers/wooden_boat_lake.jpg",
                 "ماجرای یک سفر دریایی");
         boatStoryMix.addSound(new Mixed.MixedSound("دریا", "sea", 65, 0, 1800, true));
@@ -1315,7 +1317,7 @@ public class MainActivity extends AppCompatActivity {
         boatStoryMix.addSound(new Mixed.MixedSound("سفر", "sg_voyage", 50, 0, 1800, false));
         allMixes.add(boatStoryMix);
 
-        Mixed cabinMix = new Mixed("8", "کلبه جنگلی",
+        Mixed cabinMix = new Mixed("11", "کلبه جنگلی",
                 baseUrl + "covers/log_cabin_forest.jpg",
                 "پناهگاهی در دل طبیعت");
         cabinMix.addSound(new Mixed.MixedSound("آتش هیزم", "firewood", 50, 0, 1800, true));
@@ -1324,7 +1326,7 @@ public class MainActivity extends AppCompatActivity {
         cabinMix.addSound(new Mixed.MixedSound("پناهگاه", "sg_sanctuary", 50, 0, 1800, false));
         allMixes.add(cabinMix);
 
-        Mixed lanternMix = new Mixed("9", "فانوس جادویی",
+        Mixed lanternMix = new Mixed("12", "فانوس جادویی",
                 baseUrl + "covers/old_lantern_light.jpg",
                 "ماجرای فانوس در شب تاریک");
         lanternMix.addSound(new Mixed.MixedSound("باد", "wind", 45, 0, 1800, true));
@@ -1333,7 +1335,7 @@ public class MainActivity extends AppCompatActivity {
         lanternMix.addSound(new Mixed.MixedSound("شب تاریک", "sg_morketid", 50, 0, 1800, false));
         allMixes.add(lanternMix);
 
-        Mixed chocolateMix = new Mixed("10", "کارخانه شکلات سازی",
+        Mixed chocolateMix = new Mixed("13", "کارخانه شکلات سازی",
                 baseUrl + "covers/chocolate_factory_sweet.jpg",
                 "ماجرای شیرین در کارخانه شکلات");
         chocolateMix.addSound(new Mixed.MixedSound("جریان آب", "water_flow", 50, 0, 1800, true));
@@ -1342,7 +1344,7 @@ public class MainActivity extends AppCompatActivity {
         chocolateMix.addSound(new Mixed.MixedSound("بی‌خیالی", "sg_without_care", 50, 0, 1800, false));
         allMixes.add(chocolateMix);
 
-        Mixed spiderMix = new Mixed("11", "خاله سوسکه",
+        Mixed spiderMix = new Mixed("14", "خاله سوسکه",
                 baseUrl + "covers/spider_web_dew.jpg",
                 "ماجرای خاله سوسکه در خانه قدیمی");
         spiderMix.addSound(new Mixed.MixedSound("باران روی پنجره", "rain_on_window", 50, 0, 1800, true));
@@ -1353,7 +1355,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Mixed goatMix = new Mixed("13", "بزغاله کوچولو",
+        Mixed goatMix = new Mixed("15", "بزغاله کوچولو",
                 baseUrl + "covers/goat_farm_animal.jpg",
                 "ماجراهای بزغاله در مزرعه");
         goatMix.addSound(new Mixed.MixedSound("چمنزار", "grassland", 50, 0, 1800, true));
@@ -1363,7 +1365,7 @@ public class MainActivity extends AppCompatActivity {
         allMixes.add(goatMix);
 
         // ترکیب‌های مدیتیشن و آرامش
-        Mixed meditationMix = new Mixed("14", "مدیتیشن عمیق",
+        Mixed meditationMix = new Mixed("16", "مدیتیشن عمیق",
                 baseUrl + "covers/yoga_meditation_peace.jpg",
                 "مناسب برای تمرین مدیتیشن و یوگا");
         meditationMix.addSound(new Mixed.MixedSound("نویز سفید", "white_noise", 40, 0, 1800, true));
@@ -1372,7 +1374,7 @@ public class MainActivity extends AppCompatActivity {
         meditationMix.addSound(new Mixed.MixedSound("مدیتیشن", "brian_earth", 50, 0, 1800, false));
         allMixes.add(meditationMix);
 
-        Mixed nightMix = new Mixed("15", "شب آرام",
+        Mixed nightMix = new Mixed("17", "شب آرام",
                 baseUrl + "covers/starry_night_sky.jpg",
                 "صدای طبیعت در یک شب آرام");
         nightMix.addSound(new Mixed.MixedSound("جیرجیرک", "cricket", 50, 0, 1800, true));
@@ -1381,7 +1383,7 @@ public class MainActivity extends AppCompatActivity {
         nightMix.addSound(new Mixed.MixedSound("نیمه شب نیلی", "dg_midnight_blue", 50, 0, 1800, false));
         allMixes.add(nightMix);
 
-        Mixed desertMix = new Mixed("16", "بیابان ستاره‌ها",
+        Mixed desertMix = new Mixed("18", "بیابان ستاره‌ها",
                 baseUrl + "covers/desert_sand_dunes.jpg",
                 "شبی آرام در دل بیابان");
         desertMix.addSound(new Mixed.MixedSound("باد", "wind", 50, 0, 1800, true));
@@ -1389,7 +1391,7 @@ public class MainActivity extends AppCompatActivity {
         desertMix.addSound(new Mixed.MixedSound("دیدار", "visit", 50, 0, 1800, false));
         allMixes.add(desertMix);
 
-        Mixed zenMix = new Mixed("17", "باغ ذن",
+        Mixed zenMix = new Mixed("19", "باغ ذن",
                 baseUrl + "covers/zen_garden_calm.jpg",
                 "آرامش در باغ ژاپنی");
         zenMix.addSound(new Mixed.MixedSound("جریان آب", "water_flow", 45, 0, 1800, true));
@@ -1398,7 +1400,7 @@ public class MainActivity extends AppCompatActivity {
         zenMix.addSound(new Mixed.MixedSound("لوتوس", "sg_lotus", 50, 0, 1800, false));
         allMixes.add(zenMix);
 
-        Mixed candleMix = new Mixed("18", "نور شمع",
+        Mixed candleMix = new Mixed("20", "نور شمع",
                 baseUrl + "covers/candle_light_relax.jpg",
                 "آرامش در نور شمع");
         candleMix.addSound(new Mixed.MixedSound("نویز قهوه‌ای", "brown_noise", 40, 0, 1800, true));
@@ -1406,7 +1408,7 @@ public class MainActivity extends AppCompatActivity {
         candleMix.addSound(new Mixed.MixedSound("خواب", "sleep", 50, 0, 1800, false));
         allMixes.add(candleMix);
 
-        Mixed tropicalMix = new Mixed("19", "ساحل گرمسیری",
+        Mixed tropicalMix = new Mixed("21", "ساحل گرمسیری",
                 baseUrl + "covers/tropical_beach_palm_trees.jpg",
                 "گرمای آفتاب و نسیم دریا");
         tropicalMix.addSound(new Mixed.MixedSound("دریا", "sea", 70, 0, 1800, true));
@@ -1415,7 +1417,7 @@ public class MainActivity extends AppCompatActivity {
         tropicalMix.addSound(new Mixed.MixedSound("عشق پرشور", "passion_of_love", 50, 0, 1800, false));
         allMixes.add(tropicalMix);
 
-        Mixed rainforestMix = new Mixed("20", "جنگل بارانی استوایی",
+        Mixed rainforestMix = new Mixed("22", "جنگل بارانی استوایی",
                 baseUrl + "covers/rainforest_jungle_plants.jpg",
                 "تنوع صوتی جنگل‌های بارانی");
         rainforestMix.addSound(new Mixed.MixedSound("جنگل", "forest", 60, 0, 1800, true));
