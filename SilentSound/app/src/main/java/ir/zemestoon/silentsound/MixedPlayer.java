@@ -39,13 +39,16 @@ public class MixedPlayer {
         time++;
         if(insideTask) return;
         insideTask=true;
-        mainActivity.mixedPlayingStatus.put(mixed.getId(), true);
-        mainActivity.mixedPlaying = true;
-        mainActivity.updateAllItemsAppearance();
+        if(!mainActivity.mixedPlayingStatus.containsKey(mixed.getId())) {
+            mainActivity.mixedPlayingStatus.put(mixed.getId(), true);
+            mainActivity.mixedPlaying = true;
+            mainActivity.updateAllItemsAppearance();
+        }
         //Task Codes Here
         for (Mixed.MixedSound sound:sounds) {
             if(time>mixed.getTotalDuration()){
                 mainActivity.StopAllSoundsAndMixes();
+                mainActivity.updateAllItemsAppearance();
             }else if(time>sound.getEndTime() && !sound.isPlaying())
             {
                 //noting... sound finished
@@ -53,10 +56,12 @@ public class MixedPlayer {
             {
                 //stop sound
                 StopMixedSound(sound);
+                mainActivity.updateAllItemsAppearance();
             }else if(time>sound.getStartTime()&&!sound.isPlaying())
             {
                 //play sound
                 PlayMixedSound(sound);
+                mainActivity.updateAllItemsAppearance();
             }
         }
         //Finish Task Codes
