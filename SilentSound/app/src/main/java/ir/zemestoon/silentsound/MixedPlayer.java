@@ -72,6 +72,7 @@ public class MixedPlayer {
         String soundId = mixedSound.getSoundId();
         Sound sound = mainActivity.findSoundById(soundId);
         if (sound != null) {
+            sound.setVolume(mixedSound.getVolume());
             if (!mainActivity.playingStatus.containsKey(sound.getId()) || !mainActivity.playingStatus.get(sound.getId())) {
                 if (sound.isMusicGroup()) {
                     if (!mainActivity.audioManager.isSoundDownloaded(sound)) {

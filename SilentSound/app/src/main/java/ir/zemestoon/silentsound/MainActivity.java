@@ -920,6 +920,10 @@ public class MainActivity extends AppCompatActivity {
         allSounds.add(new Sound("nature", "امواج دریا با باد ملایم", "https://img.icons8.com/ios-filled/50/FFFFFF/waves.png", baseUrl + "nature/sea_waves_light_wind.mp3", 10, false, false));
         allSounds.add(new Sound("nature", "رعد و برق ۲", "https://img.icons8.com/ios-filled/50/FFFFFF/storm.png", baseUrl + "nature/thunder2.mp3", 10, false, false));
         allSounds.add(new Sound("nature", "باد ۲", "https://img.icons8.com/ios-filled/50/FFFFFF/wind.png", baseUrl + "nature/wind2.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "پارو زدن", "https://img.icons8.com/ios_filled/50/FFFFFF/dinghy.png", baseUrl + "nature/oar.mp3", 10, false, false));
+        allSounds.add(new Sound("nature", "باد ملایم", "https://img.icons8.com/ios_filled/50/FFFFFF/wind.png", baseUrl + "nature/gentle_wind.mp3", 10, false, false));
+
+
 
         // موسیقی
         //dan gibson
@@ -1077,12 +1081,12 @@ public class MainActivity extends AppCompatActivity {
         allSounds.add(new Sound("wave", "راهب آب", "https://img.icons8.com/ios-filled/50/FFFFFF/water.png", baseUrl + "wave/Water_Monk.mp3.mp3", 40, false, false));
 
         allSounds.add(new Sound("story", "داستان چمنزار", "https://img.icons8.com/ios-filled/50/FFFFFF/tree.png",baseUrl + "story/story_grassland.mp3", 50, false, false));
+        allSounds.add(new Sound("story", "داستان قطب شمال", "https://img.icons8.com/ios-filled/50/FFFFFF/north.png",baseUrl + "story/story_north_pole.mp3", 50, false, false));
         allSounds.add(new Sound("story", "داستان غواصی", "https://img.icons8.com/ios-filled/50/FFFFFF/cliff.png","", 50, false, false));
         allSounds.add(new Sound("story", "داستان قایق سواری", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png","", 50, false, false));
         allSounds.add(new Sound("story", "داستان دریاچه", "https://img.icons8.com/ios-filled/50/FFFFFF/lake.png","", 50, false, false));
         allSounds.add(new Sound("story", "داستان بزغاله", "https://img.icons8.com/ios-filled/50/FFFFFF/music.png","", 50, false, false));
         allSounds.add(new Sound("story", "داستان کفش آهنی", "https://img.icons8.com/ios-filled/50/FFFFFF/iron.png","", 50, false, false));
-        allSounds.add(new Sound("story", "داستان قطب شمال", "https://img.icons8.com/ios-filled/50/FFFFFF/north.png","", 50, false, false));
         allSounds.add(new Sound("story", "خاله سوسکه", "https://img.icons8.com/ios-filled/50/FFFFFF/spider.png","", 50, false, false));
         allSounds.add(new Sound("story", "خاله پیرزن", "https://img.icons8.com/ios-filled/50/FFFFFF/old-woman.png","", 50, false, false));
         allSounds.add(new Sound("story", "کارخانه شکلات سازی", "https://img.icons8.com/ios-filled/50/FFFFFF/factory.png","", 50, false, false));
@@ -1209,13 +1213,14 @@ public class MainActivity extends AppCompatActivity {
         Mixed arcticMix = new Mixed("1", "ماجرای قطب شمال",
                 baseUrl + "covers/arctic_ice_landscape.jpg",
                 "سفر به سرزمین یخ‌ها");
-        arcticMix.addSound(new Mixed.MixedSound("باد", "wind2", 40, 0, 120, true));
+        arcticMix.addSound(new Mixed.MixedSound("باد", "wind2", 25, 0, 120, true));
         arcticMix.addSound(new Mixed.MixedSound("نهنگ", "whale", 36, 70, 110, true));
-        arcticMix.addSound(new Mixed.MixedSound("پناهگاه", "sg_sanctuary", 90, 0, 900, false)); // Secret Garden
-        arcticMix.addSound(new Mixed.MixedSound("نوازش فرشته ای", "dg_an_angles_caress", 100, 60, 900, false)); // Dan Gibson
-        arcticMix.addSound(new Mixed.MixedSound("رهروی در سرزمین خواب", "dg_drifting_in_dreamland", 80, 60, 900, false)); // Dan Gibson
-        arcticMix.addSound(new Mixed.MixedSound("آکوا", "kitaro_aqua", 80, 100, 900, false)); // Kitaro
-        arcticMix.addSound(new Mixed.MixedSound("امواج شفاف", "Alpha_Lucid_Waves", 60, 100, 1800, true));
+        arcticMix.addSound(new Mixed.MixedSound("پناهگاه", "sg_sanctuary", 80, 0, 900, false)); // Secret Garden
+        arcticMix.addSound(new Mixed.MixedSound("نوازش فرشته ای", "dg_an_angles_caress", 80, 60, 900, false)); // Dan Gibson
+        arcticMix.addSound(new Mixed.MixedSound("رهروی در سرزمین خواب", "dg_drifting_in_dreamland", 75, 60, 900, false)); // Dan Gibson
+        arcticMix.addSound(new Mixed.MixedSound("آکوا", "kitaro_aqua", 70, 90, 900, false)); // Kitaro
+        arcticMix.addSound(new Mixed.MixedSound("امواج شفاف", "Alpha_Lucid_Waves", 35, 100, 1800, true));
+        arcticMix.addSound(new Mixed.MixedSound("داستان قطب شمال", "story_north_pole", 100, 20, 955, false));
         allMixes.add(arcticMix);
 
         Mixed singleTreeMix = new Mixed("2", "تک درخت",
@@ -1262,12 +1267,23 @@ public class MainActivity extends AppCompatActivity {
 
         Mixed forestMix = new Mixed("5", "جنگل بارانی",
                 baseUrl + "covers/forest_trees_green_nature.jpg",
-                "تجربه جنگل در یک روز بارانی");
-        forestMix.addSound(new Mixed.MixedSound("جنگل", "forest", 60, 0, 1800, true));
-        forestMix.addSound(new Mixed.MixedSound("باران", "rain", 50, 0, 1800, true));
-        forestMix.addSound(new Mixed.MixedSound("پرنده", "bird", 30, 60, 400, false));
-        forestMix.addSound(new Mixed.MixedSound("رعد و برق", "thunder", 40, 120, 180, false));
-        forestMix.addSound(new Mixed.MixedSound("بهار", "brian_spring", 50, 0, 1800, false));
+                "تجربه جنگل در یک روز بارانی با امواج و موسیقی آرامش‌بخش");
+        // صداهای طبیعت
+        //forestMix.addSound(new Mixed.MixedSound("پرنده لون", "loon", 10, 0, 13, true));
+        forestMix.addSound(new Mixed.MixedSound("جنگل", "forest", 5, 0, 30, true));
+        forestMix.addSound(new Mixed.MixedSound("باران", "rain", 15, 0, 1800, true));
+        forestMix.addSound(new Mixed.MixedSound("پرنده", "bird", 10, 60, 400, false));
+        forestMix.addSound(new Mixed.MixedSound("پرنده ها", "birds", 10, 40, 100, false));
+        forestMix.addSound(new Mixed.MixedSound("رعد و برق", "thunder", 15, 120, 180, false));
+// موسیقی‌های آرامش‌بخش
+        forestMix.addSound(new Mixed.MixedSound("بهار", "brian_spring", 100, 20, 1800, false));
+        forestMix.addSound(new Mixed.MixedSound("رهروی در سرزمین خواب", "dg_drifting_in_dreamland", 100, 40, 900, false));
+        forestMix.addSound(new Mixed.MixedSound("شب طوفانی", "sg_stormy_night", 60, 50, 1800, false));
+        forestMix.addSound(new Mixed.MixedSound("نوازش فرشته‌ای", "dg_an_angles_caress", 70, 60, 600, false));
+        // انواع امواج موجود
+        forestMix.addSound(new Mixed.MixedSound("آلفا شفاف", "Alpha_Lucid_Waves", 15, 0, 1800, true));
+        forestMix.addSound(new Mixed.MixedSound("آلفا مدیتیشن", "Alpha_Meditation", 15, 60, 1800, true));
+        forestMix.addSound(new Mixed.MixedSound("مانترا آلفا-تتا", "Mantra_Alpha-Theta", 15, 120, 1800, true));
         allMixes.add(forestMix);
 
         Mixed mountainMix = new Mixed("6", "کوهستان مه‌آلود",
@@ -1308,13 +1324,19 @@ public class MainActivity extends AppCompatActivity {
         divingStoryMix.addSound(new Mixed.MixedSound("افق درخشان", "kitaro_shimmering_horizon", 50, 0, 1800, false));
         allMixes.add(divingStoryMix);
 
-        Mixed boatStoryMix = new Mixed("10", "قایق سواری ماجراجویانه",
+        Mixed boatStoryMix = new Mixed("10", "قایق سواری آرام",
                 baseUrl + "covers/wooden_boat_lake.jpg",
-                "ماجرای یک سفر دریایی");
-        boatStoryMix.addSound(new Mixed.MixedSound("دریا", "sea", 65, 0, 1800, true));
-        boatStoryMix.addSound(new Mixed.MixedSound("باد", "wind", 40, 0, 1800, true));
-        boatStoryMix.addSound(new Mixed.MixedSound("مرغ دریایی", "seagull", 30, 60, 200, false));
-        boatStoryMix.addSound(new Mixed.MixedSound("سفر", "sg_voyage", 50, 0, 1800, false));
+                "");
+        boatStoryMix.addSound(new Mixed.MixedSound("پارو زدن", "oar", 8, 60, 80, true));
+        boatStoryMix.addSound(new Mixed.MixedSound("باد ملایم", "gentle_wind", 25, 0, 1800, true));
+        boatStoryMix.addSound(new Mixed.MixedSound("مرغ دریایی", "seagull", 10, 60, 200, false));
+        boatStoryMix.addSound(new Mixed.MixedSound("مرغ دریایی", "seagull", 10, 0, 15, false));
+        boatStoryMix.addSound(new Mixed.MixedSound("مرغ دریایی", "seagull", 15, 40, 55, false));
+        boatStoryMix.addSound(new Mixed.MixedSound("به کسی که می داند", "yanni_to_the_one_who_knows", 90, 0, 1800, false));
+        boatStoryMix.addSound(new Mixed.MixedSound("همه در دریا", "dyathon_all_at_sea", 100, 40, 1800, true));
+        boatStoryMix.addSound(new Mixed.MixedSound("نوازش فرشته‌ای", "dg_an_angles_caress", 100, 60, 600, false)); // Dan Gibson
+        boatStoryMix.addSound(new Mixed.MixedSound("رهروی در سرزمین خواب", "dg_drifting_in_dreamland", 100, 80, 900, false)); // Dan Gibson
+        boatStoryMix.addSound(new Mixed.MixedSound("زندگی", "Living_150-158Hz", 15, 0, 180, true));
         allMixes.add(boatStoryMix);
 
         Mixed cabinMix = new Mixed("11", "کلبه جنگلی",
