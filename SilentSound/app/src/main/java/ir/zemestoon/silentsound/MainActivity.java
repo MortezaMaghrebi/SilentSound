@@ -1215,7 +1215,7 @@ public class MainActivity extends AppCompatActivity {
                 "سفر به سرزمین یخ‌ها");
         arcticMix.addSound(new Mixed.MixedSound("باد", "wind2", 25, 0, 120, true));
         arcticMix.addSound(new Mixed.MixedSound("نهنگ", "whale", 36, 70, 110, true));
-        arcticMix.addSound(new Mixed.MixedSound("پناهگاه", "sg_sanctuary", 80, 0, 900, false)); // Secret Garden
+        arcticMix.addSound(new Mixed.MixedSound("پناهگاه", "sg_sanctuary", 70, 0, 900, false)); // Secret Garden
         arcticMix.addSound(new Mixed.MixedSound("نوازش فرشته ای", "dg_an_angles_caress", 80, 60, 900, false)); // Dan Gibson
         arcticMix.addSound(new Mixed.MixedSound("رهروی در سرزمین خواب", "dg_drifting_in_dreamland", 75, 60, 900, false)); // Dan Gibson
         arcticMix.addSound(new Mixed.MixedSound("آکوا", "kitaro_aqua", 70, 90, 900, false)); // Kitaro

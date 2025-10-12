@@ -18,15 +18,39 @@ public class MixedPlayer {
         this.mixed = mixed;
         this.sounds = mixed.getSounds();
     }
-
+    boolean downloaded=false;
     public void startPlaying() {
         handler = new Handler(Looper.getMainLooper());
          time=0;
+        for (Mixed.MixedSound mixedSound:sounds) {
+            Sound sound = mainActivity.findSoundById(mixedSound.getSoundId());
+            if (sound != null) {
+                        if (!mainActivity.audioManager.isSoundDownloaded(sound)) {
+                            mainActivity.updateSoundDownloadProgress(sound.getId(), 5);
+                            mainActivity.startDownloadWithProgress(sound);
+                            }
+             }
+        }
         runnable = new Runnable() {
             @Override
             public void run() {
                 handler.postDelayed(runnable,1000);
-                task1s();
+                boolean notdownloaded = false;
+                if(!downloaded) {
+                    for (Mixed.MixedSound mixedSound : sounds) {
+                        Sound sound = mainActivity.findSoundById(mixedSound.getSoundId());
+                        if (sound != null) {
+                            if (!mainActivity.audioManager.isSoundDownloaded(sound)) {
+                                notdownloaded = true;
+                            }
+                        }
+                    }
+                }
+
+                if(!notdownloaded){
+                    downloaded=true;
+                    task1s();
+                }
             }
         };
         handler.postDelayed(runnable,1000);
