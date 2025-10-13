@@ -68,6 +68,37 @@ public class NetController {
         queue.add(getRequest);
     }
 
+    public  void  DownloadMixedList()  throws UnsupportedEncodingException {
+
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/SilentSound/refs/heads/main/mixedlist.txt";
+
+        // Variable to store the file content
+        final String[] fileContent = {""}; // Using array to allow modification in inner class
+
+        StringRequest getRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        int responselen = response.trim().length();
+                        int sllen = getMixedList().trim().length();
+                        if(!response.trim().equals(getMixedList().trim())) {
+                            setMixedList(response.trim());
+                            Toast.makeText(context,"لیست میکس ها آپدیت شد",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(context,"برای دریافت لیست میکس ها به اینترنت متصل شوید",Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+        queue.getCache().clear();
+        queue.add(getRequest);
+    }
+
     public void setSoundList(String soundList)
     {
         editor.putString("soundlist",soundList);
@@ -272,5 +303,17 @@ public class NetController {
                 "story,فانوس,lantern.png,,100,0,0\n" +
                 "story,کلبه آرامش,cabin.png,,100,0,0\n" +
                 "    ");
+    }
+
+    public void setMixedList(String mixedList)
+    {
+        editor.putString("mixedlist",mixedList);
+        editor.commit();
+    }
+
+    public String getMixedList()
+    {
+        String mixedList = prefs.getString("mixedlist","");
+        return prefs.getString("mixedlist","");
     }
 }
