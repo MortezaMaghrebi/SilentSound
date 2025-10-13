@@ -2,6 +2,7 @@ package ir.zemestoon.silentsound;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.media.midi.MidiSender;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -594,7 +595,8 @@ public class MainActivity extends AppCompatActivity {
                 // آهنگ بعدی را پیدا کن
                 currentMusicIndex = (currentIndex - 1) % musicPlaylist.size();
             }
-
+            if(currentMusicIndex<0) currentMusicIndex+=musicPlaylist.size();
+            if(currentMusicIndex>(musicPlaylist.size()-1))currentMusicIndex=musicPlaylist.size()-1;
             // آهنگ بعدی را پخش کن
             Sound nextSound = musicPlaylist.get(currentMusicIndex);
             if (!isSoundPlaying(nextSound.getId())) {
@@ -1138,9 +1140,11 @@ public class MainActivity extends AppCompatActivity {
                 stopAllSounds();
                 for (Sound _sound : allSounds) {
                     _sound.setSelected(false);
+
                 }
                 playingStatus.clear();
                 musicPlaylist.clear();
+                if(mixedPlayer!=null) mixedPlayer.Dispose();
                 updateAllItemsAppearance();
                 if(mixedPlaying)
                 {
@@ -1174,10 +1178,12 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     }
-
                 }
                 if(mixedPlayer!=null){
                     mixedPlayer.Dispose();
+                }
+                for (Mixed.MixedSound mixedSound:mixed.getSounds()) {
+                    mixedSound.setPlaying(false);
                 }
                 mixedPlayer= new MixedPlayer(MainActivity.this,mixed);
                 mixedPlayer.startPlaying();
