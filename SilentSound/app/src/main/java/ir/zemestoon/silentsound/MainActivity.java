@@ -888,18 +888,18 @@ public class MainActivity extends AppCompatActivity {
         String[] soundList = soundlist_str.split("\n");
         for (String soundstr:soundList) {
             String[] items = soundstr.split(",");
-            if(items.length==5)
+            if(items.length==7)
             {
                 String group = items[0];
                 String name = items[1];
                 String icon = items[2];
                 String sound = items[3];
                 String volume = items[4];
+                String selected = items[5];
+                String vip = items[6];
                 int ivolueme =50;
                 try{ivolueme=Integer.parseInt(volume);}catch (Exception e){}
-                allSounds.add(new Sound(group,name,baseIconUrl+icon,baseSoundUrl+sound,ivolueme,false,true));
-
-
+                allSounds.add(new Sound(group,name,baseIconUrl+icon,baseSoundUrl+sound,ivolueme,selected.equals("1"),vip.equals("1")));
             }
         }
 
