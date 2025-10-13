@@ -897,7 +897,7 @@ public class MainActivity extends AppCompatActivity {
                 String volume = items[4];
                 int ivolueme =50;
                 try{ivolueme=Integer.parseInt(volume);}catch (Exception e){}
-                allSounds.add(new Sound(group,name,baseIconUrl+icon,baseSoundUrl+sound,ivolueme,false,false));
+                allSounds.add(new Sound(group,name,baseIconUrl+icon,baseSoundUrl+sound,ivolueme,false,true));
 
 
             }
