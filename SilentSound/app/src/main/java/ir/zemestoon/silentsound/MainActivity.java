@@ -33,6 +33,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import ir.tapsell.plus.TapsellPlus;
+import ir.tapsell.plus.TapsellPlusInitListener;
+import ir.tapsell.plus.model.AdNetworkError;
+import ir.tapsell.plus.model.AdNetworks;
+
 public class MainActivity extends AppCompatActivity {
     NetController netController;
     private RecyclerView soundsRecyclerView,mixesRecyclerView;
@@ -107,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
                 downloadMixes();
             }
         },1000);
+        initializeTapsell();
+
     }
 
     private void initializeSoundMap() {
@@ -114,6 +121,24 @@ public class MainActivity extends AppCompatActivity {
         for (Sound sound : allSounds) {
             soundMap.put(sound.getId(), sound);
         }
+    }
+
+    String key ="rtglinlqkaanoalbdtbjrhtmthtactdsjcctboithdncqnnoeehaesmidaiendaceckndi";
+    private void initializeTapsell()
+    {
+        TapsellPlus.initialize(this, key,
+                new TapsellPlusInitListener() {
+                    @Override
+                    public void onInitializeSuccess(AdNetworks adNetworks) {
+                        Log.d("onInitializeSuccess", adNetworks.name());
+                    }
+
+                    @Override
+                    public void onInitializeFailed(AdNetworks adNetworks,
+                                                   AdNetworkError adNetworkError) {
+                        Log.e("onInitializeFailed", "ad network: " + adNetworks.name() + ", error: " +	adNetworkError.getErrorMessage());
+                    }
+                });
     }
 
     private void initViews() {
