@@ -49,15 +49,12 @@ public class NetController {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        int responselen = response.trim().length();
-                        int sllen = getSoundList().trim().length();
-                        if(!response.trim().equals(getSoundList().trim())) {
                             boolean changed= setSoundList(response.trim());
                             if(changed) {
                                 activity.loadSounds();
                                 Toast.makeText(activity, "لیست صداها آپدیت شد", Toast.LENGTH_SHORT).show();
                             }
-                        }
+
                     }
                 },
                 new Response.ErrorListener() {
@@ -85,13 +82,12 @@ public class NetController {
                     public void onResponse(String response) {
                         int responselen = response.trim().length();
                         int sllen = getMixedList().trim().length();
-                        if(!response.trim().equals(getMixedList().trim())) {
                             boolean changed = setMixedList(response.trim());
                             if(changed) {
                                 activity.loadMixes();
                                 Toast.makeText(activity, "لیست میکس ها آپدیت شد", Toast.LENGTH_SHORT).show();
                             }
-                        }
+
                     }
                 },
                 new Response.ErrorListener() {

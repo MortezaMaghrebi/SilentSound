@@ -1039,9 +1039,9 @@ public class MainActivity extends AppCompatActivity {
         allMixes=new ArrayList<>();
         for (String mixedItem_str:mixedList_str.split("#")) {
             Mixed mixed;
-            String[] mixedParts = mixedItem_str.split("$");
+            String[] mixedParts = mixedItem_str.split("~~");
             if(mixedParts.length==2) {
-                String[] mixedParams = mixedParts[1].replace("\n","").trim().split(",");
+                String[] mixedParams = mixedParts[0].replace("\n","").trim().split(",");
                 if(mixedParams.length>=7)
                 {
                     String type = mixedParams[0].trim();
