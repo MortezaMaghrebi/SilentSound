@@ -900,7 +900,7 @@ public class MainActivity extends AppCompatActivity {
         String[] soundList = soundlist_str.split("\n");
         for (String soundstr:soundList) {
             String[] items = soundstr.split(",");
-            if(items.length==7)
+            if(items.length>6)
             {
                 String group = items[0];
                 String name = items[1];
@@ -1042,7 +1042,7 @@ public class MainActivity extends AppCompatActivity {
             String[] mixedParts = mixedItem_str.split("~~");
             if(mixedParts.length==2) {
                 String[] mixedParams = mixedParts[0].replace("\n","").trim().split(",");
-                if(mixedParams.length>=7)
+                if(mixedParams.length>7)
                 {
                     String type = mixedParams[0].trim();
                     String vip = mixedParams[1].trim();
@@ -1055,7 +1055,7 @@ public class MainActivity extends AppCompatActivity {
                     mixed = new Mixed(id,mixedName,baseGithubUrl+ cover,description);
                     for (String mixedItemLine:mixedParts[1].split("\n")) {
                         String[] soundsParams = mixedItemLine.trim().split(",");
-                        if (soundsParams.length >= 7) {
+                        if (soundsParams.length > 6) {
                             String soundName = soundsParams[1].trim();
                             String soundId = soundsParams[2].trim();
                             int soundVolume = Integer.parseInt(soundsParams[3].trim());
@@ -1064,8 +1064,9 @@ public class MainActivity extends AppCompatActivity {
                             boolean soundLooping = soundsParams[6].trim().equals("true");
                             mixed.addSound(new Mixed.MixedSound(soundName,soundId,soundVolume,soundStartTime,soundEndTime,soundLooping));
                         }
-                        if(mixed.getSounds().size()>0) allMixes.add(mixed);
                     }
+                    if(mixed.getSounds().size()>0) allMixes.add(mixed);
+
                 }
 
             }

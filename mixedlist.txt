@@ -88,7 +88,7 @@ s,نهنگ,whale,35,45,120,false
 s,چکه آب,dripping,25,30,150,false
 s,افق درخشان,kitaro_shimmering_horizon,50,0,1800,false
 #
-m,0,boatStoryMix,10,قایق سواری آرام,covers/wooden_boat_lake.jpg,1800,
+m,0,boatStoryMix,10,قایق سواری آرام,covers/wooden_boat_lake.jpg,1800,قایق سواری آرامش بخش 
 ~~
 s,پارو زدن,oar,8,60,80,true
 s,باد ملایم,gentle_wind,25,0,1800,true
