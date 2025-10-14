@@ -59,7 +59,7 @@ s,آلفا شفاف,Alpha_Lucid_Waves,15,0,1800,true
 s,آلفا مدیتیشن,Alpha_Meditation,15,60,1800,true
 s,مانترا آلفا-تتا,Mantra_Alpha-Theta,15,120,1800,true
 #
-m,0,mountainMix,6,کوهستان مه‌آلود,baseUrl +covers/mountain_peak_fog.jpg,1800,صدای طبیعت بکر کوهستان
+m,0,mountainMix,6,کوهستان مه‌آلود,covers/mountain_peak_fog.jpg,1800,صدای طبیعت بکر کوهستان
 ~~
 s,باد,wind,45,0,1800,true
 s,جریان آب,water_flow,35,20,1780,true
