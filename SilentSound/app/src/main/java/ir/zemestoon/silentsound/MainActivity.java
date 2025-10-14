@@ -100,7 +100,6 @@ public class MainActivity extends AppCompatActivity {
         setupTimerButtons();
         loadSounds();
         loadMixes();
-        initializeSoundMap();
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -401,6 +400,44 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return null;
+    }
+
+    public void startDownloadWithProgressWihoutPlay(Sound sound) {
+        audioManager.downloadSound(sound, new AudioManager.DownloadCallback() {
+            @Override
+            public void onDownloadProgress(String soundId, int progress) {
+                updateSoundDownloadProgress(soundId, progress);
+                Log.d("DownloadProgress", soundId + ": " + progress + "%");
+            }
+
+            @Override
+            public void onDownloadComplete(String soundId, String localPath) {
+                Sound currentSound = soundMap.get(soundId);
+                if (currentSound != null) {
+                    currentSound.setLocalPath(localPath);
+                }
+                updateSoundDownloadProgress(soundId, 100);
+                showToast(findSoundById(soundId).getName()
+                        + " دانلود شد");
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        updateSoundDownloadProgress(soundId, 100);
+                    }
+                }, 500);
+            }
+
+            @Override
+            public void onDownloadError(String soundId, String error) {
+                Sound currentSound = soundMap.get(soundId);
+                if (currentSound != null) {
+                    currentSound.setSelected(false);
+                }
+                updateSoundDownloadProgress(soundId, 0);
+                showToast("خطا در دانلود " + soundId + ": " + error);
+            }
+        });
     }
 
     public void startDownloadWithProgress(Sound sound) {
@@ -914,7 +951,7 @@ public class MainActivity extends AppCompatActivity {
                 allSounds.add(new Sound(group,name,baseIconUrl+icon,baseSoundUrl+sound,ivolueme,selected.equals("1"),vip.equals("1")));
             }
         }
-
+        initializeSoundMap();
         filterSoundsByGroup("nature");
     }
 
@@ -1073,6 +1110,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mixedAdapter.updateList(allMixes);
+        mixedAdapter.notifyDataSetChanged();
     }
 
     private void filterSoundsByGroup(String group) {
@@ -1083,9 +1121,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         soundAdapter.updateList(filteredSounds);
-
-
-
         // لیست پخش را به‌روزرسانی کن وقتی تب تغییر می‌کند
         if ("music".equals(group)) {
             //updateMusicPlaylist();

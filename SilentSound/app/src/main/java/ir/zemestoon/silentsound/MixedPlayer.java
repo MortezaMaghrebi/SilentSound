@@ -27,14 +27,14 @@ public class MixedPlayer {
             if (sound != null) {
                         if (!mainActivity.audioManager.isSoundDownloaded(sound)) {
                             mainActivity.updateSoundDownloadProgress(sound.getId(), 5);
-                            mainActivity.startDownloadWithProgress(sound);
+                            mainActivity.startDownloadWithProgressWihoutPlay(sound);
                             }
              }
         }
         runnable = new Runnable() {
             @Override
             public void run() {
-                handler.postDelayed(runnable,1000);
+                handler.postDelayed(runnable,2000);
                 boolean notdownloaded = false;
                 if(!downloaded) {
                     for (Mixed.MixedSound mixedSound : sounds) {
@@ -60,7 +60,7 @@ public class MixedPlayer {
     boolean insideTask=false;
     void task1s()
     {
-        time++;
+        time+=2;
         if(insideTask) return;
         insideTask=true;
         if(!mainActivity.mixedPlayingStatus.containsKey(mixed.getId())) {
