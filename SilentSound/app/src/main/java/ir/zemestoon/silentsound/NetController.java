@@ -19,27 +19,27 @@ import com.android.volley.toolbox.Volley;
 import java.io.UnsupportedEncodingException;
 
 public class NetController {
-    Context context;
+    MainActivity activity;
     final String MY_PREFS_NAME = "PREFS_SILENT_SOUND";
     SharedPreferences.Editor editor;
     SharedPreferences prefs;
 
     public static  NetController instance;
-    public static synchronized NetController getInstance(Context context) {
+    public static synchronized NetController getInstance(MainActivity activity) {
         if (instance == null) {
-            instance = new NetController(context);
+            instance = new NetController(activity);
         }
         return instance;
     }
-    public NetController(Context context) {
-        this.context = context;
-        editor = context.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        prefs = context.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+    public NetController(MainActivity activity) {
+        this.activity = activity;
+        editor = activity.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        prefs = activity.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
     }
 
     public  void  DownloadSoundList()  throws UnsupportedEncodingException {
 
-        RequestQueue queue = Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(activity);
         String url = "https://raw.githubusercontent.com/MortezaMaghrebi/SilentSound/refs/heads/main/soundlist.txt";
 
         // Variable to store the file content
@@ -52,15 +52,18 @@ public class NetController {
                         int responselen = response.trim().length();
                         int sllen = getSoundList().trim().length();
                         if(!response.trim().equals(getSoundList().trim())) {
-                            setSoundList(response.trim());
-                            Toast.makeText(context,"لیست صداها آپدیت شد",Toast.LENGTH_SHORT).show();
+                            boolean changed= setSoundList(response.trim());
+                            if(changed) {
+                                activity.loadSounds();
+                                Toast.makeText(activity, "لیست صداها آپدیت شد", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context,"برای دریافت لیست صداها به اینترنت متصل شوید",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity,"برای دریافت لیست صداها به اینترنت متصل شوید",Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -70,7 +73,7 @@ public class NetController {
 
     public  void  DownloadMixedList()  throws UnsupportedEncodingException {
 
-        RequestQueue queue = Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(activity);
         String url = "https://raw.githubusercontent.com/MortezaMaghrebi/SilentSound/refs/heads/main/mixedlist.txt";
 
         // Variable to store the file content
@@ -83,15 +86,18 @@ public class NetController {
                         int responselen = response.trim().length();
                         int sllen = getMixedList().trim().length();
                         if(!response.trim().equals(getMixedList().trim())) {
-                            setMixedList(response.trim());
-                            Toast.makeText(context,"لیست میکس ها آپدیت شد",Toast.LENGTH_SHORT).show();
+                            boolean changed = setMixedList(response.trim());
+                            if(changed) {
+                                activity.loadMixes();
+                                Toast.makeText(activity, "لیست میکس ها آپدیت شد", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(context,"برای دریافت لیست میکس ها به اینترنت متصل شوید",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity,"برای دریافت لیست میکس ها به اینترنت متصل شوید",Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -99,10 +105,12 @@ public class NetController {
         queue.add(getRequest);
     }
 
-    public void setSoundList(String soundList)
+    public boolean setSoundList(String soundList)
     {
+        boolean changed =!getSoundList().trim().equals(soundList.trim());
         editor.putString("soundlist",soundList);
         editor.commit();
+        return changed;
     }
 
     public String getSoundList()
@@ -305,10 +313,12 @@ public class NetController {
                 "    ");
     }
 
-    public void setMixedList(String mixedList)
+    public boolean setMixedList(String mixedList)
     {
+        boolean changed =!getMixedList().trim().equals(mixedList.trim());
         editor.putString("mixedlist",mixedList);
         editor.commit();
+        return changed;
     }
 
     public String getMixedList()
