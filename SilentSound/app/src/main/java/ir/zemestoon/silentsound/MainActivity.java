@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
     // اضافه کردن flag برای جلوگیری از حلقه بی‌نهایت
     private boolean isAutoPlayingNext = false;
+    AddsManager addsManager;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 downloadMixes();
             }
         },1000);
-        initializeTapsell();
+        addsManager = AddsManager.getInstance(MainActivity.this);
 
     }
 
@@ -123,23 +124,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    String key ="rtglinlqkaanoalbdtbjrhtmthtactdsjcctboithdncqnnoeehaesmidaiendaceckndi";
-    private void initializeTapsell()
-    {
-        TapsellPlus.initialize(this, key,
-                new TapsellPlusInitListener() {
-                    @Override
-                    public void onInitializeSuccess(AdNetworks adNetworks) {
-                        Log.d("onInitializeSuccess", adNetworks.name());
-                    }
-
-                    @Override
-                    public void onInitializeFailed(AdNetworks adNetworks,
-                                                   AdNetworkError adNetworkError) {
-                        Log.e("onInitializeFailed", "ad network: " + adNetworks.name() + ", error: " +	adNetworkError.getErrorMessage());
-                    }
-                });
-    }
 
     private void initViews() {
         soundsRecyclerView = findViewById(R.id.soundsRecyclerView);
@@ -1008,6 +992,13 @@ public class MainActivity extends AppCompatActivity {
         mixedAdapter = new MixedAdapter(allMixes, new MixedAdapter.OnMixedClickListener() {
             @Override
             public void onMixedClick(Mixed mixed) {
+                if(mixed.isVip())
+                {
+                    if(addsManager.isPassed24HoursAfterAdd()) {
+                        addsManager.RequestRewardedVideoAdd();
+                        return;
+                    }
+                }
                 List<Mixed.MixedSound> mixedSounds= mixed.getSounds();
                 stopAllSounds();
                 for (Sound _sound : allSounds) {
@@ -1107,17 +1098,18 @@ public class MainActivity extends AppCompatActivity {
                 if(mixedParams.length>7)
                 {
                     String type = mixedParams[0].trim();
-                    String vip = mixedParams[1].trim();
+                    boolean vip = mixedParams[1].trim().equals("1");
                     String name = mixedParams[2].trim();
                     String id = mixedParams[3].trim();
                     String mixedName = mixedParams[4].trim();
                     String cover = mixedParams[5].trim();
                     int duration = Integer.parseInt( mixedParams[6].trim());
                     String description = mixedParams[7].trim();
-                    mixed = new Mixed(id,mixedName,baseGithubUrl+ cover,description);
+                    mixed = new Mixed(id,mixedName,baseGithubUrl+ cover,description,vip);
                     for (String mixedItemLine:mixedParts[1].split("\n")) {
                         String[] soundsParams = mixedItemLine.trim().split(",");
                         if (soundsParams.length > 6) {
+
                             String soundName = soundsParams[1].trim();
                             String soundId = soundsParams[2].trim();
                             int soundVolume = Integer.parseInt(soundsParams[3].trim());

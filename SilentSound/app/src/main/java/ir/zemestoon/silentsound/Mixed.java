@@ -11,18 +11,28 @@ public class Mixed {
     private List<MixedSound> sounds;
     private boolean selected;
     private int totalDuration; // مدت زمان کل به ثانیه
+    private boolean vip=false;
 
     public Mixed() {
         this.sounds = new ArrayList<>();
     }
 
-    public Mixed(String id, String name, String icon, String description) {
+    public Mixed(String id, String name, String icon, String description,boolean vip) {
         this();
         this.id = id;
         this.name = name;
         this.icon = icon;
         this.description = description;
+        this.vip=vip;
     }
+    public boolean isVip() {
+        return vip;
+    }
+
+    public void setVip(boolean vip) {
+        this.vip = vip;
+    }
+    // Getter and Setter methods
 
     // کلاس داخلی برای مدیریت هر صدا در ترکیب
     public static class MixedSound {
@@ -33,6 +43,7 @@ public class Mixed {
         private int endTime; // زمان پایان به ثانیه
         private boolean loop;
         private boolean playing=false;
+
         public MixedSound() {}
 
         public MixedSound(String soundName, String soundId, int volume, int startTime, int endTime, boolean loop) {
@@ -42,10 +53,10 @@ public class Mixed {
             this.startTime = startTime;
             this.endTime = endTime;
             this.loop = loop;
+
         }
 
-        // Getter and Setter methods
-        public String getSoundName() { return soundName; }
+         public String getSoundName() { return soundName; }
         public void setSoundName(String soundName) { this.soundName = soundName; }
 
         public String getSoundId() { return soundId; }

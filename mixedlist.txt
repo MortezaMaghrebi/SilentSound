@@ -1,4 +1,4 @@
-m,0,arcticMix,1,ماجرای قطب شمال,covers/arctic_ice_landscape.jpg,1800,سفر به سرزمین یخ‌ها
+﻿m,0,arcticMix,1,ماجرای قطب شمال,covers/arctic_ice_landscape.jpg,1800,سفر به سرزمین یخ‌ها
 ~~
 s,باد,wind2,25,0,120,true
 s,نهنگ,whale,36,70,110,true
@@ -20,7 +20,7 @@ s,آکوا,kitaro_aqua,30,270,900,false
 s,پاییز,brian_autumn,30,290,900,false 
 s,تمرکز آلفا ۱,Alpha_Focus_107-115Hz,15,0,1200,true
 #
-m,0,beachMix,3,ساحل آرام,covers/beach_sea_coast_sunset.jpg,1800,ترکیبی آرامش‌بخش از صدای دریا و مرغان دریایی
+m,1,beachMix,3,ساحل آرام,covers/beach_sea_coast_sunset.jpg,1800,ترکیبی آرامش‌بخش از صدای دریا و مرغان دریایی
 ~~
 s,دریای آرام,sea_calm,0,30,0,180,true
 s,مرغ دریایی,seagull,10,30,60,false
@@ -30,7 +30,7 @@ s,کاروانسرا,kitaro_caravansary,100,30,1800,false
 s,باغ مخفی,sg_secret_garden,100,50,1800,false 
 s,امواج شفاف,Alpha_Lucid_Waves,7,0,180,true
 #
-m,0,darkSeaMix,4,دریای تاریک و طوفانی,covers/dark_thunder_sea.jpg,1800,ترکیبی از دریای طوفانی، رعد و برق و موسیقی کاروان
+m,1,darkSeaMix,4,دریای تاریک و طوفانی,covers/dark_thunder_sea.jpg,1800,ترکیبی از دریای طوفانی، رعد و برق و موسیقی کاروان
 ~~
 s,زیر آب,under_water,40,0,10,true
 s,نهنگ,whale,100,0,30,true
