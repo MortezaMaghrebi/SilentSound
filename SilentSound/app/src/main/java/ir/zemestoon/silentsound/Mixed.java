@@ -12,6 +12,7 @@ public class Mixed {
     private boolean selected;
     private int totalDuration; // مدت زمان کل به ثانیه
     private boolean vip=false;
+    private int lastDownloadProgress=0;
 
     public Mixed() {
         this.sounds = new ArrayList<>();
@@ -132,4 +133,8 @@ public class Mixed {
     public int getSoundCount() {
         return sounds.size();
     }
+
+    public void setLastDownloadProgress(int progress){this.lastDownloadProgress=progress;}
+
+    public int getLastDownloadProgress() {return lastDownloadProgress;}
 }

@@ -36,20 +36,32 @@ public class MixedPlayer {
             public void run() {
                 handler.postDelayed(runnable,2000);
                 boolean notdownloaded = false;
+                int percents=0;
+                int size = mixed.getSoundCount();
                 if(!downloaded) {
                     for (Mixed.MixedSound mixedSound : sounds) {
                         Sound sound = mainActivity.findSoundById(mixedSound.getSoundId());
                         if (sound != null) {
                             if (!mainActivity.audioManager.isSoundDownloaded(sound)) {
                                 notdownloaded = true;
-                            }
+                                percents+=sound.getLastDownloadProgress();
+                            }else percents+=100;
                         }
                     }
                 }
 
                 if(!notdownloaded){
+                    mixed.setLastDownloadProgress(0);
+                    mainActivity.UpdateMixedItemsAppearance();
                     downloaded=true;
                     task1s();
+                }else
+                {
+                    int downloadprogress = percents/size;
+                    if(downloadprogress>mixed.getLastDownloadProgress()) {
+                        mixed.setLastDownloadProgress(percents / size);
+                        mainActivity.UpdateMixedItemsAppearance();
+                    }
                 }
             }
         };

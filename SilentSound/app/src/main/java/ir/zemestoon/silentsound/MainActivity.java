@@ -1130,6 +1130,10 @@ public class MainActivity extends AppCompatActivity {
         mixedAdapter.notifyDataSetChanged();
     }
 
+    public void UpdateMixedItemsAppearance(){
+        mixedAdapter.notifyDataSetChanged();
+    }
+
     private void filterSoundsByGroup(String group) {
         filteredSounds.clear();
         for (Sound sound : allSounds) {

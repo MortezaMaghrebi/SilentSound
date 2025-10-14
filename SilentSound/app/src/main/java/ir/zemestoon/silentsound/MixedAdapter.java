@@ -128,26 +128,15 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
             soundsCountTextView.setText(mixed.getSoundCount() + " صدا");
 
             // بررسی وضعیت دانلود
-            boolean allSoundsDownloaded = checkAllSoundsDownloaded(mixed);
-            int downloadProgress = calculateDownloadProgress(mixed);
+            //boolean allSoundsDownloaded = checkAllSoundsDownloaded(mixed);
+            int downloadProgress = mixed.getLastDownloadProgress();// calculateDownloadProgress(mixed);
 
-            Log.d("MixedAdapter", "Binding: " + mixed.getName() +
-                    ", All Downloaded: " + allSoundsDownloaded +
-                    ", Progress: " + downloadProgress);
+            //Log.d("MixedAdapter", "Binding: " + mixed.getName() +
+            //        ", All Downloaded: " + allSoundsDownloaded +
+            //        ", Progress: " + downloadProgress);
 
            // // مدیریت نمایش progress
-           // if (!allSoundsDownloaded && downloadProgress > 0) {
-           //     //progressBackground.setVisibility(View.VISIBLE);
-           //     // تنظیم level برای ClipDrawable
-           //    //Drawable backgroundDrawable = progressBackground.getBackground();
-           //    //if (backgroundDrawable instanceof LayerDrawable) {
-           //    //    LayerDrawable layerDrawable = (LayerDrawable) backgroundDrawable;
-           //    //    Drawable clipDrawable = layerDrawable.getDrawable(1);
-           //    //    if (clipDrawable instanceof ClipDrawable) {
-           //    //        int level = downloadProgress * 100;
-           //    //        clipDrawable.setLevel(level);
-           //    //    }
-           //    //}
+
 //
            //     downloadProgressText.setVisibility(View.VISIBLE);
            //     downloadProgressText.setText(downloadProgress + "%");
@@ -199,7 +188,24 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
                 nameTextView.setTypeface(nameTextView.getTypeface(), Typeface.NORMAL);
                 playPauseButton.setImageResource(R.drawable.ic_play);
             }
-
+            if ( downloadProgress > 0) {
+                progressBackground.setVisibility(View.VISIBLE);
+                // تنظیم level برای ClipDrawable
+                Drawable backgroundDrawable = progressBackground.getBackground();
+                if (backgroundDrawable instanceof LayerDrawable) {
+                    LayerDrawable layerDrawable = (LayerDrawable) backgroundDrawable;
+                    Drawable clipDrawable = layerDrawable.getDrawable(1);
+                    if (clipDrawable instanceof ClipDrawable) {
+                        int level = downloadProgress * 100;
+                        clipDrawable.setLevel(level);
+                    }
+                }
+                downloadProgressText.setVisibility(View.VISIBLE);
+                downloadProgressText.setText(downloadProgress+"%");
+            }else {
+                downloadProgressText.setVisibility(View.INVISIBLE);
+                progressBackground.setVisibility(View.INVISIBLE);
+            }
 
             Glide.with(itemView.getContext())
                     .load(mixed.getIcon())
