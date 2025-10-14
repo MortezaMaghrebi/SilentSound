@@ -563,7 +563,7 @@ public class AudioManager {
                 mediaPlayers.clear();
                 soundKeyToSoundMap.clear();
             }catch (Exception e1){}
-            //Toast.makeText(context,"Error: "+e.getMessage(),Toast.LENGTH_LONG).show();
+            //ToastUtils.showSafeToast(context,"Error: "+e.getMessage());
         }
 
     }

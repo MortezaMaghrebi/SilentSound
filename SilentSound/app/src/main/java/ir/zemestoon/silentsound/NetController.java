@@ -52,7 +52,7 @@ public class NetController {
                             boolean changed= setSoundList(response.trim());
                             if(changed) {
                                 activity.loadSounds();
-                                Toast.makeText(activity, "لیست صداها آپدیت شد", Toast.LENGTH_SHORT).show();
+                                ToastUtils.showSafeToast(activity, "لیست صداها آپدیت شد");
                             }
 
                     }
@@ -60,7 +60,7 @@ public class NetController {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(activity,"برای دریافت لیست صداها به اینترنت متصل شوید",Toast.LENGTH_SHORT).show();
+                        ToastUtils.showSafeToast(activity,"برای دریافت لیست صداها به اینترنت متصل شوید");
                     }
                 }
         );
@@ -85,7 +85,7 @@ public class NetController {
                             boolean changed = setMixedList(response.trim());
                             if(changed) {
                                 activity.loadMixes();
-                                Toast.makeText(activity, "لیست میکس ها آپدیت شد", Toast.LENGTH_SHORT).show();
+                                ToastUtils.showSafeToast(activity, "لیست میکس ها آپدیت شد");
                             }
 
                     }
@@ -93,7 +93,7 @@ public class NetController {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(activity,"برای دریافت لیست میکس ها به اینترنت متصل شوید",Toast.LENGTH_SHORT).show();
+                        ToastUtils.showSafeToast(activity,"برای دریافت لیست میکس ها به اینترنت متصل شوید");
                     }
                 }
         );
