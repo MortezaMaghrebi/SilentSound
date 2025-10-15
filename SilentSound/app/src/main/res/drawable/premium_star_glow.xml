@@ -1,0 +1,16 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="72dp"
+    android:height="72dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- درخشش -->
+    <path
+        android:fillColor="#33FFD700"
+        android:pathData="M12,0a12,12 0,1 1,0 24a12,12 0,1 1,0 -24z" />
+
+    <!-- ستاره طلایی -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M12,2l2.39,6.91h7.26l-5.88,4.27l2.25,6.9L12,15.8l-6.02,4.28l2.25-6.9L2.35,8.91h7.26z" />
+</vector>

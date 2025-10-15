@@ -40,7 +40,13 @@ public class NetController {
     }
 
     public void DownloadSoundList() throws UnsupportedEncodingException {
-
+        int counter = prefs.getInt("download_sound_counter",2);
+        if(counter<2){
+            counter++;
+            editor.putInt("download_sound_counter",counter);
+            editor.commit();
+            return;
+        }
         RequestQueue queue = Volley.newRequestQueue(activity);
         String url = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/refs/heads/main/soundlist.txt";
 
@@ -51,6 +57,8 @@ public class NetController {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        editor.putInt("download_sound_counter",0);
+                        editor.commit();
                         boolean changed = setSoundList(response.trim());
                         if (changed) {
                             activity.loadSounds();
@@ -71,7 +79,13 @@ public class NetController {
     }
 
     public void DownloadMixedList() throws UnsupportedEncodingException {
-
+        int counter = prefs.getInt("download_mixed_counter",2);
+        if(counter<2){
+            counter++;
+            editor.putInt("download_mixed_counter",counter);
+            editor.commit();
+            return;
+        }
         RequestQueue queue = Volley.newRequestQueue(activity);
         String url = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/refs/heads/main/mixedlist.txt";
 
@@ -82,8 +96,8 @@ public class NetController {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        int responselen = response.trim().length();
-                        int sllen = getMixedList().trim().length();
+                        editor.putInt("download_mixed_counter",0);
+                        editor.commit();
                         boolean changed = setMixedList(response.trim());
                         if (changed) {
                             activity.loadMixes();
@@ -509,6 +523,13 @@ public class NetController {
 
     public void DownloadMessage() throws UnsupportedEncodingException {
 
+        int counter = prefs.getInt("download_message_counter",3);
+        if(counter<3){
+            counter++;
+            editor.putInt("download_message_counter",counter);
+            editor.commit();
+            return;
+        }
         RequestQueue queue = Volley.newRequestQueue(activity);
         String url = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/refs/heads/main/message.txt";
 
@@ -519,10 +540,12 @@ public class NetController {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        editor.putInt("download_message_counter",0);
+                        editor.commit();
                         boolean changed = setMessage(response.trim());
-                        //if (changed) {
+                        if (changed) {
                             showMessageDialog(response);
-                       // }
+                        }
 
                     }
                 },
@@ -556,6 +579,34 @@ public class NetController {
             MessageDialog dialog = new MessageDialog(activity, htmlContent);
             dialog.show();
         });
+    }
+
+    public void ShowWebpage() throws UnsupportedEncodingException {
+
+          RequestQueue queue = Volley.newRequestQueue(activity);
+        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/refs/heads/main/webpage.txt";
+
+        // Variable to store the file content
+        final String[] fileContent = {""}; // Using array to allow modification in inner class
+
+        StringRequest getRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                           showMessageDialog(response);
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+
+                    }
+                }
+        );
+        queue.getCache().clear();
+        queue.add(getRequest);
     }
 
 }

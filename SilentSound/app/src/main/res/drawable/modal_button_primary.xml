@@ -1,5 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#3B82F6" />
-    <corners android:radius="8dp" />
-</shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- حالت عادی -->
+    <item android:state_pressed="false">
+        <layer-list>
+            <!-- سایه -->
+            <item>
+                <shape android:shape="rectangle">
+                    <gradient
+                        android:startColor="#3B82F6"
+                        android:endColor="#8B5CF6"
+                        android:angle="45" />
+                    <corners android:radius="12dp" />
+                </shape>
+            </item>
+            <!-- هایلایت -->
+            <item android:bottom="0dp">
+                <shape android:shape="rectangle">
+                    <gradient
+                        android:startColor="#60FFFFFF"
+                        android:endColor="#10FFFFFF"
+                        android:angle="90" />
+                    <corners android:radius="12dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+
+    <!-- حالت فشرده -->
+    <item android:state_pressed="true">
+        <layer-list>
+            <item>
+                <shape android:shape="rectangle">
+                    <gradient
+                        android:startColor="#2563EB"
+                        android:endColor="#7C3AED"
+                        android:angle="45" />
+                    <corners android:radius="12dp" />
+                </shape>
+            </item>
+        </layer-list>
+    </item>
+</selector>

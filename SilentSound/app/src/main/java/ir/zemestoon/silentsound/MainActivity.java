@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout llMixesButton,llSoundsButton;
     private RelativeLayout rlMixes,rlSounds;
     TextView tvMixes,tvSounds;
-    ImageView ivMixes,ivSounds,ivComment;
+    ImageView ivMixes,ivSounds,ivComment,ivAppIcon;
     private TextView timerDisplay;
     private ImageButton playPauseButton, nextButton, prevButton;
     private SoundAdapter soundAdapter;
@@ -180,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
          ivMixes = findViewById(R.id.ivMixes);
          ivSounds = findViewById(R.id.ivSounds);
         ivComment = findViewById(R.id.ivComment);
+        ivAppIcon = findViewById(R.id.ivAppIcon);
 
         rlMixes.setVisibility(View.VISIBLE);
         rlSounds.setVisibility(View.GONE);
@@ -232,6 +233,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ivAppIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    NetController.getInstance(MainActivity.this).ShowWebpage();
+                } catch (UnsupportedEncodingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
     private void openMyketForComment() {
         final String packageName = getPackageName(); // اسم پکیج همین اپ
@@ -1157,6 +1168,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void downloadMessage()
     {
+
         netController =NetController.getInstance(MainActivity.this);
         try {
             netController.DownloadMessage();

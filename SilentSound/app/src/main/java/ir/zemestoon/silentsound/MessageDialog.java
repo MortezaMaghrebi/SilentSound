@@ -14,6 +14,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -43,7 +44,7 @@ public class MessageDialog extends Dialog {
         }
 
         webView = findViewById(R.id.webView);
-        Button btnClose = findViewById(R.id.btnClose);
+        ImageButton btnClose = findViewById(R.id.btnClose);
 
         // پیکربندی WebView
         webView.getSettings().setJavaScriptEnabled(true);
@@ -61,7 +62,8 @@ public class MessageDialog extends Dialog {
                 "body { margin: 20px; font-family: sans-serif; background: transparent; } " +
                 "a { color: #60a5fa; text-decoration: none; } " +
                 "a:active { color: #3b82f6; } " +
-                ".bazaar-link { background: #ff5722; color: white; padding: 10px 15px; border-radius: 8px; display: inline-block; margin: 10px 0; }" +
+                ".bazaar-link { background: #0FA958; color: white; padding: 10px 15px; border-radius: 8px; display: inline-block; margin: 10px 0; }  " +
+                ".myket-link { background: #2EC9FF; color: white; padding: 10px 15px; border-radius: 8px; display: inline-block; margin: 10px 0; }"+
                 "</style>" +
                 "</head><body>" + htmlContent + "</body></html>";
 
@@ -108,6 +110,27 @@ public class MessageDialog extends Dialog {
                         String packageName = extractPackageName(url);
                         if (packageName != null) {
                             webUrl = "https://cafebazaar.ir/app/" + packageName;
+                        }
+                    }
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(webUrl));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                }
+                return true;
+            }
+            if (url.startsWith("myket://") || url.contains("myket.ir")) {
+                try {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                } catch (Exception e) {
+                    // اگر مایکت نصب نبود، لینک وب‌سایت مایکت رو باز کن
+                    String webUrl = "https://myket.ir";
+                    if (url.contains("details?id=")) {
+                        // استخراج package name از لینک
+                        String packageName = extractPackageName(url);
+                        if (packageName != null) {
+                            webUrl = "https://myket.ir/app/" + packageName;
                         }
                     }
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(webUrl));
