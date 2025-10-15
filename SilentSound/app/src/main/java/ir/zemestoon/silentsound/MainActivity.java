@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
     // اضافه کردن flag برای جلوگیری از حلقه بی‌نهایت
     private boolean isAutoPlayingNext = false;
     AddsManager addsManager;
+    private BazaarBilling bazaarBilling;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         setupTimerButtons();
         loadSounds();
         loadMixes();
+        initializeAddsManager();
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -113,10 +115,27 @@ public class MainActivity extends AppCompatActivity {
                 downloadMixes();
             }
         },1000);
-        addsManager = AddsManager.getInstance(MainActivity.this);
-
+        initializeBazaarBilling();
     }
 
+    private void initializeBazaarBilling(){
+        bazaarBilling = BazaarBilling.getInstance(this);
+        bazaarBilling.initializeBazaar();
+    }
+    private void initializeAddsManager()
+    {
+        addsManager = AddsManager.getInstance(MainActivity.this);
+        addsManager.setAdCompletionListener(new AddsManager.AdCompletionListener() {
+            @Override
+            public void onAdCompleted() {
+                // پس از تماشای تبلیغ، محتوای pending را پخش کن
+                if (pendingMixedAfterAd != null) {
+                    playMixedContent(pendingMixedAfterAd);
+                    pendingMixedAfterAd = null;
+                }
+            }
+        });
+    }
     private void initializeSoundMap() {
         soundMap.clear();
         for (Sound sound : allSounds) {
@@ -981,6 +1000,63 @@ public class MainActivity extends AppCompatActivity {
     }
     boolean mixedPlaying=false;
     MixedPlayer mixedPlayer=null;
+    private void Mixed_Click(Mixed mixed)
+    {
+        List<Mixed.MixedSound> mixedSounds= mixed.getSounds();
+        stopAllSounds();
+        for (Sound _sound : allSounds) {
+            _sound.setSelected(false);
+
+        }
+        playingStatus.clear();
+        musicPlaylist.clear();
+        if(mixedPlayer!=null) mixedPlayer.Dispose();
+        updateAllItemsAppearance();
+        if(mixedPlaying)
+        {
+            boolean returnAfterStop=false;
+            if(isMixedPlaying(mixed.getId()))returnAfterStop=true;
+            mixedPlayingStatus.clear();
+            updateAllItemsAppearance();
+            if(returnAfterStop){
+                mixedPlaying=false;
+                return;
+            }
+        }
+        for (Mixed.MixedSound mixedSound:mixedSounds) {
+            for (Sound sound : allSounds) {
+
+                if (sound.getId().equals(mixedSound.getSoundId())) {
+                    if(sound!=null) {
+                        if (!playingStatus.containsKey(sound.getId()) || !playingStatus.get(sound.getId())) {
+
+                        }else {
+                            stopAllSounds();
+                            playingStatus.clear();
+                            for (Sound _sound : allSounds) {
+                                _sound.setSelected(false);
+                            }
+                            mixedPlayingStatus.clear();
+                            mixedPlaying=false;
+                            updateAllItemsAppearance();
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+        if(mixedPlayer!=null){
+            mixedPlayer.Dispose();
+        }
+        for (Mixed.MixedSound mixedSound:mixed.getSounds()) {
+            mixedSound.setPlaying(false);
+        }
+        mixedPlayer= new MixedPlayer(MainActivity.this,mixed);
+        mixedPlayer.startPlaying();
+        mixedPlayingStatus.put(mixed.getId(),true);
+        mixedPlaying=true;
+        updateAllItemsAppearance();
+    }
     private void setupMixesRecyclerView() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
@@ -992,68 +1068,19 @@ public class MainActivity extends AppCompatActivity {
         mixedAdapter = new MixedAdapter(allMixes, new MixedAdapter.OnMixedClickListener() {
             @Override
             public void onMixedClick(Mixed mixed) {
-                if(mixed.isVip())
-                {
-                    if(addsManager.isPassed24HoursAfterAdd()) {
-                        addsManager.RequestRewardedVideoAdd();
+                if(mixedPlaying){
+                    if(isMixedPlaying(mixed.getId())){
+                        Mixed_Click(mixed);
                         return;
                     }
                 }
-                List<Mixed.MixedSound> mixedSounds= mixed.getSounds();
-                stopAllSounds();
-                for (Sound _sound : allSounds) {
-                    _sound.setSelected(false);
-
-                }
-                playingStatus.clear();
-                musicPlaylist.clear();
-                if(mixedPlayer!=null) mixedPlayer.Dispose();
-                updateAllItemsAppearance();
-                if(mixedPlaying)
-                {
-                    boolean returnAfterStop=false;
-                    if(isMixedPlaying(mixed.getId()))returnAfterStop=true;
-                    mixedPlayingStatus.clear();
-                    updateAllItemsAppearance();
-                    if(returnAfterStop){
-                        mixedPlaying=false;
+                if (mixed.isVip() && !bazaarBilling.isPremiumActivated()) {
+                    if (addsManager.isPassed24HoursAfterAdd()) {
+                        showVipModal(mixed);
                         return;
                     }
                 }
-                for (Mixed.MixedSound mixedSound:mixedSounds) {
-                    for (Sound sound : allSounds) {
-
-                        if (sound.getId().equals(mixedSound.getSoundId())) {
-                            if(sound!=null) {
-                                if (!playingStatus.containsKey(sound.getId()) || !playingStatus.get(sound.getId())) {
-
-                                }else {
-                                    stopAllSounds();
-                                    playingStatus.clear();
-                                    for (Sound _sound : allSounds) {
-                                        _sound.setSelected(false);
-                                    }
-                                    mixedPlayingStatus.clear();
-                                    mixedPlaying=false;
-                                    updateAllItemsAppearance();
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-                if(mixedPlayer!=null){
-                    mixedPlayer.Dispose();
-                }
-                for (Mixed.MixedSound mixedSound:mixed.getSounds()) {
-                    mixedSound.setPlaying(false);
-                }
-                mixedPlayer= new MixedPlayer(MainActivity.this,mixed);
-                mixedPlayer.startPlaying();
-                mixedPlayingStatus.put(mixed.getId(),true);
-                mixedPlaying=true;
-                updateAllItemsAppearance();
-
+                Mixed_Click(mixed);
             }
 
             @Override
@@ -1147,4 +1174,67 @@ public class MainActivity extends AppCompatActivity {
             //updateMusicPlaylist();
         }
     }
+
+    private void showVipModal(Mixed mixed) {
+        VipModal vipModal = new VipModal(this, mixed, new VipModal.VipModalListener() {
+            @Override
+            public void onPurchaseClicked(Mixed mixed) {
+                // اجرای خرید درون برنامه‌ای از کافه بازار
+                if(!bazaarBilling.isPremiumActivated()){
+                    bazaarBilling.activePremium();
+                }else ToastUtils.showSafeToast(MainActivity.this,"شما اکانت پرمیوم را خریداری کرده اید");
+            }
+
+            @Override
+            public void onWatchAdClicked(Mixed mixed) {
+                // نمایش تبلیغ پاداشی
+                if (addsManager.isPassed24HoursAfterAdd()) {
+                    addsManager.RequestRewardedVideoAdd();
+                    // بعد از تماشای تبلیغ، محتوا پخش خواهد شد
+                    pendingMixedAfterAd = mixed;
+                } else {
+                    // کاربر قبلاً تبلیغ دیده و می‌تواند محتوا را استفاده کند
+                    playMixedContent(mixed);
+                }
+            }
+
+            @Override
+            public void onCancelClicked() {
+                // هیچ کاری انجام نده
+                ToastUtils.showSafeToast(MainActivity.this, "انصراف داده شد");
+            }
+        });
+
+        vipModal.show();
+    }
+
+    // متد برای خرید درون برنامه‌ای
+    private void startInAppPurchase() {
+        // اینجا کد مربوط به خرید از کافه بازار را اضافه کنید
+        // برای نمونه:
+        try {
+            // کد نمونه برای خرید از کافه بازار
+            // Intent intent = new Intent("ir.cafebazaar.pardakht.InAppBillingService.BIND");
+            // intent.setPackage("com.farsitel.bazaar");
+            // startService(intent);
+
+            ToastUtils.showSafeToast(this, "سیستم خرید به زودی فعال خواهد شد");
+        } catch (Exception e) {
+            ToastUtils.showSafeToast(this, "خطا در اتصال به کافه بازار");
+        }
+    }
+
+    // متغیر برای نگهداری mixed در انتظار پس از تبلیغ
+    private Mixed pendingMixedAfterAd = null;
+
+    // اضافه کردن این متد به AddsManager برای callback پس از تماشای تبلیغ
+    public void setAdCompletionListener(Mixed mixed) {
+        this.pendingMixedAfterAd = mixed;
+    }
+
+    // متد برای پخش محتوای mixed
+    private void playMixedContent(Mixed mixed) {
+        Mixed_Click(mixed);
+    }
+
 }

@@ -91,9 +91,18 @@ public class AddsManager {
                 });
     }
 
-    private void ShowRewardedVideoAdd(String rewardedResponseId)
-    {
-        TapsellPlus.showRewardedVideoAd(activity,rewardedResponseId ,
+    private AdCompletionListener adCompletionListener;
+
+    public interface AdCompletionListener {
+        void onAdCompleted();
+    }
+
+    public void setAdCompletionListener(AdCompletionListener listener) {
+        this.adCompletionListener = listener;
+    }
+
+    private void ShowRewardedVideoAdd(String rewardedResponseId) {
+        TapsellPlus.showRewardedVideoAd(activity, rewardedResponseId,
                 new AdShowListener() {
                     @Override
                     public void onOpened(TapsellPlusAdModel tapsellPlusAdModel) {
@@ -113,12 +122,16 @@ public class AddsManager {
                             String currentTimeString = currentTime.format(formatter);
                             editor.putString("rewardedtime", currentTimeString);
                         } else {
-                            // برای اندرویدهای قبل از 8 از System.currentTimeMillis() استفاده کن
                             long currentTimeMillis = System.currentTimeMillis();
                             editor.putLong("rewardedtime_millis", currentTimeMillis);
                         }
-
                         editor.apply();
+
+                        // اطلاع به listener پس از تماشای تبلیغ
+                        if (adCompletionListener != null) {
+                            adCompletionListener.onAdCompleted();
+                        }
+
                         super.onRewarded(tapsellPlusAdModel);
                     }
 
@@ -147,7 +160,7 @@ public class AddsManager {
                 diffInSeconds = (now - storedTimeMillis) / 1000;
             }else return true;
         }
-        return (diffInSeconds>(24*60*60));
+        return (diffInSeconds>20);//(24*60*60));
     }
 
 }
