@@ -31,7 +31,7 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
     private int itemWidth;
     private MainActivity mainActivity;
     private AudioManager audioManager;
-
+    BazaarBilling bazaarBilling;
     public interface OnMixedClickListener {
         void onMixedClick(Mixed mixed);
         void onMixedPlayPause(Mixed mixed);
@@ -47,6 +47,7 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
         this.itemWidth = (screenWidth - convertDpToPx(60)) / 2;
         this.mainActivity = mainActivity;
         this.audioManager = AudioManager.getInstance(mainActivity);
+        this.bazaarBilling = BazaarBilling.getInstance(mainActivity);
     }
 
     private boolean isMixedPlaying(String mixedId) {
@@ -91,6 +92,7 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
         private View selectionOverlay;
         private View progressBackground;
         private ImageButton playPauseButton;
+        private ImageView premiumIcon;
 
         public MixedViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -106,6 +108,7 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
             selectionOverlay = itemView.findViewById(R.id.selectionOverlay);
             progressBackground = itemView.findViewById(R.id.progressBackground);
             playPauseButton = itemView.findViewById(R.id.playPauseButton);
+            premiumIcon = itemView.findViewById(R.id.premiumIcon);
 
             // کلیک روی کل آیتم
             itemView.setOnClickListener(v -> {
@@ -126,6 +129,13 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
             nameTextView.setText(mixed.getName());
             durationTextView.setText(mixed.getFormattedDuration());
             soundsCountTextView.setText(mixed.getSoundCount() + " صدا");
+
+            // مدیریت نمایش آیکون VIP
+            if (mixed.isVip()) {
+                premiumIcon.setVisibility(View.VISIBLE);
+            } else {
+                premiumIcon.setVisibility(View.GONE);
+            }
 
             // بررسی وضعیت دانلود
             //boolean allSoundsDownloaded = checkAllSoundsDownloaded(mixed);
@@ -170,20 +180,20 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
 
             // مدیریت ظاهر بر اساس وضعیت پخش
             if (isMixedPlaying(mixed.getId())) {
-                itemView.setBackgroundResource(R.drawable.sound_item_background_playing);
+                itemView.setBackgroundResource(R.drawable.dark_item_background_playing);
                 selectionOverlay.setVisibility(View.VISIBLE);
                 nameTextView.setTextColor(Color.parseColor("#aBe2F6"));
                 nameTextView.setTypeface(nameTextView.getTypeface(), Typeface.BOLD);
                 playPauseButton.setImageResource(R.drawable.ic_pause);
             } else if (mixed.isSelected()) {
                 selectionOverlay.setVisibility(View.VISIBLE);
-                itemView.setBackgroundResource(R.drawable.sound_item_background);
+                itemView.setBackgroundResource(R.drawable.dark_item_background);
                 nameTextView.setTextColor(Color.parseColor("#E2E8F0"));
                 nameTextView.setTypeface(nameTextView.getTypeface(), Typeface.NORMAL);
                 playPauseButton.setImageResource(R.drawable.ic_play);
             } else {
                 selectionOverlay.setVisibility(View.GONE);
-                itemView.setBackgroundResource(R.drawable.sound_item_background);
+                itemView.setBackgroundResource(R.drawable.dark_item_background);
                 nameTextView.setTextColor(Color.parseColor("#E2E8F0"));
                 nameTextView.setTypeface(nameTextView.getTypeface(), Typeface.NORMAL);
                 playPauseButton.setImageResource(R.drawable.ic_play);

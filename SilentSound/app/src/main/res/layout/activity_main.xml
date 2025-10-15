@@ -3,7 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0F172A">
+    android:background="#15172A">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/dark_blue_background"
+        android:alpha="0.2"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,6 +21,28 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/rlMixes">
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_alignTop="@id/tvTitleMixes"
+                android:layout_alignBottom="@+id/tvTitleMixes"
+                android:src="@drawable/appicon"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:id="@+id/ivAppIcon"
+                />
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:layout_alignTop="@id/tvTitleMixes"
+                android:layout_alignBottom="@+id/tvTitleMixes"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/quote_96px"
+                android:layout_marginRight="20dp"
+                android:id="@+id/ivComment"
+                />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -22,7 +51,9 @@
                 android:fontFamily="@font/yekan"
                 android:gravity="center"
                 android:layout_marginTop="20dp"
-                android:textColor="#4080f0"
+                android:textColor="#8080f0"
+                android:layout_marginLeft="70dp"
+                android:layout_marginRight="70dp"
                 android:textSize="30dp"
                 android:layout_marginBottom="10dp"/>
 

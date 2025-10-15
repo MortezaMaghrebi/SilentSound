@@ -24,23 +24,25 @@ public class NetController {
     SharedPreferences.Editor editor;
     SharedPreferences prefs;
 
-    public static  NetController instance;
+    public static NetController instance;
+
     public static synchronized NetController getInstance(MainActivity activity) {
         if (instance == null) {
             instance = new NetController(activity);
         }
         return instance;
     }
+
     public NetController(MainActivity activity) {
         this.activity = activity;
         editor = activity.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
         prefs = activity.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
     }
 
-    public  void  DownloadSoundList()  throws UnsupportedEncodingException {
+    public void DownloadSoundList() throws UnsupportedEncodingException {
 
         RequestQueue queue = Volley.newRequestQueue(activity);
-        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/SilentSound/refs/heads/main/soundlist.txt";
+        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/refs/heads/main/soundlist.txt";
 
         // Variable to store the file content
         final String[] fileContent = {""}; // Using array to allow modification in inner class
@@ -49,18 +51,18 @@ public class NetController {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                            boolean changed= setSoundList(response.trim());
-                            if(changed) {
-                                activity.loadSounds();
-                                ToastUtils.showSafeToast(activity, "لیست صداها آپدیت شد");
-                            }
+                        boolean changed = setSoundList(response.trim());
+                        if (changed) {
+                            activity.loadSounds();
+                            ToastUtils.showSafeToast(activity, "لیست صداها آپدیت شد");
+                        }
 
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        ToastUtils.showSafeToast(activity,"برای دریافت لیست صداها به اینترنت متصل شوید");
+                        //ToastUtils.showSafeToast(activity, "برای دریافت لیست صداها به اینترنت متصل شوید");
                     }
                 }
         );
@@ -68,10 +70,10 @@ public class NetController {
         queue.add(getRequest);
     }
 
-    public  void  DownloadMixedList()  throws UnsupportedEncodingException {
+    public void DownloadMixedList() throws UnsupportedEncodingException {
 
         RequestQueue queue = Volley.newRequestQueue(activity);
-        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/SilentSound/refs/heads/main/mixedlist.txt";
+        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/refs/heads/main/mixedlist.txt";
 
         // Variable to store the file content
         final String[] fileContent = {""}; // Using array to allow modification in inner class
@@ -82,18 +84,19 @@ public class NetController {
                     public void onResponse(String response) {
                         int responselen = response.trim().length();
                         int sllen = getMixedList().trim().length();
-                            boolean changed = setMixedList(response.trim());
-                            if(changed) {
-                                activity.loadMixes();
-                                ToastUtils.showSafeToast(activity, "لیست میکس ها آپدیت شد");
-                            }
+                        boolean changed = setMixedList(response.trim());
+                        if (changed) {
+                            activity.loadMixes();
+                            ToastUtils.showSafeToast(activity, "لیست میکس ها آپدیت شد");
+                        }
 
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        ToastUtils.showSafeToast(activity,"برای دریافت لیست میکس ها به اینترنت متصل شوید");
+
+                        //ToastUtils.showSafeToast(activity, "برای دریافت لیست میکس ها به اینترنت متصل شوید");
                     }
                 }
         );
@@ -101,18 +104,18 @@ public class NetController {
         queue.add(getRequest);
     }
 
-    public boolean setSoundList(String soundList)
-    {
-        boolean changed =!getSoundList().trim().equals(soundList.trim());
-        editor.putString("soundlist",soundList);
+
+
+    public boolean setSoundList(String soundList) {
+        boolean changed = !getSoundList().trim().equals(soundList.trim());
+        editor.putString("soundlist", soundList);
         editor.commit();
         return changed;
     }
 
-    public String getSoundList()
-    {
-        String soudnlist = prefs.getString("soundlist","");
-        return prefs.getString("soundlist","nature,پرنده,bird.png,nature/bird.mp3,10,0,0\n" +
+    public String getSoundList() {
+        String soudnlist = prefs.getString("soundlist", "");
+        return prefs.getString("soundlist", "nature,پرنده,bird.png,nature/bird.mp3,10,0,0\n" +
                 "nature,پرنده ها,hummingbird.png,nature/birds.mp3,10,0,0\n" +
                 "nature,گربه خرخر,cat.png,nature/cat_purring.mp3,10,0,0\n" +
                 "nature,جیرجیرک,cricket.png,nature/cricket.mp3,10,0,0\n" +
@@ -309,17 +312,250 @@ public class NetController {
                 "    ");
     }
 
-    public boolean setMixedList(String mixedList)
-    {
-        boolean changed =!getMixedList().trim().equals(mixedList.trim());
-        editor.putString("mixedlist",mixedList);
+    public boolean setMixedList(String mixedList) {
+        boolean changed = !getMixedList().trim().equals(mixedList.trim());
+        editor.putString("mixedlist", mixedList);
         editor.commit();
         return changed;
     }
 
-    public String getMixedList()
-    {
-        String mixedList = prefs.getString("mixedlist","");
-        return prefs.getString("mixedlist","");
+    public String getMixedList() {
+        String mixedList = prefs.getString("mixedlist", "m,0,arcticMix,1,ماجرای قطب شمال,covers/arctic_ice_landscape.jpg,1800,سفر به سرزمین یخ\u200Cها\n" +
+                "~~\n" +
+                "s,باد,wind2,25,0,120,true\n" +
+                "s,نهنگ,whale,36,70,110,true\n" +
+                "s,پناهگاه,sg_sanctuary,70,0,900,false\n" +
+                "s,نوازش فرشته ای,dg_an_angles_caress,80,60,900,false \n" +
+                "s,رهروی در سرزمین خواب,dg_drifting_in_dreamland,75,60,900,false \n" +
+                "s,آکوا,kitaro_aqua,70,90,900,false\n" +
+                "s,امواج شفاف,Alpha_Lucid_Waves,35,100,1800,true\n" +
+                "s,داستان قطب شمال,story_north_pole,100,20,955,false\n" +
+                "#\n" +
+                "m,0,singleTreeMix,2,تک درخت,covers/single_tree_in_bliss.jpg,1800,دویدن در چمنزار\n" +
+                "~~\n" +
+                "s,داستان چمنزار,story_grassland,100,10,240,true\n" +
+                "s,پرندگان پاییزی,birds_autumn,15,0,50,true\n" +
+                "s,بلبل,bulbul,3,0,30,true\n" +
+                "s,نیمه شب نیلی,dg_midnight_blue,100,240,900,false \n" +
+                "s,آداجیو,sg_adagio,35,250,900,false \n" +
+                "s,آکوا,kitaro_aqua,30,270,900,false \n" +
+                "s,پاییز,brian_autumn,30,290,900,false \n" +
+                "s,تمرکز آلفا ۱,Alpha_Focus_107-115Hz,15,0,1200,true\n" +
+                "#\n" +
+                "m,1,beachMix,3,ساحل آرام,covers/beach_sea_coast_sunset.jpg,1800,ترکیبی آرامش\u200Cبخش از صدای دریا و مرغان دریایی\n" +
+                "~~\n" +
+                "s,دریای آرام,sea_calm,0,30,0,180,true\n" +
+                "s,مرغ دریایی,seagull,10,30,60,false\n" +
+                "s,باد,wind,10,20,40,true\n" +
+                "s,جاده ابریشم,kitaro_silk_road,100,5,1800,false \n" +
+                "s,کاروانسرا,kitaro_caravansary,100,30,1800,false \n" +
+                "s,باغ مخفی,sg_secret_garden,100,50,1800,false \n" +
+                "s,امواج شفاف,Alpha_Lucid_Waves,7,0,180,true\n" +
+                "#\n" +
+                "m,1,darkSeaMix,4,دریای تاریک و طوفانی,covers/dark_thunder_sea.jpg,1800,ترکیبی از دریای طوفانی، رعد و برق و موسیقی کاروان\n" +
+                "~~\n" +
+                "s,زیر آب,under_water,40,0,10,true\n" +
+                "s,نهنگ,whale,100,0,30,true\n" +
+                "s,رعد و برق,thunder,80,5,10,false\n" +
+                "s,رعد و برق,thunder,70,10,30,false\n" +
+                "s,رعد و برق,thunder,80,50,70,false\n" +
+                "s,رعد و برق,thunder,70,120,140,false\n" +
+                "s,رعد و برق,thunder,70,190,240,false\n" +
+                "s,دریای شب,sea_night,70,30,60,true\n" +
+                "s,کاروان,kitaro_caravan,100,10,1800,false\n" +
+                "s,شب طوفانی,sg_stormy_night,90,40,1800,false\n" +
+                "s,امواج شفاف,Alpha_Lucid_Waves,25,0,1800,true\n" +
+                "#\n" +
+                "m,0,forestMix,5,جنگل بارانی,covers/forest_trees_green_nature.jpg,1800,تجربه جنگل در یک روز بارانی با امواج و موسیقی آرامش\u200Cبخش\n" +
+                "~~\n" +
+                "s,جنگل,forest,5,0,30,true\n" +
+                "s,باران,rain,15,0,1800,true\n" +
+                "s,پرنده,bird,10,60,400,false\n" +
+                "s,پرنده ها,birds,10,40,100,false\n" +
+                "s,رعد و برق,thunder,15,120,180,false\n" +
+                "s,بهار,brian_spring,100,20,1800,false\n" +
+                "s,رهروی در سرزمین خواب,dg_drifting_in_dreamland,100,40,900,false\n" +
+                "s,شب طوفانی,sg_stormy_night,60,50,1800,false\n" +
+                "s,نوازش فرشته\u200Cای,dg_an_angles_caress,70,60,600,false\n" +
+                "s,آلفا شفاف,Alpha_Lucid_Waves,15,0,1800,true\n" +
+                "s,آلفا مدیتیشن,Alpha_Meditation,15,60,1800,true\n" +
+                "s,مانترا آلفا-تتا,Mantra_Alpha-Theta,15,120,1800,true\n" +
+                "#\n" +
+                "m,0,mountainMix,6,کوهستان مه\u200Cآلود,covers/mountain_peak_fog.jpg,1800,صدای طبیعت بکر کوهستان\n" +
+                "~~\n" +
+                "s,باد,wind,45,0,1800,true\n" +
+                "s,جریان آب,water_flow,35,20,1780,true\n" +
+                "s,پرنده,bird,25,90,350,false\n" +
+                "s,زمستان,brian_winter,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,lakeMix,7,دریاچه آرام,covers/lake_reflection_water.jpg,1800,انعکاس آرامش در آب\u200Cهای دریاچه\n" +
+                "~~\n" +
+                "s,آب,brian_water,55,0,1800,false\n" +
+                "s,قورباغه,frog,35,45,180,false\n" +
+                "s,جیرجیرک,cricket,30,90,240,true\n" +
+                "s,آب روان,dg_water_flow,30,0,300,false\n" +
+                "s,رقص پروانه,yanni_butterfly_dance,45,0,1800,false\n" +
+                "#\n" +
+                "m,0,waterfallMix,8,آبشار خروشان,covers/waterfall_river_nature.jpg,1800,انرژی بخش و نشاط آور\n" +
+                "~~\n" +
+                "s,آبشار,waterfall,65,0,1800,true\n" +
+                "s,جریان آب,water_flow,45,0,1800,true\n" +
+                "s,پرنده,bird,30,45,200,false\n" +
+                "s,آزادی,freedom,0,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,divingStoryMix,9,ماجرای غواصی,covers/scuba_diving_ocean.jpg,1800,سفر به اعماق اقیانوس\n" +
+                "~~\n" +
+                "s,زیر آب,under_water,60,0,1800,true\n" +
+                "s,نهنگ,whale,35,45,120,false\n" +
+                "s,چکه آب,dripping,25,30,150,false\n" +
+                "s,افق درخشان,kitaro_shimmering_horizon,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,boatStoryMix,10,قایق سواری آرام,covers/wooden_boat_lake.jpg,1800,قایق سواری آرامش بخش \n" +
+                "~~\n" +
+                "s,پارو زدن,oar,8,60,80,true\n" +
+                "s,باد ملایم,gentle_wind,25,0,1800,true\n" +
+                "s,مرغ دریایی,seagull,10,60,200,false\n" +
+                "s,مرغ دریایی,seagull,10,0,15,false\n" +
+                "s,مرغ دریایی,seagull,15,40,55,false\n" +
+                "s,به کسی که می داند,yanni_to_the_one_who_knows,90,0,1800,false\n" +
+                "s,همه در دریا,dyathon_all_at_sea,100,40,1800,true\n" +
+                "s,نوازش فرشته\u200Cای,dg_an_angles_caress,100,60,600,false \n" +
+                "s,رهروی در سرزمین خواب,dg_drifting_in_dreamland,100,80,900,false \n" +
+                "s,زندگی,Living_150-158Hz,15,0,180,true\n" +
+                "#\n" +
+                "m,0,cabinMix,11,کلبه جنگلی,covers/log_cabin_forest.jpg,1800,پناهگاهی در دل طبیعت\n" +
+                "~~\n" +
+                "s,آتش هیزم,firewood,50,0,1800,true\n" +
+                "s,باران,rain,45,0,1800,true\n" +
+                "s,جیرجیرک,cricket,30,60,240,true\n" +
+                "s,پناهگاه,sg_sanctuary,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,lanternMix,12,فانوس جادویی,covers/old_lantern_light.jpg,1800,ماجرای فانوس در شب تاریک\n" +
+                "~~\n" +
+                "s,باد,wind,45,0,1800,true\n" +
+                "s,جیرجیرک,cricket,35,30,1770,true\n" +
+                "s,جغد,owl,30,150,200,false\n" +
+                "s,شب تاریک,sg_morketid,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,chocolateMix,13,کارخانه شکلات سازی,covers/chocolate_factory_sweet.jpg,1800,ماجرای شیرین در کارخانه شکلات\n" +
+                "~~\n" +
+                "s,جریان آب,water_flow,50,0,1800,true\n" +
+                "s,چکه آب,dripping,40,45,150,false\n" +
+                "s,پرنده,bird,30,90,200,false\n" +
+                "s,بی\u200Cخیالی,sg_without_care,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,spiderMix,14,خاله سوسکه,covers/spider_web_dew.jpg,1800,ماجرای خاله سوسکه در خانه قدیمی\n" +
+                "~~\n" +
+                "s,باران روی پنجره,rain_on_window,50,0,1800,true\n" +
+                "s,چکه آب,dripping,35,60,150,false\n" +
+                "s,جیرجیرک,cricket,30,120,240,true\n" +
+                "s,رویا,sg_the_dream,0,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,goatMix,15,بزغاله کوچولو,covers/goat_farm_animal.jpg,1800,ماجراهای بزغاله در مزرعه\n" +
+                "~~\n" +
+                "s,چمنزار,grassland,50,0,1800,true\n" +
+                "s,پرنده,bird,35,90,200,false\n" +
+                "s,چکه آب,dripping,40,150,180,false\n" +
+                "s,تابستان,brian_summer,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,meditationMix,16,مدیتیشن عمیق,covers/yoga_meditation_peace.jpg,1800,مناسب برای تمرین مدیتیشن و یوگا\n" +
+                "~~\n" +
+                "s,نویز سفید,white_noise,40,0,1800,true\n" +
+                "s,آبشار,waterfall,35,10,1790,true\n" +
+                "s,سرود امید,sg_hymn_to_hope,60,300,320,false\n" +
+                "s,مدیتیشن,brian_earth,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,nightMix,17,شب آرام,covers/starry_night_sky.jpg,1800,صدای طبیعت در یک شب آرام\n" +
+                "~~\n" +
+                "s,جیرجیرک,cricket,50,0,1800,true\n" +
+                "s,جغد,owl,35,45,200,false\n" +
+                "s,باد,wind,25,0,1800,true\n" +
+                "s,نیمه شب نیلی,dg_midnight_blue,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,desertMix,18,بیابان ستاره\u200Cها,covers/desert_sand_dunes.jpg,1800,شبی آرام در دل بیابان\n" +
+                "~~\n" +
+                "s,باد,wind,50,0,1800,true\n" +
+                "s,برف,snow,30,90,240,true\n" +
+                "s,دیدار,visit,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,zenMix,19,باغ ذن,covers/zen_garden_calm.jpg,1800,آرامش در باغ ژاپنی\n" +
+                "~~\n" +
+                "s,جریان آب,water_flow,45,0,1800,true\n" +
+                "s,چکه آب,dripping,35,60,120,false\n" +
+                "s,پرنده,bird,25,90,200,false\n" +
+                "s,لوتوس,sg_lotus,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,candleMix,20,نور شمع,covers/candle_light_relax.jpg,1800,آرامش در نور شمع\n" +
+                "~~\n" +
+                "s,نویز قهوه\u200Cای,brown_noise,40,0,1800,true\n" +
+                "s,چکه آب,dripping,30,45,150,false\n" +
+                "s,خواب,sleep,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,tropicalMix,21,ساحل گرمسیری,covers/tropical_beach_palm_trees.jpg,1800,گرمای آفتاب و نسیم دریا\n" +
+                "~~\n" +
+                "s,دریا,sea,70,0,1800,true\n" +
+                "s,باد,wind,35,0,1800,true\n" +
+                "s,مرغ دریایی,seagull,40,30,300,false\n" +
+                "s,عشق پرشور,passion_of_love,50,0,1800,false\n" +
+                "#\n" +
+                "m,0,rainforestMix,22,جنگل بارانی استوایی,covers/rainforest_jungle_plants.jpg,1800,تنوع صوتی جنگل\u200Cهای بارانی\n" +
+                "~~\n" +
+                "s,جنگل,forest,60,0,1800,true\n" +
+                "s,پرنده,bird,35,45,180,false\n" +
+                "s,باران,rain,50,0,1800,true\n" +
+                "s,سونا,sg_sona,50,0,1800,false\n");
+        return mixedList;
     }
+
+    public void DownloadMessage() throws UnsupportedEncodingException {
+
+        RequestQueue queue = Volley.newRequestQueue(activity);
+        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/refs/heads/main/message.txt";
+
+        // Variable to store the file content
+        final String[] fileContent = {""}; // Using array to allow modification in inner class
+
+        StringRequest getRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        boolean changed = setMessage(response.trim());
+                        //if (changed) {
+                            showMessageDialog(response);
+                       // }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+
+                    }
+                }
+        );
+        queue.getCache().clear();
+        queue.add(getRequest);
+    }
+
+    public boolean setMessage(String message) {
+        boolean changed = !getMessage().trim().equals(message.trim());
+        editor.putString("message_html", message);
+        editor.commit();
+        return changed;
+    }
+
+    public String getMessage() {
+        String message = prefs.getString("message_html", "");
+        return message;
+    }
+
+    private void showMessageDialog(String htmlContent) {
+        // نمایش در ترد اصلی
+        activity.runOnUiThread(() -> {
+            MessageDialog dialog = new MessageDialog(activity, htmlContent);
+            dialog.show();
+        });
+    }
+
 }

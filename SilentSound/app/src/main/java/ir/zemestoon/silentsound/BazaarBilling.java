@@ -56,7 +56,7 @@ public class BazaarBilling {
             connectToBazaar();
         } catch (Exception e) {
             Log.e(TAG, "❌ Error initializing Bazaar: " + e.getMessage());
-            ToastUtils.showSafeToast(activity,"❌ Error initializing Bazaar: " + e.getMessage());
+            //ToastUtils.showSafeToast(activity,"❌ Error initializing Bazaar: " + e.getMessage());
         }
     }
 
@@ -72,7 +72,7 @@ public class BazaarBilling {
                         @Override
                         public Unit invoke() {
                             Log.d(TAG, "✅ Connected to Bazaar");
-                            ToastUtils.showSafeToast(activity, "✅ Connected to Bazaar");
+                            //ToastUtils.showSafeToast(activity, "✅ Connected to Bazaar");
                             return Unit.INSTANCE;
                         }
                     });
@@ -82,7 +82,7 @@ public class BazaarBilling {
                         @Override
                         public Unit invoke(Throwable throwable) {
                             Log.e(TAG, "❌ Connection failed: " + throwable.getMessage());
-                            ToastUtils.showSafeToast(activity, "❌ Connection failed: " + throwable.getMessage());
+                            //ToastUtils.showSafeToast(activity, "❌ Connection failed: " + throwable.getMessage());
                             return Unit.INSTANCE;
                         }
                     });
@@ -92,7 +92,7 @@ public class BazaarBilling {
                         @Override
                         public Unit invoke() {
                             Log.w(TAG, "⚠️ Disconnected from Bazaar");
-                            ToastUtils.showSafeToast(activity, "⚠️ Disconnected from Bazaar");
+                            //ToastUtils.showSafeToast(activity, "⚠️ Disconnected from Bazaar");
                             return Unit.INSTANCE;
                         }
                     });
@@ -102,7 +102,7 @@ public class BazaarBilling {
             });
         } catch (Exception e) {
             Log.e(TAG, "❌ Error connecting to Bazaar: " + e.getMessage());
-            ToastUtils.showSafeToast(activity, "❌ Error connecting to Bazaar: " + e.getMessage());
+            //ToastUtils.showSafeToast(activity, "❌ Error connecting to Bazaar: " + e.getMessage());
         }
     }
 
@@ -124,8 +124,8 @@ public class BazaarBilling {
                     callback.purchaseFlowBegan(new Function0<Unit>() {
                         @Override
                         public Unit invoke() {
-                            Log.d(TAG, "🛒 Purchase flow began");
-                            ToastUtils.showSafeToast(activity, "🛒 Purchase flow began");
+                            //Log.d(TAG, "🛒 Purchase flow began");
+                            //ToastUtils.showSafeToast(activity, "🛒 Purchase flow began");
                             return Unit.INSTANCE;
                         }
                     });
@@ -133,7 +133,7 @@ public class BazaarBilling {
                     callback.failedToBeginFlow(new Function1<Throwable, Unit>() {
                         @Override
                         public Unit invoke(Throwable throwable) {
-                            Log.e(TAG, "❌ Failed to start purchase: " + throwable.getMessage());
+                            //Log.e(TAG, "❌ Failed to start purchase: " + throwable.getMessage());
                             ToastUtils.showSafeToast(activity, "❌ Failed to start purchase: " + throwable.getMessage());
                             return Unit.INSTANCE;
                         }
@@ -142,11 +142,12 @@ public class BazaarBilling {
                     callback.purchaseSucceed(new Function1<PurchaseInfo, Unit>() {
                         @Override
                         public Unit invoke(PurchaseInfo purchaseInfo) {
-                            Log.d(TAG, "✅ Purchase successful: " + purchaseInfo.getProductId());
+                            //Log.d(TAG, "✅ Purchase successful: " + purchaseInfo.getProductId());
                             String token = purchaseInfo.getPurchaseToken();
                             editor.putString("last_purchase_token", token);
                             editor.putBoolean("premium_activated",true);
                             editor.apply();
+                            ToastUtils.showSafeToast(activity, "✅ پرداخت با موفقیت انجام شد");
                             return Unit.INSTANCE;
                         }
                     });
@@ -154,8 +155,8 @@ public class BazaarBilling {
                     callback.purchaseCanceled(new Function0<Unit>() {
                         @Override
                         public Unit invoke() {
-                            Log.w(TAG, "⚠️ Purchase canceled");
-                            ToastUtils.showSafeToast(activity, "⚠️ Purchase canceled");
+                            //Log.w(TAG, "⚠️ Purchase canceled");
+                            //ToastUtils.showSafeToast(activity, "⚠️ Purchase canceled");
                             return Unit.INSTANCE;
                         }
                     });
@@ -163,8 +164,8 @@ public class BazaarBilling {
                     callback.purchaseFailed(new Function1<Throwable, Unit>() {
                         @Override
                         public Unit invoke(Throwable throwable) {
-                            Log.e(TAG, "❌ Purchase failed: " + throwable.getMessage());
-                            ToastUtils.showSafeToast(activity, "❌ Purchase failed: " + throwable.getMessage());
+                            //Log.e(TAG, "❌ Purchase failed: " + throwable.getMessage());
+                            ToastUtils.showSafeToast(activity, "❌ پرداخت انجام نشد" +"\n"+ throwable.getMessage());
                             return Unit.INSTANCE;
                         }
                     });
@@ -174,7 +175,7 @@ public class BazaarBilling {
             });
         } catch (Exception e) {
             Log.e(TAG, "❌ Error during purchase: " + e.getMessage());
-            ToastUtils.showSafeToast(activity, "❌ Error during purchase: " + e.getMessage());
+            ToastUtils.showSafeToast(activity, "❌ پرداخت با خطا مواجه شد" +"\n"+ e.getMessage());
         }
     }
     public void activePremium() {

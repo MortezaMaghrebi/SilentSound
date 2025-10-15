@@ -1,8 +1,10 @@
 package ir.zemestoon.silentsound;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.midi.MidiSender;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout llMixesButton,llSoundsButton;
     private RelativeLayout rlMixes,rlSounds;
     TextView tvMixes,tvSounds;
-    ImageView ivMixes,ivSounds;
+    ImageView ivMixes,ivSounds,ivComment;
     private TextView timerDisplay;
     private ImageButton playPauseButton, nextButton, prevButton;
     private SoundAdapter soundAdapter;
@@ -72,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean isAutoPlayingNext = false;
     AddsManager addsManager;
     private BazaarBilling bazaarBilling;
+    final boolean MYKET=false;
+    final boolean BAZAAR = true;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -113,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 downloadSounds();
                 downloadMixes();
+                downloadMessage();
             }
         },1000);
         initializeBazaarBilling();
@@ -174,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
          tvSounds = findViewById(R.id.tvSounds);
          ivMixes = findViewById(R.id.ivMixes);
          ivSounds = findViewById(R.id.ivSounds);
+        ivComment = findViewById(R.id.ivComment);
 
         rlMixes.setVisibility(View.VISIBLE);
         rlSounds.setVisibility(View.GONE);
@@ -218,8 +224,45 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
+        ivComment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(BAZAAR) openCafeBazaarForComment();
+                else if (MYKET) openMyketForComment();
+            }
+        });
 
+    }
+    private void openMyketForComment() {
+        final String packageName = getPackageName(); // اسم پکیج همین اپ
+        try {
+            // باز کردن صفحه‌ی اپ در مایکت
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("myket://comment?id=" + packageName));
+            intent.setPackage("ir.mservices.market");
+            startActivity(intent);
+        } catch (Exception e) {
+            // اگر مایکت نصب نبود، لینک وبی مایکت باز بشه
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://myket.ir/app/" + packageName));
+            startActivity(intent);
+        }
+    }
+    private void openCafeBazaarForComment() {
+        final String packageName = getPackageName(); // اسم پکیج همین اپ
+        try {
+            // باز کردن صفحه‌ی اپ در بازار (بخش کامنت و امتیاز)
+            Intent intent = new Intent(Intent.ACTION_EDIT);
+            intent.setData(Uri.parse("bazaar://details?id=" + packageName));
+            intent.setPackage("com.farsitel.bazaar");
+            startActivity(intent);
+        } catch (Exception e) {
+            // اگر بازار نصب نبود، لینک وبی بازار باز بشه
+            Intent intent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("https://cafebazaar.ir/app/" + packageName));
+            startActivity(intent);
+        }
+    }
     boolean isPlaying = false;
 
     private void playPauseButtonClick() {
@@ -463,7 +506,7 @@ public class MainActivity extends AppCompatActivity {
                     currentSound.setSelected(false);
                 }
                 updateSoundDownloadProgress(soundId, 0);
-                showToast("خطا در دانلود " + soundId + ": " + error);
+                showToast("خطا در دانلود " + findSoundById(soundId).getName());
             }
         });
     }
@@ -510,7 +553,7 @@ public class MainActivity extends AppCompatActivity {
                     currentSound.setSelected(false);
                 }
                 updateSoundDownloadProgress(soundId, 0);
-                showToast("خطا در دانلود " + soundId + ": " + error);
+                showToast("خطا در دانلود " + findSoundById(soundId).getName());
             }
         });
     }
@@ -1107,6 +1150,16 @@ public class MainActivity extends AppCompatActivity {
         netController =NetController.getInstance(MainActivity.this);
         try {
             netController.DownloadMixedList();
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void downloadMessage()
+    {
+        netController =NetController.getInstance(MainActivity.this);
+        try {
+            netController.DownloadMessage();
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
