@@ -41,12 +41,12 @@ public class NetController {
 
     public void DownloadSoundList() throws UnsupportedEncodingException {
         int counter = prefs.getInt("download_sound_counter",2);
-        if(counter<2){
+       // if(counter<2000){
             counter++;
             editor.putInt("download_sound_counter",counter);
             editor.commit();
-            return;
-        }
+            //return;
+//}
         RequestQueue queue = Volley.newRequestQueue(activity);
         String url = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/refs/heads/main/soundlist.txt";
 
@@ -59,11 +59,11 @@ public class NetController {
                     public void onResponse(String response) {
                         editor.putInt("download_sound_counter",0);
                         editor.commit();
-                        boolean changed = setSoundList(response.trim());
-                        if (changed) {
-                            activity.loadSounds();
-                            ToastUtils.showSafeToast(activity, "لیست صداها آپدیت شد");
-                        }
+                        //boolean changed = setSoundList(response.trim());
+                        //if (changed) {
+                        //    activity.loadSounds();
+                        //    ToastUtils.showSafeToast(activity, "لیست صداها آپدیت شد");
+                        //}
 
                     }
                 },
@@ -80,12 +80,12 @@ public class NetController {
 
     public void DownloadMixedList() throws UnsupportedEncodingException {
         int counter = prefs.getInt("download_mixed_counter",2);
-        if(counter<2){
+        //if(counter<2000){
             counter++;
             editor.putInt("download_mixed_counter",counter);
             editor.commit();
-            return;
-        }
+           // return;
+        //}
         RequestQueue queue = Volley.newRequestQueue(activity);
         String url = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/refs/heads/main/mixedlist.txt";
 
@@ -129,7 +129,7 @@ public class NetController {
 
     public String getSoundList() {
         String soudnlist = prefs.getString("soundlist", "");
-        return prefs.getString("soundlist", "nature,پرنده,bird.png,nature/bird.mp3,10,0,0\n" +
+        return prefs.getString("soundlist", "nature,پرنده,bird.png,nature/bird_enc.mp3,10,0,0\n" +
                 "nature,پرنده ها,hummingbird.png,nature/birds.mp3,10,0,0\n" +
                 "nature,گربه خرخر,cat.png,nature/cat_purring.mp3,10,0,0\n" +
                 "nature,جیرجیرک,cricket.png,nature/cricket.mp3,10,0,0\n" +
@@ -177,7 +177,7 @@ public class NetController {
                 "nature,پارو زدن,dinghy.png,nature/oar.mp3,10,0,0\n" +
                 "nature,باد ملایم,wind.png,nature/gentle_wind.mp3,10,0,0\n" +
                 "music,نوازش فرشته ای,sleep.png,music/dan_gibson/dg_an_angles_caress.mp3,70,0,0\n" +
-                "music,رهروی در سرزمین خواب,sleep.png,music/dan_gibson/dg_drifting_in_dreamland.mp3,70,0,0\n" +
+                "music,رهروی در سرزمین خسسواب,sleep.png,music/dan_gibson/dg_drifting_in_dreamland_enc.mp3,70,0,0\n" +
                 "music,نخستین ستاره افق,sleep.png,music/dan_gibson/dg_first_star_in_sky.mp3,70,0,0\n" +
                 "music,فرود آرام,sleep.png,music/dan_gibson/dg_gentle_descent.mp3,70,0,0\n" +
                 "music,نیمه شب نیلی,sleep.png,music/dan_gibson/dg_midnight_blue.mp3,70,0,0\n" +

@@ -1,0 +1,13 @@
+C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\bin\Debug\FileEncrypter.exe.config
+C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\bin\Debug\FileEncrypter.exe
+C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\bin\Debug\FileEncrypter.pdb
+C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.csprojAssemblyReference.cache
+C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.Form1.resources
+C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.Properties.Resources.resources
+C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.csproj.GenerateResource.cache
+C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.csproj.CoreCompileInputs.cache
+C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.exe
+C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.pdb
+C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\bin\Debug\BouncyCastle.Crypto.dll
+C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\bin\Debug\BouncyCastle.Crypto.xml
+C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.csproj.CopyComplete

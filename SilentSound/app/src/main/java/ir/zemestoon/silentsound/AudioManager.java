@@ -9,6 +9,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -24,6 +25,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class AudioManager {
     private static final String TAG = "AudioManager";
@@ -186,7 +192,6 @@ public class AudioManager {
             return;
         }
 
-        // ذخیره callback برای آپدیت progress
         downloadCallbacks.put(soundKey, callback);
         downloadProgressMap.put(soundKey, 0);
 
@@ -207,9 +212,7 @@ public class AudioManager {
                     return;
                 }
 
-                // Encode برای URL هایی که فاصله یا کاراکتر خاص دارند
                 audioUrl = audioUrl.replace(" ", "%20");
-
                 Log.d(TAG, "Starting download: " + sound.getId() + " from: " + audioUrl);
 
                 URL url = new URL(audioUrl);
@@ -233,12 +236,12 @@ public class AudioManager {
                 int fileLength = connection.getContentLength();
                 input = connection.getInputStream();
 
-                File outputFile = new File(getLocalPath(soundKey));
-                if (outputFile.getParentFile() != null && !outputFile.getParentFile().exists()) {
-                    outputFile.getParentFile().mkdirs();
+                File encryptedFile = new File(getLocalPath(soundKey) + "_enc");
+                if (encryptedFile.getParentFile() != null && !encryptedFile.getParentFile().exists()) {
+                    encryptedFile.getParentFile().mkdirs();
                 }
 
-                output = new FileOutputStream(outputFile);
+                output = new FileOutputStream(encryptedFile);
 
                 byte[] data = new byte[8192];
                 long total = 0;
@@ -246,13 +249,6 @@ public class AudioManager {
                 int lastProgress = 0;
 
                 while ((count = input.read(data)) != -1) {
-                    if (Thread.currentThread().isInterrupted()) {
-                        input.close();
-                        output.close();
-                        outputFile.delete();
-                        return;
-                    }
-
                     total += count;
                     if (fileLength > 0) {
                         final int progress = (int) (total * 100 / fileLength);
@@ -270,43 +266,38 @@ public class AudioManager {
                     }
                     output.write(data, 0, count);
                 }
-
                 output.flush();
 
-                // بررسی صحت فایل دانلود شده
-                if (outputFile.exists()
-                        && outputFile.length() > 0
-                        && (fileLength <= 0 || outputFile.length() == fileLength)) {
+                if (encryptedFile.exists() && encryptedFile.length() > 0) {
+                    Log.d(TAG, "Decrypting file for: " + sound.getId());
+                    File decryptedFile = decryptFile(encryptedFile, soundKey);
 
-                    sound.setLocalPath(outputFile.getAbsolutePath());
+                    // پاک کردن فایل رمز شده برای صرفه‌جویی
+                    encryptedFile.delete();
+
+                    sound.setLocalPath(decryptedFile.getAbsolutePath());
                     downloadStatus.put(soundKey, true);
                     saveDownloadStatus(soundKey);
 
-                    Log.d(TAG, "Download completed successfully: " + sound.getId() +
-                            ", size: " + outputFile.length() + " bytes");
-
                     runOnUiThread(() -> {
                         DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
                         if (currentCallback != null) {
-                            currentCallback.onDownloadComplete(sound.getId(), outputFile.getAbsolutePath());
+                            currentCallback.onDownloadComplete(sound.getId(), decryptedFile.getAbsolutePath());
                         }
-                        // حالا می‌تونیم callback رو پاک کنیم
                         downloadCallbacks.remove(soundKey);
                     });
-
                 } else {
-                    outputFile.delete();
                     runOnUiThread(() -> {
                         DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
                         if (currentCallback != null) {
-                            currentCallback.onDownloadError(sound.getId(), "Downloaded file is incomplete or corrupted");
+                            currentCallback.onDownloadError(sound.getId(), "Downloaded file is empty or corrupted");
                         }
                         downloadCallbacks.remove(soundKey);
                     });
                 }
 
             } catch (Exception e) {
-                Log.e(TAG, "Download error for " + sound.getId() + ": " + e.getMessage(), e);
+                Log.e(TAG, "Download/Decrypt error for " + sound.getId() + ": " + e.getMessage(), e);
                 runOnUiThread(() -> {
                     DownloadCallback currentCallback = downloadCallbacks.get(soundKey);
                     if (currentCallback != null) {
@@ -321,16 +312,47 @@ public class AudioManager {
                     if (connection != null) connection.disconnect();
                 } catch (IOException ignored) {}
 
-                // فقط progress map رو پاک کنید، callback رو نه
                 downloadProgressMap.remove(soundKey);
-
-                // لاگ برای دیباگ
-                Log.d(TAG, "Finally block executed for: " + sound.getId() +
-                        ", Callback exists: " + downloadCallbacks.containsKey(soundKey));
             }
         });
     }
 
+    private File decryptFile(File encryptedFile, String soundKey) throws Exception {
+        // کلید AES باید همان باشد که در رمزگذاری استفاده کردی
+        String password = "Hello";
+        File decryptedFile = FileDecryptor.decryptFile(encryptedFile, password);
+        if(decryptedFile==null) decryptedFile = FileDecryptor.decryptFileAlternative(encryptedFile, password);
+
+
+        return decryptedFile;
+    }
+
+    // تابع کمکی برای تبدیل hex string به byte array
+    private byte[] hexStringToByteArray(String hex) {
+        if (hex == null || hex.trim().isEmpty()) {
+            return null;
+        }
+
+        String cleanHex = hex.trim();
+        if (cleanHex.startsWith("0x") || cleanHex.startsWith("0X")) {
+            cleanHex = cleanHex.substring(2);
+        }
+
+        if (cleanHex.length() % 2 != 0) {
+            return null;
+        }
+
+        byte[] data = new byte[cleanHex.length() / 2];
+        for (int i = 0; i < cleanHex.length(); i += 2) {
+            String byteStr = cleanHex.substring(i, i + 2);
+            try {
+                data[i / 2] = (byte) Integer.parseInt(byteStr, 16);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+        return data;
+    }
     // دریافت progress فعلی دانلود
     public int getDownloadProgress(Sound sound) {
         String soundKey = getSoundKey(sound);
