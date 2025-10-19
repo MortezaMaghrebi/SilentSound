@@ -48,7 +48,7 @@ public class NetController {
             //return;
 //}
         RequestQueue queue = Volley.newRequestQueue(activity);
-        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/refs/heads/main/soundlist.txt";
+        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/MySoundData/refs/heads/main/soundlist.txt";
 
         // Variable to store the file content
         final String[] fileContent = {""}; // Using array to allow modification in inner class
@@ -59,11 +59,11 @@ public class NetController {
                     public void onResponse(String response) {
                         editor.putInt("download_sound_counter",0);
                         editor.commit();
-                        //boolean changed = setSoundList(response.trim());
-                        //if (changed) {
-                        //    activity.loadSounds();
-                        //    ToastUtils.showSafeToast(activity, "لیست صداها آپدیت شد");
-                        //}
+                        boolean changed = setSoundList(response.trim());
+                        if (changed) {
+                            activity.loadSounds();
+                            ToastUtils.showSafeToast(activity, "لیست صداها آپدیت شد");
+                        }
 
                     }
                 },
@@ -87,7 +87,7 @@ public class NetController {
            // return;
         //}
         RequestQueue queue = Volley.newRequestQueue(activity);
-        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/refs/heads/main/mixedlist.txt";
+        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/MySoundData/refs/heads/main/mixedlist.txt";
 
         // Variable to store the file content
         final String[] fileContent = {""}; // Using array to allow modification in inner class
@@ -531,7 +531,7 @@ public class NetController {
             return;
         }
         RequestQueue queue = Volley.newRequestQueue(activity);
-        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/refs/heads/main/message.txt";
+        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/MySoundData/refs/heads/main/message.txt";
 
         // Variable to store the file content
         final String[] fileContent = {""}; // Using array to allow modification in inner class
@@ -584,7 +584,7 @@ public class NetController {
     public void ShowWebpage() throws UnsupportedEncodingException {
 
           RequestQueue queue = Volley.newRequestQueue(activity);
-        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/refs/heads/main/webpage.txt";
+        String url = "https://raw.githubusercontent.com/MortezaMaghrebi/MySoundData/refs/heads/main/webpage.txt";
 
         // Variable to store the file content
         final String[] fileContent = {""}; // Using array to allow modification in inner class

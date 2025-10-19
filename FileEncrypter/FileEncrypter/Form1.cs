@@ -23,197 +23,128 @@ namespace FileEncrypter
             InitializeComponent();
         }
 
-        private void btnBrowse_Click(object sender, EventArgs e)
+
+
+        int result_success = 0;
+        int result_error = 0;
+        string filenames = "";
+        string filenames_enc = "";
+        void EncryptRecursive(String current_directory,String target_directory)
         {
-            using (OpenFileDialog ofd = new OpenFileDialog())
+            if (!Directory.Exists(target_directory))
             {
-                ofd.Filter = "Audio Files|*.mp3;*.wav;*.ogg;*.m4a|All Files|*.*";
-                if (ofd.ShowDialog() == DialogResult.OK)
+                Directory.CreateDirectory(target_directory);
+            }
+            string[] filetypes = txtFileTypes.Text.Split(',');
+            foreach (string filetype in filetypes)
+            {
+                string[] files = Directory.GetFiles(current_directory, filetype);
+                for (int i = 0; i < files.Length; i++)
                 {
-                    lblPath.Text= (ofd.FileName);
+                    try
+                    {
+                        string file = files[i];
+                        string fileNameWithoutExt = Path.GetFileNameWithoutExtension(file);
+                        string formattedFileNameWithoutExt = fileNameWithoutExt.Replace("-", "_").Replace(" ", "_");
+                        string target_file_name_without_ext = chbEncryptFileNames.Checked ? Encrypter.EncodeString(formattedFileNameWithoutExt) : formattedFileNameWithoutExt;
+                        string extension = Path.GetExtension(file);
+                        string target_file_name = Path.Combine(target_directory, $"{target_file_name_without_ext}{extension}");
+                        bool result = Encrypter.EncryptFile(file, target_file_name, txtPassword.Text.Trim());
+                        if (result)
+                        {
+                            result_success++;
+                            filenames += file.Replace(txtInputFolder.Text,"").Replace("-", "_").Replace(" ", "_") + "\r\n";
+                            filenames_enc += target_file_name.Replace(txtOutputFolder.Text, "") + "\r\n";
+                        }
+                        else result_error++;
+                        progress_Files.Value = (i + 1) * 100 / files.Length;
+                        progress_Files.Invalidate();
+                        Application.DoEvents();
+                    }
+                    catch (Exception ex)
+                    {
+                        result_error++;
+                    }
                 }
             }
-        }
 
-        private void EncryptFile(string inputFilePath)
-        {
-            try
+            string[] directories = Directory.GetDirectories(current_directory);
+            for (int i = 0; i < directories.Length; i++)
             {
-                // کلید AES-256 به صورت hex string — این باید همان کلیدی باشد که در اندروید استفاده می‌کنی
-                string keyHex = rtxKEY.Text; // به صورت 64 کارکتر hex برای AES-256
-                byte[] key = HexStringToBytes(keyHex);
-                if (key == null || (key.Length != 32))
+                try
                 {
-                    MessageBox.Show("کلید نامعتبر است. مطمئن شو که یک AES-256 (32 بایت) hex وارد کرده‌ای.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    string directory = directories[i];
+                    string sub_directory_name = Path.GetFileName(directory);
+                    if (sub_directory_name.Equals(".git")) continue;
+                    string target_sub_directory_name = chbEncryptFolderNames.Checked? Encrypter.EncodeString(sub_directory_name): sub_directory_name;
+                    string target_sub_directory = Path.Combine(target_directory, target_sub_directory_name);
+                    string current_sub_directory = Path.Combine(current_directory, sub_directory_name);
+                    EncryptRecursive(current_sub_directory, target_sub_directory);
+                    progress_Folders.Value = (i + 1) * 100 / directories.Length;
+                    progress_Folders.Invalidate();
+                    Application.DoEvents();
                 }
-
-                // مسیر خروجی: کنار فایل اصلی و با پسوند _enc (بدون پسوند فایل)
-                string outputFilePath = Path.Combine(
-                    Path.GetDirectoryName(inputFilePath),
-                    Path.GetFileNameWithoutExtension(inputFilePath) + "_enc"
-                );
-
-                // خواندن فایل ورودی
-                byte[] plaintext = File.ReadAllBytes(inputFilePath);
-
-                // تولید IV تصادفی 12 بایتی (GCM)
-                SecureRandom rnd = new SecureRandom();
-                byte[] iv = new byte[12];
-                rnd.NextBytes(iv);
-
-                // تنظیم GCM با BouncyCastle
-                GcmBlockCipher gcm = new GcmBlockCipher(new AesEngine());
-                AeadParameters parameters = new AeadParameters(new KeyParameter(key), 128, iv, null); // 128-bit tag
-                gcm.Init(true, parameters);
-
-                // خروجی سایز لازم
-                byte[] outBuf = new byte[gcm.GetOutputSize(plaintext.Length)];
-                int outLen1 = gcm.ProcessBytes(plaintext, 0, plaintext.Length, outBuf, 0);
-                int outLen2 = gcm.DoFinal(outBuf, outLen1);
-                int totalOut = outLen1 + outLen2;
-
-                // outBuf شامل: [ciphertext || tag] (در این ترتیب)
-                int tagLen = 16; // 128-bit tag = 16 bytes
-                if (totalOut < tagLen)
-                    throw new Exception("نتیجه رمزنگاری نامعتبر است.");
-
-                int cipherTextLen = totalOut - tagLen;
-
-                byte[] ciphertext = new byte[cipherTextLen];
-                byte[] tag = new byte[tagLen];
-
-                Array.Copy(outBuf, 0, ciphertext, 0, cipherTextLen);
-                Array.Copy(outBuf, cipherTextLen, tag, 0, tagLen);
-
-                // نوشتن به فایل خروجی با فرمت: IV(12) + TAG(16) + CIPHERTEXT
-                using (FileStream fs = new FileStream(outputFilePath, FileMode.Create, FileAccess.Write))
+                catch (Exception ex)
                 {
-                    fs.Write(iv, 0, iv.Length);
-                    fs.Write(ciphertext, 0, ciphertext.Length);
-                    fs.Write(tag, 0, tag.Length);
+                    // لاگ خطا
+                    Console.WriteLine($"Error processing directory {directories[i]}: {ex.Message}");
                 }
+            }
 
-                MessageBox.Show($"✅ فایل رمزگذاری شد و ذخیره شد:\n{outputFilePath}", "Done", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"❌ خطا در رمزگذاری:\n{ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+
         }
 
-        private static byte[] HexStringToBytes(string hex)
-        {
-            if (string.IsNullOrWhiteSpace(hex))
-                return null;
-            hex = hex.Trim();
-            if (hex.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
-                hex = hex.Substring(2);
-            if (hex.Length % 2 != 0)
-                return null;
 
-            byte[] result = new byte[hex.Length / 2];
-            for (int i = 0; i < result.Length; i++)
-            {
-                string byteValue = hex.Substring(i * 2, 2);
-                result[i] = Convert.ToByte(byteValue, 16);
-            }
-            return result;
-        }
 
         private void btnEncrypt_Click(object sender, EventArgs e)
         {
-            EncryptFile1(lblPath.Text,"Hello");
-        }
-
-        private string GenerateAes256KeyHex()
-        {
-            byte[] key = new byte[32]; // 256 bits
-            using (var rng = new RNGCryptoServiceProvider())
+            result_success = 0;
+            result_error = 0;
+            filenames = "";
+            filenames_enc = "";
+            if (Directory.Exists(txtInputFolder.Text) && Directory.Exists(txtOutputFolder.Text))
             {
-                rng.GetBytes(key);
-            }
-            // تبدیل به hex کوچک (lowercase)
-            string hex = BitConverter.ToString(key).Replace("-", "").ToLowerInvariant();
-            return hex;
-        }
-
-        // مثال: استفاده و نمایش به کاربر
-        private void btnGenerateKey_Click(object sender, EventArgs e)
-        {
-            string keyHex = GenerateAes256KeyHex();
-            // نمایش در MessageBox (برای تست) — در عمل کلید را امن ذخیره کنید
-            MessageBox.Show("Generated AES-256 key (hex):\n" + keyHex, "Key Generated", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            // یا ذخیره در فایل کنار برنامه (فقط برای تست، نه برای production)
-            string path = System.IO.Path.Combine(Application.StartupPath, "aes_key.hex");
-            rtxKEY.Text = keyHex;
-            System.IO.File.WriteAllText(path, keyHex);
-            MessageBox.Show("Key saved to: " + path, "Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        public static void EncryptFile1(string filename, string password)
-        {
-            try
+                EncryptRecursive(txtInputFolder.Text, txtOutputFolder.Text);
+                System.IO.File.WriteAllText(Path.Combine(txtOutputFolder.Text,"FILENAMES.txt"),filenames);
+                System.IO.File.WriteAllText(Path.Combine(txtOutputFolder.Text,"FILENAMES_ENC.txt"), filenames_enc);
+                MessageBox.Show("Encryption Finished!\nSuccess: " + result_success + "\nFail: " + result_error);
+            }else
             {
-                if (!File.Exists(filename))
-                    throw new FileNotFoundException("فایل مورد نظر یافت نشد.");
-
-                // تولید salt تصادفی
-                byte[] salt = GenerateRandomSalt();
-
-                // تولید key و IV از پسورد
-                using (var key = new Rfc2898DeriveBytes(password, salt, 10000, HashAlgorithmName.SHA256))
-                {
-                    byte[] keyBytes = key.GetBytes(32); // 256-bit key
-                    byte[] iv = key.GetBytes(16);       // 128-bit IV
-
-                    // نام فایل خروجی
-                    string directory = Path.GetDirectoryName(filename);
-                    string fileNameWithoutExt = Path.GetFileNameWithoutExtension(filename);
-                    string extension = Path.GetExtension(filename);
-                    string outputFilename = Path.Combine(directory, $"{fileNameWithoutExt}_enc{extension}");
-
-                    using (var fsOutput = new FileStream(outputFilename, FileMode.Create))
-                    {
-                        // نوشتن salt در ابتدای فایل
-                        fsOutput.Write(salt, 0, salt.Length);
-                        // نوشتن IV بعد از salt
-                        fsOutput.Write(iv, 0, iv.Length);
-
-                        using (var aes = Aes.Create())
-                        {
-                            aes.Key = keyBytes;
-                            aes.IV = iv;
-                            aes.Padding = PaddingMode.PKCS7;
-
-                            using (var cryptoStream = new CryptoStream(fsOutput, aes.CreateEncryptor(), CryptoStreamMode.Write))
-                            using (var fsInput = new FileStream(filename, FileMode.Open))
-                            {
-                                // کپی و انکریپت داده‌ها
-                                fsInput.CopyTo(cryptoStream);
-                            }
-                        }
-                    }
-
-                    Console.WriteLine($"فایل با موفقیت انکریپت شد: {outputFilename}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"خطا در انکریپت کردن: {ex.Message}");
-                throw;
+                MessageBox.Show("Please select correct input and output directories!");
             }
         }
 
-        private static byte[] GenerateRandomSalt()
+        private void Form1_Load(object sender, EventArgs e)
         {
-            byte[] salt = new byte[32];
-            using (var rng = RandomNumberGenerator.Create())
+            
+        }
+
+        private void panel1_Resize(object sender, EventArgs e)
+        {
+            txtFileTypes.Width = Width + 512 - 616;
+            txtPassword.Width = Width + 512 - 616;
+        }
+
+        private void btnBrowseOutputFolder_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "*.folder|*.folder";
+            saveFileDialog.FileName = "Select This ";
+            if(saveFileDialog.ShowDialog()==DialogResult.OK)
             {
-                rng.GetBytes(salt);
+                txtOutputFolder.Text = Path.GetDirectoryName(saveFileDialog.FileName);
             }
-            return salt;
+        }
+
+        private void btnBrowseInputFolder_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "*.folder|*.folder";
+            saveFileDialog.FileName = "Select This ";
+            if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                txtInputFolder.Text = Path.GetDirectoryName(saveFileDialog.FileName);
+            }
         }
     }
 }

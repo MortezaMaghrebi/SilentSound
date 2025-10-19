@@ -319,7 +319,7 @@ public class AudioManager {
 
     private File decryptFile(File encryptedFile, String soundKey) throws Exception {
         // کلید AES باید همان باشد که در رمزگذاری استفاده کردی
-        String password = "Hello";
+        String password = "sound113355";
         File decryptedFile = FileDecryptor.decryptFile(encryptedFile, password);
         if(decryptedFile==null) decryptedFile = FileDecryptor.decryptFileAlternative(encryptedFile, password);
 

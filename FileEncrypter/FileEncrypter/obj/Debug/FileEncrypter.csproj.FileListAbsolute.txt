@@ -11,3 +11,17 @@ C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypte
 C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\bin\Debug\BouncyCastle.Crypto.dll
 C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\bin\Debug\BouncyCastle.Crypto.xml
 C:\Users\Morteza\source\repos\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.csproj.CopyComplete
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\bin\Debug\FileEncrypter.exe.config
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\bin\Debug\FileEncrypter.exe
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\bin\Debug\FileEncrypter.pdb
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\bin\Debug\BouncyCastle.Crypto.dll
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\bin\Debug\BouncyCastle.Crypto.xml
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.csproj.AssemblyReference.cache
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.csproj.SuggestedBindingRedirects.cache
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.Form1.resources
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.Properties.Resources.resources
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.csproj.GenerateResource.cache
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.csproj.CoreCompileInputs.cache
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.csproj.CopyComplete
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.exe
+D:\ALL Projects\Github\SleepHypnosis\SilentSound\FileEncrypter\FileEncrypter\obj\Debug\FileEncrypter.pdb

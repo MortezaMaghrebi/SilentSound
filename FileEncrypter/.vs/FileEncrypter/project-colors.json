@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "ce90f2d5-7547-45bc-956a-aaeead83f58a": {
+      "ProjectGuid": "ce90f2d5-7547-45bc-956a-aaeead83f58a",
+      "DisplayName": "FileEncrypter",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}

@@ -57,7 +57,7 @@ public class Sound {
         String soundId = parts[parts.length-1];
         //parts = soundId.split(".");
         soundId = soundId.replace(".mp3","");
-        return soundId;
+        return Encoder.decodeString(soundId);
     }
 
     public void setName(String name) {

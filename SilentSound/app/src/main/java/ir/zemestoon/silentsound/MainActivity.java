@@ -1011,7 +1011,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadSounds() {
         allSounds = new ArrayList<>();
-        String baseSoundUrl = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/main/";
+        String baseSoundUrl = "https://raw.githubusercontent.com/MortezaMaghrebi/MySoundData/main/sounds/";
         String baseIconUrl = "https://img.icons8.com/ios-filled/50/FFFFFF/";
         netController =NetController.getInstance(MainActivity.this);
         String soundlist_str=netController.getSoundList();
@@ -1028,6 +1028,13 @@ public class MainActivity extends AppCompatActivity {
                 String volume = items[4];
                 String selected = items[5];
                 String vip = items[6];
+                String[] urlparams = sound.split("/");
+                sound="";
+                for(int i=0;i<urlparams.length;i++){
+                    if(i>0) sound+="/";
+                    sound+=Encoder.encodeString(urlparams[i].replace(".mp3",""));
+                }
+                sound+=".mp3";
                 int ivolueme =50;
                 try{ivolueme=Integer.parseInt(volume);}catch (Exception e){}
                 allSounds.add(new Sound(group,name,baseIconUrl+icon,baseSoundUrl+sound,ivolueme,selected.equals("1"),vip.equals("1")));
@@ -1177,7 +1184,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void loadMixes() {
-        String baseGithubUrl = "https://raw.githubusercontent.com/MortezaMaghrebi/sounds/main/";
+        String baseGithubUrl = "https://raw.githubusercontent.com/MortezaMaghrebi/MySoundData/main/";
         netController =NetController.getInstance(MainActivity.this);
         String mixedList_str=netController.getMixedList();
         if(mixedList_str==null)return;
