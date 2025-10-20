@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
                 songTitle.setText(currentsound.getName());
                 String url=currentsound.getAudioUrl();
                 String[] urlparts=currentsound.getAudioUrl().toString().split("/");
-                String[] artistNameParts = urlparts[urlparts.length-2].split("_");
+                String[] artistNameParts = Encoder.decodeString(urlparts[urlparts.length-2]).split("_");
                 StringBuilder  artistname=new StringBuilder();
                 for (String word:artistNameParts) {
                     if (!word.isEmpty()) {

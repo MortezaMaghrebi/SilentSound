@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import androidx.activity.result.ActivityResultRegistry;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Target;
 
 import ir.cafebazaar.poolakey.Payment;
@@ -147,8 +148,21 @@ public class BazaarBilling {
                             editor.putString("last_purchase_token", token);
                             editor.putBoolean("premium_activated",true);
                             editor.apply();
+
                             ToastUtils.showSafeToast(activity, "✅ پرداخت با موفقیت انجام شد");
-                            return Unit.INSTANCE;
+                            try {
+                                editor.putInt("download_sound_counter",2);
+                                editor.commit();
+                                NetController.getInstance(activity).DownloadSoundList();
+                            } catch (UnsupportedEncodingException e) {
+                                throw new RuntimeException(e);
+                            }
+                            try {
+                                editor.putInt("download_mixed_counter",2);
+                                NetController.getInstance(activity).DownloadMixedList();
+                            } catch (UnsupportedEncodingException e) {
+                                throw new RuntimeException(e);
+                            } return Unit.INSTANCE;
                         }
                     });
 
