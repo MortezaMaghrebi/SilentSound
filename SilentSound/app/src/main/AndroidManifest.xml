@@ -9,6 +9,9 @@
     <uses-permission android:name="com.google.android.gms.permission.AD_ID"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR"></uses-permission>
+    <!-- دسترسی برای برنامه‌های myket -->
+    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="ir.myket.billing.BILLING" />
 
     <application
         android:allowBackup="true"

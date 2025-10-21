@@ -43,5 +43,6 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
     implementation("ir.tapsell.plus:tapsell-plus-sdk-android:2.3.2")
     implementation "com.github.cafebazaar.Poolakey:poolakey:2.2.0"
+    implementation 'ir.myket.billingclient:billingclient:2.1.3'
 
 }

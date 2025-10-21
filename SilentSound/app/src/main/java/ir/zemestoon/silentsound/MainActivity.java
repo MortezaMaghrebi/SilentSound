@@ -74,8 +74,8 @@ public class MainActivity extends AppCompatActivity {
     private boolean isAutoPlayingNext = false;
     AddsManager addsManager;
     private BazaarBilling bazaarBilling;
-    final boolean MYKET=false;
-    final boolean BAZAAR = true;
+    final boolean MYKET=true;
+    final boolean BAZAAR = false;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

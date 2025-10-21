@@ -130,8 +130,9 @@ public class NetController {
         }
         RequestQueue queue = Volley.newRequestQueue(activity);
         String url = "https://raw.githubusercontent.com/MortezaMaghrebi/MySoundData/refs/heads/main/message.txt";
+        if(activity.MYKET) url = url.replace("message","message_myket");
 
-        // Variable to store the file content
+            // Variable to store the file content
         final String[] fileContent = {""}; // Using array to allow modification in inner class
 
         StringRequest getRequest = new StringRequest(Request.Method.GET, url,
@@ -434,6 +435,7 @@ public class NetController {
 
           RequestQueue queue = Volley.newRequestQueue(activity);
         String url = "https://raw.githubusercontent.com/MortezaMaghrebi/MySoundData/refs/heads/main/webpage.txt";
+        if(activity.MYKET) url = url.replace("webpage","webpage_myket");
 
         // Variable to store the file content
         final String[] fileContent = {""}; // Using array to allow modification in inner class

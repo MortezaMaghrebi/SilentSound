@@ -4,6 +4,7 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         maven { url 'https://jitpack.io' }
+        maven { url "https://myket.ir/repo/maven" } // ریپازیتوری مایکت
     }
 }
 dependencyResolutionManagement {
@@ -12,6 +13,7 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
+        maven { url "https://myket.ir/repo/maven" } // ریپازیتوری مایکت
     }
 }
 rootProject.name = "SilentSound"
