@@ -1,5 +1,7 @@
 package ir.zemestoon.silentsound;
 
+import static ir.zemestoon.silentsound.BuildConfig.FLAVOR;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
@@ -73,9 +75,9 @@ public class MainActivity extends AppCompatActivity {
     // اضافه کردن flag برای جلوگیری از حلقه بی‌نهایت
     private boolean isAutoPlayingNext = false;
     AddsManager addsManager;
-    private BazaarBilling bazaarBilling;
-    final boolean MYKET=true;
-    final boolean BAZAAR = false;
+    private BillingManager billingManager;
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -120,13 +122,15 @@ public class MainActivity extends AppCompatActivity {
                 downloadMessage();
             }
         },1000);
-        initializeBazaarBilling();
+        initializeBilling();
+
     }
 
-    private void initializeBazaarBilling(){
-        bazaarBilling = BazaarBilling.getInstance(this);
-        bazaarBilling.initializeBazaar();
+    private void initializeBilling(){
+        billingManager = BillingManager.getInstance(this);
+        billingManager.initializeBilling();
     }
+
     private void initializeAddsManager()
     {
         addsManager = AddsManager.getInstance(MainActivity.this);
@@ -228,8 +232,8 @@ public class MainActivity extends AppCompatActivity {
         ivComment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(BAZAAR) openCafeBazaarForComment();
-                else if (MYKET) openMyketForComment();
+                if(FLAVOR=="bazaar") openCafeBazaarForComment();
+                else if (FLAVOR=="myket") openMyketForComment();
             }
         });
 
@@ -1135,7 +1139,7 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                 }
-                if (mixed.isVip() && !bazaarBilling.isPremiumActivated()) {
+                if (mixed.isVip() && !billingManager.isPremiumActivated()) {
                     if (addsManager.isPassed24HoursAfterAdd()) {
                         showVipModal(mixed);
                         return;
@@ -1252,9 +1256,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPurchaseClicked(Mixed mixed) {
                 // اجرای خرید درون برنامه‌ای از کافه بازار
-                if(!bazaarBilling.isPremiumActivated()){
-                    bazaarBilling.activePremium();
-                }else ToastUtils.showSafeToast(MainActivity.this,"شما اکانت پرمیوم را خریداری کرده اید");
+
+                    if(!billingManager.isPremiumActivated())
+                    {
+                        if (billingManager.isReady()) {
+                            billingManager.purchasePremium();
+                        } else {
+                            ToastUtils.showSafeToast(MainActivity.this, "سرویس پرداخت آماده نیست");
+                        }
+                    } else {
+                        ToastUtils.showSafeToast(MainActivity.this, "شما اکانت پرمیوم را خریداری کرده اید");
+                    }
+
             }
 
             @Override
@@ -1280,21 +1293,7 @@ public class MainActivity extends AppCompatActivity {
         vipModal.show();
     }
 
-    // متد برای خرید درون برنامه‌ای
-    private void startInAppPurchase() {
-        // اینجا کد مربوط به خرید از کافه بازار را اضافه کنید
-        // برای نمونه:
-        try {
-            // کد نمونه برای خرید از کافه بازار
-            // Intent intent = new Intent("ir.cafebazaar.pardakht.InAppBillingService.BIND");
-            // intent.setPackage("com.farsitel.bazaar");
-            // startService(intent);
 
-            ToastUtils.showSafeToast(this, "سیستم خرید به زودی فعال خواهد شد");
-        } catch (Exception e) {
-            ToastUtils.showSafeToast(this, "خطا در اتصال به کافه بازار");
-        }
-    }
 
     // متغیر برای نگهداری mixed در انتظار پس از تبلیغ
     private Mixed pendingMixedAfterAd = null;

@@ -2,6 +2,8 @@ package ir.zemestoon.silentsound;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import static ir.zemestoon.silentsound.BuildConfig.FLAVOR;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -52,7 +54,7 @@ public class NetController {
 
         // Variable to store the file content
         final String[] fileContent = {""}; // Using array to allow modification in inner class
-        if(BazaarBilling.getInstance(activity).isPremiumActivated())url=url.replace("soundlist","soundlist_pro");
+        if(BillingManager.getInstance(activity).isPremiumActivated())url=url.replace("soundlist","soundlist_pro");
         StringRequest getRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -91,7 +93,7 @@ public class NetController {
 
         // Variable to store the file content
         final String[] fileContent = {""}; // Using array to allow modification in inner class
-        if(BazaarBilling.getInstance(activity).isPremiumActivated())url=url.replace("mixedlist","mixedlist_pro");
+        if(BillingManager.getInstance(activity).isPremiumActivated())url=url.replace("mixedlist","mixedlist_pro");
 
         StringRequest getRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -130,7 +132,7 @@ public class NetController {
         }
         RequestQueue queue = Volley.newRequestQueue(activity);
         String url = "https://raw.githubusercontent.com/MortezaMaghrebi/MySoundData/refs/heads/main/message.txt";
-        if(activity.MYKET) url = url.replace("message","message_myket");
+        if(FLAVOR=="myket") url = url.replace("message","message_myket");
 
             // Variable to store the file content
         final String[] fileContent = {""}; // Using array to allow modification in inner class
@@ -435,7 +437,7 @@ public class NetController {
 
           RequestQueue queue = Volley.newRequestQueue(activity);
         String url = "https://raw.githubusercontent.com/MortezaMaghrebi/MySoundData/refs/heads/main/webpage.txt";
-        if(activity.MYKET) url = url.replace("webpage","webpage_myket");
+        if(FLAVOR=="myket") url = url.replace("webpage","webpage_myket");
 
         // Variable to store the file content
         final String[] fileContent = {""}; // Using array to allow modification in inner class

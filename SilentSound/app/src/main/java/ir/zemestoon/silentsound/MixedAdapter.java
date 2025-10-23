@@ -31,7 +31,7 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
     private int itemWidth;
     private MainActivity mainActivity;
     private AudioManager audioManager;
-    BazaarBilling bazaarBilling;
+    BillingManager billingManager;
     public interface OnMixedClickListener {
         void onMixedClick(Mixed mixed);
         void onMixedPlayPause(Mixed mixed);
@@ -47,7 +47,7 @@ public class MixedAdapter extends RecyclerView.Adapter<MixedAdapter.MixedViewHol
         this.itemWidth = (screenWidth - convertDpToPx(60)) / 2;
         this.mainActivity = mainActivity;
         this.audioManager = AudioManager.getInstance(mainActivity);
-        this.bazaarBilling = BazaarBilling.getInstance(mainActivity);
+        this.billingManager = BillingManager.getInstance(mainActivity);
     }
 
     private boolean isMixedPlaying(String mixedId) {
